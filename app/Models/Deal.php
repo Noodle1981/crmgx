@@ -22,6 +22,7 @@ class Deal extends Model
         'deal_stage_id',
         'expected_close_date',
         'notes',
+        'status',
     ];
     
     protected $casts = [

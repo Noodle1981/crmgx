@@ -14,16 +14,27 @@ class DealController extends Controller
     /**
      * Muestra el pipeline de ventas.
      */
-    public function index()
-    {
-        $user = Auth::user();
-        $dealStages = DealStage::orderBy('order')->get();
-        $pipelineData = $dealStages->map(function ($stage) use ($user) {
-            $deals = $stage->deals()->where('user_id', $user->id)->where('status', 'open')->with('client')->get();
-            return ['id' => $stage->id, 'name' => $stage->name, 'deals' => $deals];
-        });
-        return view('deals.index', ['pipelineData' => $pipelineData]);
-    }
+ public function index()
+{
+    $user = Auth::user();
+    $dealStages = DealStage::orderBy('order')->get();
+
+    $pipelineData = $dealStages->map(function ($stage) use ($user) {
+        $deals = $stage->deals()
+                       ->where('user_id', $user->id)
+                       ->where('status', 'open') // <-- ¡LA LÍNEA MÁGICA Y CORRECTA!
+                       ->with('client')
+                       ->get();
+
+        return [
+            'id' => $stage->id,
+            'name' => $stage->name,
+            'deals' => $deals
+        ];
+    });
+
+    return view('deals.index', ['pipelineData' => $pipelineData]);
+}
 
     /**
      * Muestra el formulario para crear un nuevo deal.
@@ -72,6 +83,47 @@ class DealController extends Controller
         return redirect()->route('deals.index')->with('success', '¡Nuevo deal creado con éxito!');
     }
     
+    public function updateStage(Request $request, Deal $deal)
+    {
+        // Seguridad: ¿Este deal le pertenece al usuario?
+        if (Auth::user()->id !== $deal->user_id) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        // Validación: Asegurarse de que nos envían una etapa válida
+        $validated = $request->validate([
+            'deal_stage_id' => 'required|integer|exists:deal_stages,id'
+        ]);
+
+        // Actualización
+        $deal->update([
+            'deal_stage_id' => $validated['deal_stage_id']
+        ]);
+
+        // Redirección con mensaje de éxito
+        return redirect()->back()->with('success', __('messages.deal_updated'));
+    }
+     public function markAsWon(Deal $deal)
+    {
+        if (auth()->user()->id !== $deal->user_id) abort(403);
+
+        $deal->update(['status' => 'won']);
+
+        return redirect()->route('deals.index')->with('success', "¡Felicidades! Has ganado el deal '{$deal->name}'.");
+    }
+
+    /**
+     * Mark a deal as lost.
+     */
+    public function markAsLost(Deal $deal)
+    {
+        if (auth()->user()->id !== $deal->user_id) abort(403);
+        
+        $deal->update(['status' => 'lost']);
+        
+    return redirect()->route('deals.index')->with('success', "DEBUG: Deal '{$deal->name}' marcado como perdido.");
+    }
+
     // ... los métodos edit, update, destroy y updateStage se quedan como estaban ...
     // Asegúrate de tenerlos aquí.
 }

@@ -8,6 +8,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Database\Eloquent\Relations\HasMany; // <-- AÑADE ESTO
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
 use App\Models\Activity;
 use App\Models\Sequence;
@@ -77,4 +78,14 @@ class User extends Authenticatable
     {
         return $this->hasMany(Sequence::class);
     }
+
+     public function contacts(): HasManyThrough
+    {
+        return $this->hasManyThrough(Contact::class, Client::class);
+    }
+    public function sequenceEnrollments(): HasMany
+    {
+        return $this->hasMany(SequenceEnrollment::class);
+    }
+
 }

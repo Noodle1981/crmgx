@@ -38,6 +38,20 @@
                                         </div>
                                         <!-- ¡AQUÍ ESTÁN LOS ENLACES CRUD! -->
                                         <div class="text-xs text-gray-500 space-x-2 flex-shrink-0 ml-2">
+
+                                            <form action="{{ route('deals.win', $deal) }}" method="POST" class="inline">
+        @csrf
+        @method('PATCH')
+        <button type="submit" class="font-bold text-green-500 hover:underline">Ganado</button>
+    </form>
+    <form action="{{ route('deals.lost', $deal) }}" method="POST" class="inline">
+        @csrf
+        @method('PATCH')
+        <button type="submit" class="font-bold text-gray-500 hover:underline">Perdido</button>
+    </form>
+
+
+
                                             <a href="{{ route('deals.edit', $deal) }}" class="hover:underline">Editar</a>
                                             <form action="{{ route('deals.destroy', $deal) }}" method="POST" class="inline" onsubmit="return confirm('¿Estás seguro?');">
                                                 @csrf

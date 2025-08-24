@@ -11,6 +11,7 @@ use App\Http\Controllers\ActivityController;
 use App\Http\Controllers\SequenceController;
 use App\Http\Controllers\SequenceStepController;
 use App\Http\Controllers\EnrollmentController;
+use App\Http\Controllers\SalesReportController;
 
 use Illuminate\Support\Facades\Route;
 
@@ -35,17 +36,15 @@ Route::middleware('auth')->group(function () {
     // Rutas para Deals (Pipeline y CRUD)
     Route::resource('deals', DealController::class)->except(['show']); // Usamos resource para todo el CRUD
     Route::patch('/deals/{deal}/update-stage', [DealController::class, 'updateStage'])->name('deals.updateStage'); // Mantenemos esta para las flechas
-
+    Route::patch('/deals/{deal}/win', [DealController::class, 'markAsWon'])->name('deals.win');
+    Route::patch('/deals/{deal}/lose', [DealController::class, 'markAsLost'])->name('deals.lost');
+   
     Route::post('/leads/{lead}/convert', [LeadConversionController::class, 'convert'])->name('leads.convert');
 
     Route::resource('clients.contacts', ContactController::class)->scoped()->except(['index', 'show']);
-
-
     Route::get('/clients/{client}/deals/create', [DealController::class, 'create'])->name('clients.deals.create');
     Route::post('/clients/{client}/deals', [DealController::class, 'store'])->name('clients.deals.store');
-
-
-     Route::post('/clients/{client}/activities', [ActivityController::class, 'storeForClient'])->name('clients.activities.store');
+    Route::post('/clients/{client}/activities', [ActivityController::class, 'storeForClient'])->name('clients.activities.store');
 
 
     Route::resource('sequences', SequenceController::class);
@@ -54,6 +53,8 @@ Route::middleware('auth')->group(function () {
     // --- BLOQUE PARA LA INSCRIPCIÓN! ---
     Route::get('/contacts/{contact}/enroll', [EnrollmentController::class, 'create'])->name('contacts.enroll.create');
     Route::post('/contacts/{contact}/enroll', [EnrollmentController::class, 'store'])->name('contacts.enroll.store');
+
+    Route::get('/reports/sales', [SalesReportController::class, 'index'])->name('reports.sales');
 
 
 });
