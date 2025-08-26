@@ -1,98 +1,92 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            Reporte de Ventas ({{ $selectedDate->translatedFormat('F Y') }})
-        </h2>
+        Reporte de Ventas ({{ $selectedDate->translatedFormat('F Y') }})
     </x-slot>
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+        
+        {{-- ========================================================== --}}
+        {{-- AQUÍ ESTÁ EL FORMULARIO DE FILTROS QUE FALTABA --}}
+        {{-- ========================================================== --}}
+        <x-card class="mb-8">
+            <form action="{{ route('reports.sales') }}" method="GET" class="flex flex-wrap items-center gap-4">
+                <div class="flex items-center space-x-2">
+                    <x-input-label for="year" value="Año:" class="mb-0" />
+                    <select name="year" id="year" class="text-sm bg-gray-900/60 border-white/10 rounded-lg focus:border-aurora-cyan focus:ring-aurora-cyan/40">
+                        @foreach($availableYears as $availableYear)
+                            <option value="{{ $availableYear }}" @selected($availableYear == $year)>{{ $availableYear }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <x-input-label for="month" value="Mes:" class="mb-0" />
+                    <select name="month" id="month" class="text-sm bg-gray-900/60 border-white/10 rounded-lg focus:border-aurora-cyan focus:ring-aurora-cyan/40">
+                        @for ($m = 1; $m <= 12; $m++)
+                            <option value="{{ $m }}" @selected($m == $month)>{{ \Carbon\Carbon::create()->month($m)->translatedFormat('F') }}</option>
+                        @endfor
+                    </select>
+                </div>
+                <x-primary-button type="submit">Filtrar</x-primary-button>
+            </form>
+        </x-card>
+
+        <!-- KPIs Principales -->
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 mb-8">
+            <div class="col-span-2 md:col-span-3 lg:col-span-1 bg-gradient-to-br from-green-400 to-aurora-cyan p-6 rounded-2xl shadow-xl flex flex-col justify-center text-center">
+                <h3 class="font-headings text-lg text-dark-void/80">Total Ganado</h3>
+                <p class="text-5xl font-bold text-dark-void mt-1">${{ number_format($totalWonValue, 0) }}</p>
+            </div>
             
-            <!-- FORMULARIO DE FILTROS -->
-            <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm mb-6">
-                <form action="{{ route('reports.sales') }}" method="GET" class="flex flex-wrap items-center space-x-4">
-                    <div>
-                        <label for="year" class="text-sm font-medium text-gray-700 dark:text-gray-300">Año:</label>
-                        <select name="year" id="year" class="rounded-md dark:bg-gray-900 dark:text-gray-300 border-gray-300 dark:border-gray-700">
-                            @foreach($availableYears as $availableYear)
-                                <option value="{{ $availableYear }}" {{ $availableYear == $year ? 'selected' : '' }}>
-                                    {{ $availableYear }}
-                                </option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div>
-                        <label for="month" class="text-sm font-medium text-gray-700 dark:text-gray-300">Mes:</label>
-                        <select name="month" id="month" class="rounded-md dark:bg-gray-900 dark:text-gray-300 border-gray-300 dark:border-gray-700">
-                            @for ($m = 1; $m <= 12; $m++)
-                                <option value="{{ $m }}" {{ $m == $month ? 'selected' : '' }}>
-                                    {{ \Carbon\Carbon::create()->month($m)->translatedFormat('F') }}
-                                </option>
-                            @endfor
-                        </select>
-                    </div>
-                    <button type="submit" class="px-4 py-2 bg-blue-500 hover:bg-blue-700 text-white font-bold rounded-md">
-                        Filtrar
-                    </button>
-                </form>
-            </div>
+            <x-kpi-card title="Deals Ganados" value="{{ $wonCount }}" icon="fas fa-trophy" class="lg:col-span-1" />
+            <x-kpi-card title="Deals Perdidos" value="{{ $lostCount }}" icon="fas fa-times-circle" class="lg:col-span-1" />
+            <x-kpi-card title="Ticket Promedio" value="${{ number_format($averageDealSize, 0) }}" icon="fas fa-dollar-sign" class="lg:col-span-1" />
+            <x-kpi-card title="Tasa de Conversión" value="{{ number_format($conversionRate, 1) }}%" icon="fas fa-chart-line" class="lg:col-span-1" />
+        </div>
 
-            <!-- KPIs Principales -->
-            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 mb-6 text-center">
-                <div class="bg-green-500 text-white p-4 rounded-lg shadow-sm">
-                    <h3 class="font-semibold">Total Ganado</h3>
-                    <p class="text-2xl font-bold">${{ number_format($totalWonValue, 0) }}</p>
-                </div>
-                <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm">
-                    <h3 class="font-semibold text-gray-500 dark:text-gray-400">Deals Ganados</h3>
-                    <p class="text-2xl font-bold">{{ $wonCount }}</p>
-                </div>
-                <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm">
-                    <h3 class="font-semibold text-gray-500 dark:text-gray-400">Deals Perdidos</h3>
-                    <p class="text-2xl font-bold">{{ $lostCount }}</p>
-                </div>
-                <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm">
-                    <h3 class="font-semibold text-gray-500 dark:text-gray-400">Ticket Promedio</h3>
-                    <p class="text-2xl font-bold">${{ number_format($averageDealSize, 0) }}</p>
-                </div>
-                <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm">
-                    <h3 class="font-semibold text-gray-500 dark:text-gray-400">Tasa de Conversión</h3>
-                    <p class="text-2xl font-bold">{{ number_format($conversionRate, 1) }}%</p>
-                </div>
-            </div>
-
-            <!-- Listas de Deals Cerrados -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <!-- Deals Ganados -->
-                <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-                    <div class="p-6">
-                        <h3 class="text-lg font-semibold mb-4 text-gray-800 dark:text-gray-200">Deals Ganados este Mes</h3>
-                        @forelse($wonDeals as $deal)
-                            <div class="py-2 border-b dark:border-gray-700 last:border-b-0">
-                                <p class="font-semibold text-gray-800 dark:text-gray-200">{{ $deal->name }} - <span class="text-green-500">${{ number_format($deal->value, 2) }}</span></p>
-                                <p class="text-sm text-gray-500 dark:text-gray-400">{{ $deal->client->name }} | Cerrado: {{ $deal->updated_at->format('d/m/Y') }}</p>
+        <!-- Listas de Deals Cerrados -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <x-card>
+                <x-slot name="header">
+                    <div class="flex items-center space-x-3 text-green-400">
+                        <i class="fas fa-check-circle text-2xl"></i>
+                        <h3 class="font-headings text-xl text-light-text">Deals Ganados</h3>
+                    </div>
+                </x-slot>
+                <div class="space-y-4 divide-y divide-white/10">
+                    @forelse($wonDeals as $deal)
+                        <div class="pt-4 first:pt-0">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <p class="font-semibold text-light-text">{{ $deal->name }}</p>
+                                    <p class="text-sm text-light-text-muted">{{ $deal->client->name }} | {{ $deal->updated_at->format('d/m/Y') }}</p>
+                                </div>
+                                <span class="font-bold text-green-400">${{ number_format($deal->value, 0) }}</span>
                             </div>
-                        @empty
-                            <p class="text-gray-500 dark:text-gray-400">Aún no has ganado ningún deal en este período.</p>
-                        @endforelse
-                    </div>
+                        </div>
+                    @empty
+                        <p class="text-center text-light-text-muted py-8">Aún no has ganado ningún deal en este período.</p>
+                    @endempty
                 </div>
-                <!-- Deals Perdidos -->
-                <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-                    <div class="p-6">
-                        <h3 class="text-lg font-semibold mb-4 text-gray-800 dark:text-gray-200">Deals Perdidos este Mes</h3>
-                        @forelse($lostDeals as $deal)
-                            <div class="py-2 border-b dark:border-gray-700 last:border-b-0">
-                                <p class="font-semibold text-gray-800 dark:text-gray-200">{{ $deal->name }}</p>
-                                <p class="text-sm text-gray-500 dark:text-gray-400">{{ $deal->client->name }} | Cerrado: {{ $deal->updated_at->format('d/m/Y') }}</p>
-                            </div>
-                        @empty
-                            <p class="text-gray-500 dark:text-gray-400">No se han perdido deals en este período.</p>
-                        @endforelse
-                    </div>
-                </div>
-            </div>
+            </x-card>
 
+            <x-card>
+                <x-slot name="header">
+                    <div class="flex items-center space-x-3 text-aurora-red-pop">
+                        <i class="fas fa-times-circle text-2xl"></i>
+                        <h3 class="font-headings text-xl text-light-text">Deals Perdidos</h3>
+                    </div>
+                </x-slot>
+                <div class="space-y-4 divide-y divide-white/10">
+                    @forelse($lostDeals as $deal)
+                        <div class="pt-4 first:pt-0">
+                            <p class="font-semibold text-light-text">{{ $deal->name }}</p>
+                            <p class="text-sm text-light-text-muted">{{ $deal->client->name }} | {{ $deal->updated_at->format('d/m/Y') }}</p>
+                        </div>
+                    @empty
+                        <p class="text-center text-light-text-muted py-8">No se han perdido deals en este período.</p>
+                    @endempty
+                </div>
+            </x-card>
         </div>
     </div>
 </x-app-layout>

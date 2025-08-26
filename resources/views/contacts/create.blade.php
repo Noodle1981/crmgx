@@ -1,17 +1,18 @@
 <x-app-layout>
+    {{-- El header ahora es más simple. El layout se encarga del estilo. --}}
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">Añadir Contacto a {{ $client->name }}</h2>
+        Añadir Contacto a {{ $client->name }}
     </x-slot>
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900 dark:text-gray-100">
-                    <form action="{{ route('clients.contacts.store', $client) }}" method="POST">
-                        @csrf
-                        @include('contacts._form', ['btnText' => 'Guardar Contacto'])
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
+
+    {{-- Reemplazamos toda la estructura de divs por nuestro componente <x-card> --}}
+    <x-card class="max-w-4xl mx-auto">
+        {{-- El padding ya está incluido en el componente <x-card>, así que no necesitamos divs adicionales --}}
+        <form action="{{ route('clients.contacts.store', $client) }}" method="POST">
+            @csrf
+            
+            {{-- Incluimos el formulario que ya hemos estilizado --}}
+            @include('contacts._form', ['btnText' => 'Guardar Contacto'])
+        </form>
+    </x-card>
+
 </x-app-layout>

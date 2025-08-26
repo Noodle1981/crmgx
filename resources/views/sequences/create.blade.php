@@ -1,9 +1,15 @@
 <x-app-layout>
-    <x-slot name="header"><h2 class="font-semibold...">Crear Nueva Secuencia</h2></x-slot>
-    <div class="py-12"><div class="..."><div class="..."><div class="p-6 ...">
+    <x-slot name="header">
+        Crear Nueva Secuencia
+    </x-slot>
+    
+    <x-card class="max-w-4xl mx-auto">
         <form action="{{ route('sequences.store') }}" method="POST">
             @csrf
-            @include('sequences._form', ['btnText' => 'Guardar Secuencia'])
+            @include('sequences._form', [
+                'sequence' => new \App\Models\Sequence,
+                'btnText' => 'Guardar y Añadir Pasos'
+            ])
         </form>
-    </div></div></div></div>
+    </x-card>
 </x-app-layout>

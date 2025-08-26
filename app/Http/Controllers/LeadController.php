@@ -73,4 +73,22 @@ class LeadController extends Controller
         $lead->delete();
         return redirect()->route('leads.index')->with('success', '¡Lead eliminado con éxito!');
     }
+
+     public function updateStatus(Request $request, Lead $lead)
+    {
+        // Seguridad: ¿Este lead le pertenece al usuario?
+        if (auth()->user()->id !== $lead->user_id) {
+            abort(403);
+        }
+
+        // Validación: Asegurarse de que nos envían un estado válido
+        $validated = $request->validate([
+            'status' => ['required', Rule::in(['nuevo', 'contactado', 'calificado', 'perdido'])]
+        ]);
+
+        $lead->update(['status' => $validated['status']]);
+
+        // Redirigimos de vuelta a la lista con un mensaje de éxito
+        return redirect()->route('leads.index')->with('success', '¡Estado del lead actualizado!');
+    }
 }

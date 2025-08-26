@@ -1,20 +1,42 @@
+{{-- resources/views/contacts/_form.blade.php --}}
+
+{{-- Campo Nombre --}}
 <div class="mb-4">
-    <label for="name" class="block text-sm font-bold mb-2 dark:text-gray-300">Nombre</label>
-    <input type="text" name="name" id="name" value="{{ old('name', $contact->name ?? '') }}" class="shadow rounded w-full py-2 px-3 dark:bg-gray-900 dark:text-gray-300" required>
+    <x-input-label for="name" :value="__('Nombre')" />
+    <x-text-input id="name" class="block mt-1 w-full" type="text" name="name" :value="old('name', $contact->name ?? '')" required autofocus />
+    <x-input-error :messages="$errors->get('name')" class="mt-2" />
 </div>
+
+{{-- Campo Email --}}
 <div class="mb-4">
-    <label for="email" class="block text-sm font-bold mb-2 dark:text-gray-300">Email</label>
-    <input type="email" name="email" id="email" value="{{ old('email', $contact->email ?? '') }}" class="shadow rounded w-full py-2 px-3 dark:bg-gray-900 dark:text-gray-300">
+    <x-input-label for="email" :value="__('Email')" />
+    <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email', $contact->email ?? '')" />
+    <x-input-error :messages="$errors->get('email')" class="mt-2" />
 </div>
+
+{{-- Campo Teléfono --}}
 <div class="mb-4">
-    <label for="phone" class="block text-sm font-bold mb-2 dark:text-gray-300">Teléfono</label>
-    <input type="text" name="phone" id="phone" value="{{ old('phone', $contact->phone ?? '') }}" class="shadow rounded w-full py-2 px-3 dark:bg-gray-900 dark:text-gray-300">
+    <x-input-label for="phone" :value="__('Teléfono')" />
+    <x-text-input id="phone" class="block mt-1 w-full" type="text" name="phone" :value="old('phone', $contact->phone ?? '')" />
+    <x-input-error :messages="$errors->get('phone')" class="mt-2" />
 </div>
+
+{{-- Campo Cargo --}}
 <div class="mb-4">
-    <label for="position" class="block text-sm font-bold mb-2 dark:text-gray-300">Cargo</label>
-    <input type="text" name="position" id="position" value="{{ old('position', $contact->position ?? '') }}" class="shadow rounded w-full py-2 px-3 dark:bg-gray-900 dark:text-gray-300">
+    <x-input-label for="position" :value="__('Cargo')" />
+    <x-text-input id="position" class="block mt-1 w-full" type="text" name="position" :value="old('position', $contact->position ?? '')" />
+    <x-input-error :messages="$errors->get('position')" class="mt-2" />
 </div>
-<div class="flex items-center justify-end mt-4">
-    <a href="{{ route('clients.show', $client) }}" class="dark:text-gray-400 hover:underline mr-4">Cancelar</a>
-    <button type="submit" class="px-4 py-2 bg-blue-500 hover:bg-blue-700 text-white font-bold rounded-md">{{ $btnText }}</button>
+
+{{-- Botones de Acción --}}
+<div class="flex items-center justify-end mt-6 space-x-4">
+    <a href="{{ route('clients.show', $client) }}">
+        <x-secondary-button type="button">
+            {{ __('Cancelar') }}
+        </x-secondary-button>
+    </a>
+    
+    <x-primary-button>
+        {{ $btnText }}
+    </x-primary-button>
 </div>

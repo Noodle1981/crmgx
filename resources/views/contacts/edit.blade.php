@@ -1,20 +1,18 @@
 <x-app-layout>
+    {{-- Simplificamos el header, dejando que el layout principal aplique el estilo --}}
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            Editar Contacto de {{ $client->name }}
-        </h2>
+        Editar Contacto de {{ $client->name }}
     </x-slot>
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900 dark:text-gray-100">
-                    <form action="{{ route('clients.contacts.update', [$client, $contact]) }}" method="POST">
-                        @csrf
-                        @method('PUT')
-                        @include('contacts._form', ['btnText' => 'Actualizar Contacto'])
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
+
+    {{-- Usamos nuestro componente <x-card> para envolver el formulario --}}
+    <x-card class="max-w-4xl mx-auto">
+        <form action="{{ route('clients.contacts.update', [$client, $contact]) }}" method="POST">
+            @csrf
+            @method('PUT')
+            
+            {{-- Reutilizamos el mismo formulario parcial. ¡Funciona a la perfección! --}}
+            @include('contacts._form', ['btnText' => 'Actualizar Contacto'])
+        </form>
+    </x-card>
+
 </x-app-layout>

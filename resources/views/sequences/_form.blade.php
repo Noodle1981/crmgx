@@ -1,9 +1,16 @@
-<div class="mb-4">
-    <label for="name" class="block text-sm font-bold mb-2 dark:text-gray-300">Nombre de la Secuencia</label>
-    <input type="text" name="name" id="name" value="{{ old('name', $sequence->name ?? '') }}" class="shadow rounded w-full py-2 px-3 dark:bg-gray-900 dark:text-gray-300" required>
-    @error('name') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+{{-- resources/views/sequences/_form.blade.php --}}
+
+<!-- Nombre de la Secuencia -->
+<div class="mb-6">
+    <x-input-label for="name" value="Nombre de la Secuencia" />
+    <x-text-input id="name" name="name" type="text" class="mt-1 block w-full" :value="old('name', $sequence->name ?? '')" required autofocus placeholder="Ej: Secuencia de Bienvenida a Nuevos Clientes" />
+    <x-input-error :messages="$errors->get('name')" class="mt-2" />
 </div>
-<div class="flex items-center justify-end mt-4">
-    <a href="{{ route('sequences.index') }}" class="dark:text-gray-400 hover:underline mr-4">Cancelar</a>
-    <button type="submit" class="px-4 py-2 bg-blue-500 hover:bg-blue-700 text-white font-bold rounded-md">{{ $btnText }}</button>
+
+<!-- Botones de Acción -->
+<div class="flex items-center justify-end mt-8 space-x-4">
+    <a href="{{ route('sequences.index') }}">
+        <x-secondary-button type="button">Cancelar</x-secondary-button>
+    </a>
+    <x-primary-button>{{ $btnText }}</x-primary-button>
 </div>

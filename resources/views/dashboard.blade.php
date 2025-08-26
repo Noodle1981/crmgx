@@ -1,98 +1,194 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            Panel de Control
-        </h2>
+        Panel de Control
     </x-slot>
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <!-- Sección de KPIs Generales -->
-           <div class="grid grid-cols-2 md:grid-cols-3 gap-6 mb-6 justify-center mx-auto">
-    <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm text-center">
-        <h3 class="text-lg font-semibold text-gray-500 dark:text-gray-400">Clientes</h3>
-        <p class="text-3xl font-bold mt-2">{{ $clientCount }}</p>
+    {{-- ========================================================== --}}
+    {{-- SECCIÓN 1: TARJETAS DE KPI --}}
+    {{-- ========================================================== --}}
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+        <x-kpi-card title="Clientes" value="{{ $clientCount }}" icon="fas fa-users" />
+        <x-kpi-card title="Contactos" value="{{ $contactCount }}" icon="fas fa-address-book" />
+        <x-kpi-card title="Secuencias Activas" value="{{ $activeSequencesCount }}" icon="fas fa-cogs" />
     </div>
-    <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm text-center">
-        <h3 class="text-lg font-semibold text-gray-500 dark:text-gray-400">Contactos</h3>
-        <p class="text-3xl font-bold mt-2">{{ $contactCount }}</p>
-    </div>
-    <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm text-center">
-        <h3 class="text-lg font-semibold text-gray-500 dark:text-gray-400">Secuencias Activas</h3>
-        <p class="text-3xl font-bold mt-2">{{ $activeSequencesCount }}</p>
-    </div>
-</div>
 
-            <!-- Sección de Pipeline -->
-            <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm mb-6">
-                <h3 class="text-lg font-semibold mb-4">Pipeline de Ventas</h3>
-                <div class="grid grid-cols-2 gap-6 text-center">
-                    <div>
-                        <h4 class="text-gray-500 dark:text-gray-400">Deals Abiertos</h4>
-                        <p class="text-2xl font-bold">{{ $pipelineStats['openDealsCount'] }}</p>
-                    </div>
-                    <div>
-                        <h4 class="text-gray-500 dark:text-gray-400">Valor Total</h4>
-                        <p class="text-2xl font-bold">${{ number_format($pipelineStats['pipelineValue'], 0) }}</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Sección de Leads -->
-            <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm mb-6">
-                <h3 class="text-lg font-semibold mb-4">Embudo de Leads</h3>
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
-                    <div>
-                        <h4 class="text-gray-500 dark:text-gray-400">Nuevos</h4>
-                        <p class="text-2xl font-bold">{{ $leadStatusCounts['nuevo'] ?? 0 }}</p>
-                    </div>
-                    <div>
-                        <h4 class="text-gray-500 dark:text-gray-400">Contactados</h4>
-                        <p class="text-2xl font-bold">{{ $leadStatusCounts['contactado'] ?? 0 }}</p>
-                    </div>
-                    <div>
-                        <h4 class="text-gray-500 dark:text-gray-400">Calificados</h4>
-                        <p class="text-2xl font-bold">{{ $leadStatusCounts['calificado'] ?? 0 }}</p>
-                    </div>
-                    <div>
-                        <h4 class="text-gray-500 dark:text-gray-400">Perdidos</h4>
-                        <p class="text-2xl font-bold">{{ $leadStatusCounts['perdido'] ?? 0 }}</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Sección de Tareas y Deals Recientes -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <!-- Tarjeta Tareas Pendientes -->
-                <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg p-6">
-                    <h3 class="text-lg font-semibold mb-4">Próximas Tareas</h3>
-                    <div class="space-y-3">
-                        @forelse ($upcomingTasks as $task)
-                            <div class="border-l-4 @if($task->status == 'pendiente') border-yellow-500 @else border-blue-500 @endif pl-3">
-                                <p class="font-semibold">{{ $task->title }}</p>
-                                <p class="text-sm text-gray-600 dark:text-gray-400">Vence: {{ \Carbon\Carbon::parse($task->due_date)->format('d/m/Y') }}</p>
-                            </div>
-                        @empty
-                            <p class="text-gray-500 dark:text-gray-400">¡No tienes tareas pendientes!</p>
-                        @endforelse
-                    </div>
-                </div>
-                <!-- Tarjeta Deals Recientes -->
-                <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg p-6">
-                    <h3 class="text-lg font-semibold mb-4">Deals Abiertos Recientemente</h3>
-                    <div class="space-y-3">
-                        @forelse ($recentDeals as $deal)
-                            <div>
-                                <p class="font-semibold">{{ $deal->name }}</p>
-                                <p class="text-sm text-gray-600 dark:text-gray-400">Cliente: {{ $deal->client->name }}</p>
-                            </div>
-                        @empty
-                            <p class="text-gray-500 dark:text-gray-400">No hay deals abiertos.</p>
-                        @endforelse
-                    </div>
-                </div>
-            </div>
-
+    {{-- ========================================================== --}}
+    {{-- SECCIÓN 2: GRÁFICO DEL PIPELINE --}}
+    {{-- ========================================================== --}}
+    <x-card class="mb-8">
+        <x-slot name="header">
+            <h3 class="font-headings text-xl">Pipeline de Ventas</h3>
+        </x-slot>
+        
+        {{-- Contenido del gráfico dentro de la tarjeta de cristal --}}
+        <div>
+            <h3 class="text-lg font-semibold text-light-text mb-4">Valor del Pipeline por Etapa</h3>
+            <div id="pipelineChart"></div>
         </div>
+
+        <x-slot name="footer">
+            <div class="flex justify-between items-center text-sm">
+                <span>Deals Abiertos: <strong class="text-light-text">{{ $pipelineStats['openDealsCount'] }}</strong></span>
+                <span>Valor Total: <strong class="text-aurora-cyan">${{ number_format($pipelineStats['pipelineValue'], 0) }}</strong></span>
+            </div>
+        </x-slot>
+    </x-card>
+
+    {{-- ========================================================== --}}
+    {{-- SECCIÓN 3: TAREAS Y DEALS RECIENTES --}}
+    {{-- ========================================================== --}}
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <x-card>
+            <x-slot name="header">
+                <h3 class="font-headings text-xl">Próximas Tareas</h3>
+            </x-slot>
+            <div class="space-y-4">
+                @forelse ($upcomingTasks as $task)
+                    <div class="flex items-start space-x-4">
+                        <div class="flex-shrink-0 mt-1 h-3 w-3 rounded-full @if($task->status == 'pendiente') bg-aurora-red-pop animate-pulse @else bg-aurora-blue @endif"></div>
+                        <div>
+                            <p class="font-semibold text-light-text">{{ $task->title }}</p>
+                            <x-smart-date :date="$task->due_date" with-color="true" with-icon="true" />
+                        </div>
+                    </div>
+                @empty
+                    <div class="text-center py-8 text-light-text-muted">
+                        <i class="fas fa-check-circle text-4xl mb-3"></i>
+                        <p>¡No tienes tareas pendientes!</p>
+                    </div>
+                @endforelse
+            </div>
+        </x-card>
+
+        <x-card>
+            <x-slot name="header">
+                <h3 class="font-headings text-xl">Deals Abiertos Recientemente</h3>
+            </x-slot>
+            <div class="space-y-4 divide-y divide-white/10">
+                @forelse ($recentDeals as $deal)
+                    <div class="pt-4 first:pt-0">
+                        <p class="font-semibold text-light-text">{{ $deal->name }}</p>
+                        <p class="text-sm text-light-text-muted">Cliente: {{ $deal->client->name }}</p>
+                    </div>
+                @empty
+                    <div class="text-center py-8 text-light-text-muted">
+                        <i class="fas fa-folder-open text-4xl mb-3"></i>
+                        <p>No hay deals abiertos recientemente.</p>
+                    </div>
+                @endforelse
+            </div>
+        </x-card>
     </div>
 </x-app-layout>
+
+
+
+{{-- ========================================================== --}}
+{{-- SECCIÓN 4: SCRIPT PARA EL GRÁFICO --}}
+{{-- ========================================================== --}}
+@push('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Opciones del gráfico
+        const options = {
+            series: [{
+                name: 'Valor',
+                data: []
+            }],
+            chart: {
+                type: 'bar',
+                height: 350,
+                toolbar: { show: false },
+                foreColor: '#9ca3af' // Color del texto de los ejes (gris para modo oscuro)
+            },
+            plotOptions: {
+                bar: {
+                    horizontal: false,
+                    columnWidth: '55%',
+                    borderRadius: 4, // Bordes redondeados para las barras
+                },
+            },
+            colors: ['#30EEE2'], // Usamos nuestro color --aurora-cyan
+            dataLabels: { enabled: false },
+            stroke: {
+                show: true,
+                width: 2,
+                colors: ['transparent']
+            },
+            xaxis: {
+                categories: [],
+                labels: {
+                    style: {
+                        colors: '#9ca3af',
+                    },
+                },
+                axisBorder: {
+                    color: '#4A5568' // Color del eje X
+                },
+                axisTicks: {
+                    color: '#4A5568' // Color de las marcas del eje X
+                }
+            },
+            yaxis: {
+                title: { 
+                    text: '$ (Valor)',
+                    style: {
+                        color: '#9ca3af'
+                    }
+                },
+                labels: {
+                    style: {
+                        colors: '#9ca3af',
+                    },
+                    formatter: function (val) {
+                        if (val >= 1000) {
+                            return '$' + (val / 1000).toFixed(0) + 'k';
+                        }
+                        return '$' + val;
+                    }
+                }
+            },
+            grid: {
+                borderColor: '#2d3748' // Color de las líneas de la cuadrícula
+            },
+            fill: { opacity: 1 },
+            tooltip: {
+                theme: 'dark', // Usamos el tema oscuro para el tooltip
+                y: {
+                    formatter: function (val) {
+                        return "$ " + val.toLocaleString('es-ES');
+                    }
+                }
+            }
+        };
+
+        // Creamos la instancia del gráfico
+        const chart = new ApexCharts(document.querySelector("#pipelineChart"), options);
+        chart.render();
+
+        // Hacemos la petición a nuestra API para obtener los datos reales
+        fetch("{{ route('charts.pipeline') }}")
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('La respuesta de la red no fue correcta');
+                }
+                return response.json();
+            })
+            .then(data => {
+                // Actualizamos el gráfico con los datos del servidor
+                chart.updateOptions({
+                    xaxis: {
+                        categories: data.labels
+                    },
+                    series: [{
+                        data: data.series
+                    }],
+                });
+            })
+            .catch(error => {
+                console.error('Hubo un problema con la operación fetch:', error);
+                document.querySelector("#pipelineChart").innerHTML = '<p class="text-center text-aurora-red-pop">No se pudieron cargar los datos del gráfico.</p>';
+            });
+    });
+</script>
+@endpush

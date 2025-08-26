@@ -1,3 +1,4 @@
+{{-- resources/views/components/modal.blade.php --}}
 @props([
     'name',
     'show' => false,
@@ -11,6 +12,8 @@ $maxWidth = [
     'lg' => 'sm:max-w-lg',
     'xl' => 'sm:max-w-xl',
     '2xl' => 'sm:max-w-2xl',
+    '3xl' => 'sm:max-w-3xl', // Añadimos más tamaños
+    '4xl' => 'sm:max-w-4xl',
 ][$maxWidth];
 @endphp
 
@@ -18,11 +21,8 @@ $maxWidth = [
     x-data="{
         show: @js($show),
         focusables() {
-            // All focusable element types...
             let selector = 'a, button, input:not([type=\'hidden\']), textarea, select, details, [tabindex]:not([tabindex=\'-1\'])'
-            return [...$el.querySelectorAll(selector)]
-                // All non-disabled elements...
-                .filter(el => ! el.hasAttribute('disabled'))
+            return [...$el.querySelectorAll(selector)].filter(el => ! el.hasAttribute('disabled'))
         },
         firstFocusable() { return this.focusables()[0] },
         lastFocusable() { return this.focusables().slice(-1)[0] },
@@ -46,9 +46,10 @@ $maxWidth = [
     x-on:keydown.tab.prevent="$event.shiftKey || nextFocusable().focus()"
     x-on:keydown.shift.tab.prevent="prevFocusable().focus()"
     x-show="show"
-    class="fixed inset-0 overflow-y-auto px-4 py-6 sm:px-0 z-50"
+    class="fixed inset-0 overflow-y-auto px-4 py-6 sm:px-0 z-50 flex items-center justify-center"
     style="display: {{ $show ? 'block' : 'none' }};"
 >
+    {{-- Fondo Overlay --}}
     <div
         x-show="show"
         class="fixed inset-0 transform transition-all"
@@ -60,12 +61,15 @@ $maxWidth = [
         x-transition:leave-start="opacity-100"
         x-transition:leave-end="opacity-0"
     >
-        <div class="absolute inset-0 bg-gray-500 dark:bg-gray-900 opacity-75"></div>
+        {{-- Aquí aplicamos el efecto glass al fondo --}}
+        <div class="absolute inset-0 bg-dark-void/70 backdrop-blur-md"></div>
     </div>
 
+    {{-- Contenido del Modal --}}
     <div
         x-show="show"
-        class="mb-6 bg-white dark:bg-gray-800 rounded-lg overflow-hidden shadow-xl transform transition-all sm:w-full {{ $maxWidth }} sm:mx-auto"
+        class="bg-gray-900/70 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl
+               overflow-hidden transform transition-all sm:w-full {{ $maxWidth }} sm:mx-auto"
         x-transition:enter="ease-out duration-300"
         x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
         x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100"
@@ -73,6 +77,13 @@ $maxWidth = [
         x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
         x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
     >
+        {{-- Para poder tener un botón de cierre opcional --}}
+        <button x-on:click="show = false" class="absolute top-4 right-4 text-light-text-muted hover:text-light-text transition">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+        </button>
+        
         {{ $slot }}
     </div>
 </div>

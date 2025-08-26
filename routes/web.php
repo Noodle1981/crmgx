@@ -12,6 +12,8 @@ use App\Http\Controllers\SequenceController;
 use App\Http\Controllers\SequenceStepController;
 use App\Http\Controllers\EnrollmentController;
 use App\Http\Controllers\SalesReportController;
+use App\Models\Step;
+use App\Http\Controllers\Api\ChartController;
 
 use Illuminate\Support\Facades\Route;
 
@@ -40,6 +42,8 @@ Route::middleware('auth')->group(function () {
     Route::patch('/deals/{deal}/lose', [DealController::class, 'markAsLost'])->name('deals.lost');
    
     Route::post('/leads/{lead}/convert', [LeadConversionController::class, 'convert'])->name('leads.convert');
+    Route::patch('/leads/{lead}/status', [LeadController::class, 'updateStatus'])->name('leads.updateStatus');
+
 
     Route::resource('clients.contacts', ContactController::class)->scoped()->except(['index', 'show']);
     Route::get('/clients/{client}/deals/create', [DealController::class, 'create'])->name('clients.deals.create');
@@ -55,6 +59,8 @@ Route::middleware('auth')->group(function () {
     Route::post('/contacts/{contact}/enroll', [EnrollmentController::class, 'store'])->name('contacts.enroll.store');
 
     Route::get('/reports/sales', [SalesReportController::class, 'index'])->name('reports.sales');
+
+    Route::get('/charts/pipeline', [DashboardController::class, 'getPipelineData'])->name('charts.pipeline');
 
 
 });
