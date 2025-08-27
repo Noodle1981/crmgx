@@ -74,14 +74,14 @@ class LeadController extends Controller
         return redirect()->route('leads.index')->with('success', '¡Lead eliminado con éxito!');
     }
 
-     public function updateStatus(Request $request, Lead $lead)
+public function updateStatus(Request $request, Lead $lead)
     {
-        // Seguridad: ¿Este lead le pertenece al usuario?
+        // Seguridad
         if (auth()->user()->id !== $lead->user_id) {
             abort(403);
         }
 
-        // Validación: Asegurarse de que nos envían un estado válido
+        // Validación
         $validated = $request->validate([
             'status' => ['required', Rule::in(['nuevo', 'contactado', 'calificado', 'perdido'])]
         ]);

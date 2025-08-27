@@ -42,8 +42,7 @@ Route::middleware('auth')->group(function () {
     Route::patch('/deals/{deal}/lose', [DealController::class, 'markAsLost'])->name('deals.lost');
    
     Route::post('/leads/{lead}/convert', [LeadConversionController::class, 'convert'])->name('leads.convert');
-    Route::patch('/leads/{lead}/status', [LeadController::class, 'updateStatus'])->name('leads.updateStatus');
-
+    Route::patch('/leads/{lead}/update-status', [LeadController::class, 'updateStatus'])->name('leads.updateStatus');
 
     Route::resource('clients.contacts', ContactController::class)->scoped()->except(['index', 'show']);
     Route::get('/clients/{client}/deals/create', [DealController::class, 'create'])->name('clients.deals.create');
