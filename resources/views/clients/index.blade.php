@@ -2,8 +2,6 @@
     <x-slot name="header">
         <div class="flex justify-between items-center">
             <span>{{ __('Clientes') }}</span>
-            
-            {{-- 3. Botón "Crear Nuevo Cliente" adaptado --}}
             <a href="{{ route('clients.create') }}">
                 <x-primary-button>
                     <i class="fas fa-user-plus mr-2"></i>
@@ -20,7 +18,6 @@
     @endif
 
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-        {{-- 1. Tarjeta principal con el fondo de cristal --}}
         <x-card class="!p-0">
             <div class="overflow-x-auto">
                 <table class="w-full text-sm">
@@ -29,22 +26,33 @@
                             <th class="p-4 text-left font-semibold text-light-text-muted uppercase tracking-wider">Nombre</th>
                             <th class="p-4 text-left font-semibold text-light-text-muted uppercase tracking-wider">Compañía</th>
                             <th class="p-4 text-left font-semibold text-light-text-muted uppercase tracking-wider">Email</th>
+                            {{-- ========================================================== --}}
+                            {{-- 1. NUEVA COLUMNA DE TELÉFONO --}}
+                            {{-- ========================================================== --}}
+                            <th class="p-4 text-left font-semibold text-light-text-muted uppercase tracking-wider">Teléfono</th>
                             <th class="relative p-4"></th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-white/5">
                         @forelse ($clients as $client)
                             <tr class="hover:bg-gray-800/50 transition-colors duration-200">
-                                <td class="p-4 font-medium">
-                                    <a href="{{ route('clients.show', $client) }}" class="text-aurora-cyan hover:underline">
-                                        {{ $client->name }}
-                                    </a>
+                                <td class="p-4 font-medium text-light-text">
+                                    {{-- El nombre ya no es un enlace, es solo texto --}}
+                                    {{ $client->name }}
                                 </td>
                                 <td class="p-4 text-light-text-muted">{{ $client->company }}</td>
                                 <td class="p-4 text-light-text-muted">{{ $client->email }}</td>
+                                {{-- CELDA PARA EL TELÉFONO --}}
+                                <td class="p-4 text-light-text-muted">{{ $client->phone ?? 'N/A' }}</td>
                                 <td class="p-4 text-right text-sm font-medium">
-                                    {{-- 2. Acciones con iconos representativos --}}
+                                    {{-- ========================================================== --}}
+                                    {{-- 2. ACCIONES CON LUPA AÑADIDA --}}
+                                    {{-- ========================================================== --}}
                                     <div class="flex items-center justify-end space-x-4">
+                                        {{-- El nuevo icono de Lupa para ver detalles --}}
+                                        <a href="{{ route('clients.show', $client) }}" class="text-light-text-muted hover:text-aurora-cyan transition" title="Ver Detalles">
+                                            <i class="fas fa-search"></i>
+                                        </a>
                                         <a href="{{ route('clients.edit', $client) }}" class="text-light-text-muted hover:text-aurora-cyan transition" title="Editar Cliente">
                                             <i class="fas fa-pen"></i>
                                         </a>
@@ -60,7 +68,8 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="4" class="text-center text-light-text-muted py-16">
+                                {{-- No olvides cambiar el colspan a 5 --}}
+                                <td colspan="5" class="text-center text-light-text-muted py-16">
                                     <i class="fas fa-users-slash text-4xl mb-3"></i>
                                     <p>No se encontraron clientes.</p>
                                 </td>
