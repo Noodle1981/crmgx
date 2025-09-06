@@ -35,15 +35,12 @@
                         <div class="flex justify-between items-center">
                             <p><strong>Teléfono:</strong> <span class="text-light-text">{{ $client->phone ?? 'N/A' }}</span></p>
                             
-                            {{-- ========================================================== --}}
-                            {{-- BOTÓN DE WHATSAPP --}}
-                            {{-- ========================================================== --}}
-                            @if ($client->phone)
-                                <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $client->phone) }}" target="_blank"
-                                   class="text-green-400 hover:text-green-300 transition text-2xl" title="Contactar por WhatsApp">
-                                    <i class="fab fa-whatsapp"></i>
-                                </a>
-                            @endif
+@if ($client->phone)
+    <a href="https://wa.me/{{ $client->phone }}" target="_blank"
+       class="text-green-400 hover:text-green-300 transition text-2xl" title="Contactar por WhatsApp">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+@endif
                         </div>
                         @if($client->notes)
                             <div class="pt-3 border-t border-white/10">
@@ -54,49 +51,70 @@
                     </div>
                 </x-card>
 
-                <!-- Tarjeta de Contactos -->
-                <x-card>
-                    <x-slot name="header">
-                        <div class="flex justify-between items-center">
-                            <div class="flex items-center space-x-3">
-                                <i class="fas fa-users text-xl text-aurora-cyan"></i>
-                                <h3 class="font-headings text-xl text-light-text">Contactos</h3>
-                            </div>
-                            <a href="{{ route('clients.contacts.create', $client) }}"><x-secondary-button type="button" class="!px-3 !py-1 text-xs">+ Añadir</x-secondary-button></a>
-                        </div>
-                    </x-slot>
-                    <div class="space-y-4 divide-y divide-white/10">
-                        @forelse($client->contacts as $contact)
-                            <div class="pt-4 first:pt-0">
-                                <div class="flex justify-between items-start">
-                                    <div>
-                                        <p class="font-semibold text-light-text">{{ $contact->name }}</p>
-                                        <p class="text-sm text-light-text-muted">{{ $contact->position }}</p>
-                                        <p class="text-sm text-light-text-muted">{{ $contact->email }}</p>
-                                        @foreach ($contact->sequenceEnrollments->where('status', 'active') as $enrollment)
-                                            <p class="text-xs text-green-400 font-semibold mt-1 flex items-center">
-                                                <i class="fas fa-robot mr-1.5 animate-pulse"></i>
-                                                Inscrito en: {{ $enrollment->sequence->name }}
-                                            </p>
-                                        @endforeach
-                                    </div>
-                                    <x-dropdown align="right" width="48">
-                                        <x-slot name="trigger"><button class="text-light-text-muted hover:text-light-text transition"><i class="fas fa-ellipsis-v"></i></button></x-slot>
-                                        <x-slot name="content">
-                                            <form action="{{ route('contacts.enroll.create', $contact) }}" method="GET">
-                                                <button type="submit" class="block w-full px-4 py-2 text-start text-sm leading-5 text-green-400 hover:text-green-300 hover:bg-gray-800/50">Inscribir</button>
-                                            </form>
-                                            <x-dropdown-link :href="route('clients.contacts.edit', [$client, $contact])">Editar</x-dropdown-link>
-                                            <form action="{{ route('clients.contacts.destroy', [$client, $contact]) }}" method="POST" onsubmit="return confirm('¿Seguro?');">@csrf @method('DELETE')<button type="submit" class="block w-full px-4 py-2 text-start text-sm leading-5 text-aurora-red-pop/80 hover:text-aurora-red-pop hover:bg-gray-800/50">Eliminar</button></form>
-                                        </x-slot>
-                                    </x-dropdown>
-                                </div>
-                            </div>
-                        @empty
-                            <p class="text-center text-light-text-muted py-8">No hay contactos para este cliente.</p>
-                        @endforelse
+                <!-- Tarjeta de Contactos (ACTUALIZADA) -->
+<x-card>
+    <x-slot name="header">
+        <div class="flex justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <i class="fas fa-users text-xl text-aurora-cyan"></i>
+                <h3 class="font-headings text-xl text-light-text">Contactos</h3>
+            </div>
+            <a href="{{ route('clients.contacts.create', $client) }}"><x-secondary-button type="button" class="!px-3 !py-1 text-xs">+ Añadir</x-secondary-button></a>
+        </div>
+    </x-slot>
+    <div class="space-y-4 divide-y divide-white/10">
+        @forelse($client->contacts as $contact)
+            <div class="pt-4 first:pt-0">
+                <div class="flex justify-between items-start">
+                    {{-- Información del Contacto --}}
+                    <div>
+                        <p class="font-semibold text-light-text">{{ $contact->name }}</p>
+                        <p class="text-sm text-light-text-muted">{{ $contact->position }}</p>
+                        <p class="text-sm text-light-text-muted">{{ $contact->email }}</p>
+                        
+                        {{-- Icono de WhatsApp con comprobación de existencia --}}
+                        @if ($contact->phone)
+                        <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $contact->phone) }}" target="_blank"
+                           class="text-green-400 hover:text-green-300 transition text-xl inline-block mt-2" title="Contactar por WhatsApp">
+                            <i class="fab fa-whatsapp"></i>
+                        </a>
+                        @endif
+
+                        @foreach ($contact->sequenceEnrollments->where('status', 'active') as $enrollment)
+                            <p class="text-xs text-green-400 font-semibold mt-1 flex items-center">
+                                <i class="fas fa-robot mr-1.5 animate-pulse"></i>
+                                Inscrito en: {{ $enrollment->sequence->name }}
+                            </p>
+                        @endforeach
                     </div>
-                </x-card>
+                    <div class="flex items-center space-x-4 flex-shrink-0 ml-2">
+                        {{-- Acción: Inscribir en Secuencia --}}
+                        <a href="{{ route('contacts.enroll.create', $contact) }}" class="text-green-400 hover:text-green-300 transition" title="Inscribir en Secuencia">
+                            <i class="fa-regular fa-circle-right"></i>
+                                               </a>
+
+                        {{-- Acción: Editar Contacto --}}
+                        <a href="{{ route('clients.contacts.edit', [$client, $contact]) }}" class="text-light-text-muted hover:text-aurora-cyan transition" title="Editar Contacto">
+                            <i class="fas fa-pen"></i>
+                        </a>
+
+                        {{-- Acción: Eliminar Contacto --}}
+                        <form action="{{ route('clients.contacts.destroy', [$client, $contact]) }}" method="POST" class="inline" onsubmit="return confirm('¿Seguro?');">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="text-light-text-muted hover:text-aurora-red-pop transition" title="Eliminar Contacto">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </form>
+                    </div>
+                    {{-- ========================================================== --}}
+                </div>
+            </div>
+        @empty
+            <p class="text-center text-light-text-muted py-8">No hay contactos para este cliente.</p>
+        @endforelse
+    </div>
+</x-card>
             </div>
 
             <!-- Columna Derecha: Deals y Actividades -->

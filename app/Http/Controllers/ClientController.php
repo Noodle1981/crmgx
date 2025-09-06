@@ -30,13 +30,28 @@ class ClientController extends Controller
             'name' => 'required|string|max:255',
             'company' => 'nullable|string|max:255',
             'email' => 'nullable|email|max:255|unique:clients,email',
-            'phone' => 'nullable|string|max:255',
+             'phone' => ['nullable', 'string', 'max:255', new ValidPhoneNumber], // <-- ¡REGLA MEJORADA!
             'notes' => 'nullable|string',
         ]);
         Auth::user()->clients()->create($validated);
         return redirect()->route('clients.index')->with('success', '¡Cliente creado con éxito!');
     }
 
+public function setPhoneAttribute($value)
+{
+    if (empty($value)) {
+        $this->attributes['phone'] = null;
+        return;
+    }
+
+    $phoneUtil = \libphonenumber\PhoneNumberUtil::getInstance();
+    try {
+        $phoneNumber = $phoneUtil->parse($value, 'AR');
+        $this->attributes['phone'] = $phoneUtil->format($phoneNumber, \libphonenumber\PhoneNumberFormat::E164);
+    } catch (\libphonenumber\NumberParseException $e) {
+        $this->attributes['phone'] = $value;
+    }
+}
 
 
 public function show(Client $client)

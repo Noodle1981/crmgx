@@ -18,7 +18,31 @@
                     <x-session-status :status="session('success')" />
                 </div>
             @endif
-            
+
+            {{-- ========================================================== --}}
+            {{-- INICIO DEL NUEVO PANEL EXPLICATIVO --}}
+            {{-- ========================================================== --}}
+            <div class="mb-8 bg-gray-900/60 backdrop-blur-xl border border-white/10 rounded-2xl p-6 flex items-start space-x-6">
+                <div class="flex-shrink-0 text-4xl text-aurora-cyan mt-1">
+                    <i class="fas fa-robot"></i>
+                </div>
+                <div>
+                    <h3 class="font-headings text-2xl text-light-text mb-2">¿Qué son las Plantillas de Secuencia?</h3>
+                    <p class="text-light-text-muted mb-4">
+                        Una secuencia es una serie de pasos automáticos (como enviar un email o crear una tarea) que puedes diseñar una vez y luego aplicar a cualquier contacto. Es tu "robot" personal de seguimiento.
+                    </p>
+                    <h4 class="font-semibold text-light-text mb-2">¿Cómo se usan?</h4>
+                    <ul class="space-y-2 text-light-text-muted">
+                        <li class="flex items-center"><i class="fas fa-check-circle text-aurora-cyan mr-2"></i><strong>1. Crea una plantilla:</strong> Define un nombre para tu secuencia (ej. "Seguimiento Post-Reunión").</li>
+                        <li class="flex items-center"><i class="fas fa-check-circle text-aurora-cyan mr-2"></i><strong>2. Añade los pasos:</strong> Construye el flujo, indicando qué hacer y cuántos días esperar entre cada acción.</li>
+                        <li class="flex items-center"><i class="fas fa-check-circle text-aurora-cyan mr-2"></i><strong>3. Inscribe contactos:</strong> Desde la ficha de un cliente, puedes "inscribir" a un contacto en la secuencia que desees.</li>
+                    </ul>
+                </div>
+            </div>
+            {{-- ========================================================== --}}
+            {{-- FIN DEL NUEVO PANEL EXPLICATIVO --}}
+            {{-- ========================================================== --}}
+
             <x-card>
                 <x-slot name="header">
                     <h3 class="font-headings text-xl">Mis Secuencias</h3>

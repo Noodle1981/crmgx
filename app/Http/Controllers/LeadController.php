@@ -30,7 +30,7 @@ class LeadController extends Controller
             'name' => 'required|string|max:255',
             'company' => 'nullable|string|max:255',
             'email' => 'nullable|email|max:255|unique:leads,email',
-            'phone' => 'nullable|string|max:255',
+            'phone' => ['nullable', 'string', 'max:255', new ValidPhoneNumber], // <-- ¡REGLA MEJORADA!
             'source' => 'nullable|string|max:255',
             'notes' => 'nullable|string',
         ]);

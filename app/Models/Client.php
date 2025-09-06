@@ -11,7 +11,8 @@ use App\Models\Activity;
 use App\Models\Contact;
 use App\Models\Deal;
 use App\Models\Task;
-
+use libphonenumber\PhoneNumberUtil;
+use libphonenumber\PhoneNumberFormat;
 
 
 class Client extends Model
@@ -42,6 +43,23 @@ class Client extends Model
         'active' => 1, // <-- ¡LA LÍNEA MÁGICA!
     ];
 
+    protected function setPhoneAttribute($value)
+{
+    if (empty($value)) {
+        $this->attributes['phone'] = null;
+        return;
+    }
+
+    $phoneUtil = PhoneNumberUtil::getInstance();
+    try {
+        $phoneNumber = $phoneUtil->parse($value, 'AR');
+        // Guardamos el número en formato E.164
+        $this->attributes['phone'] = $phoneUtil->format($phoneNumber, PhoneNumberFormat::E164);
+    } catch (\libphonenumber\NumberParseException $e) {
+        // Si la validación falló por alguna razón, guardamos el valor original
+        $this->attributes['phone'] = $value;
+    }
+}
     // ----- RELACIONES -----
 
     public function user(): BelongsTo
