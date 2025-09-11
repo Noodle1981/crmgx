@@ -1,0 +1,12 @@
+SE NECESITA QUE CUANDO una empresa se haya logrado el contacto inicial, que apareca en el pipeline, y en el cuadro actual debe aparecer que tenga asignado tareas pendientes o si no tiene tareas tareas, con el objetivo de armar secuencias, 
+en la parte de secuencias, cuando yo creo uno, deberia poder seleccionar las empresas que se hayan logrado el contacto, 
+dichas tareas deben tener formato de varias tareas en un mismo dia,
+mas o menos en el esquema dia 1 tarea 1 tarea 2 tarea 3, dia 2 tarea 1 tarea 2 dia 3 tarea 1, 
+
+en resumen si necesito armar tareas para dicha empresa, que en la parte de pipeline se vea si tiene o no, encontes cuando va a secuencias generar una nueva, pero que muestre a las empresas contactadas (pipeline contacto inicial)
+
+
+En la parte de clientes que tenga un filtro
+
+que en el panel de cliente tenga filtro para poder buscar algun cliente, y que en plantilla muestre un icono de whp, y que este asociado al numero para poder ejecutar whaptweb
+
