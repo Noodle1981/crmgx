@@ -1,17 +1,15 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">Crear Nuevo Cliente</h2>
+        Crear Nuevo Cliente
     </x-slot>
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900 dark:text-gray-100">
-                    <form action="{{ route('clients.store') }}" method="POST">
-                        @csrf
-                        @include('clients._form', ['btnText' => 'Guardar Cliente'])
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
+    
+    <x-card class="max-w-4xl mx-auto">
+        <form action="{{ route('clients.store') }}" method="POST">
+            @csrf
+            @include('clients._form', [
+                'client' => new \App\Models\Client,
+                'btnText' => 'Guardar Cliente'
+            ])
+        </form>
+    </x-card>
 </x-app-layout>
