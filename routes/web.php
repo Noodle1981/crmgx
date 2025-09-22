@@ -14,6 +14,9 @@ use App\Http\Controllers\EnrollmentController;
 use App\Http\Controllers\SalesReportController;
 use App\Models\Step;
 use App\Http\Controllers\Api\ChartController;
+use App\Http\Controllers\SettingsController;
+use App\Http\Controllers\CalendarController;
+use App\Http\Controllers\TaskController;
 
 use Illuminate\Support\Facades\Route;
 
@@ -28,6 +31,19 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    // Rutas de Configuración de correo electrónico
+    Route::get('/settings', [SettingsController::class, 'index'])->name('settings.index');
+    Route::post('/settings', [SettingsController::class, 'store'])->name('settings.store');
+
+    // Rutas para el Calendario
+    Route::get('/calendar', [CalendarController::class, 'index'])->name('calendar.index');
+    Route::get('/calendar/events', [CalendarController::class, 'events'])->name('calendar.events');
+
+    // Ruta para editar Tareas (usada por el calendario)
+    Route::get('/tasks/{task}/edit', [TaskController::class, 'edit'])->name('tasks.edit');
+});
+
+
 
     // Rutas para Clientes
     Route::resource('clients', ClientController::class);
@@ -60,8 +76,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/reports/sales', [SalesReportController::class, 'index'])->name('reports.sales');
 
     Route::get('/charts/pipeline', [DashboardController::class, 'getPipelineData'])->name('charts.pipeline');
-
-
-});
   
 require __DIR__.'/auth.php';
+
+

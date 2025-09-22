@@ -2,6 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
+@import '@fullcalendar/core/main.css';
+
+
 body {
     background-image: linear-gradient(to top right, #3b82f6, #8b5cf6, #ec4899);
 }

@@ -1,4 +1,3 @@
-{{-- resources/views/layouts/navigation.blade.php (VERSIÓN FINAL Y COMPLETA) --}}
 <nav x-data="{ open: false }" class="bg-gray-900/60 backdrop-blur-xl border-b border-white/10 sticky top-0 z-40">
     <!-- Primary Navigation Menu -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -7,16 +6,13 @@
                 <!-- Logo -->
                 <div class="shrink-0 flex items-center">
                     <a href="{{ route('dashboard') }}">
-                        {{-- CAMBIO 2: Aquí cambiamos el nombre --}}
                         <h1 class="font-headings text-2xl font-bold bg-gradient-to-r from-aurora-cyan to-light-text bg-clip-text text-transparent">
                             CRM GX
                         </h1>
                     </a>
                 </div>
 
-                <!-- ========================================================== -->
-                <!-- CAMBIO 3: AQUÍ RESTAURAMOS LOS ENLACES -->
-                <!-- ========================================================== -->
+                <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         Panel de Control
@@ -36,6 +32,9 @@
                     <x-nav-link :href="route('reports.sales')" :active="request()->routeIs('reports.sales')">
                         {{ __('Reportes') }}
                     </x-nav-link>
+                    <x-nav-link :href="route('calendar.index')" :active="request()->routeIs('calendar.*')">
+    {{ __('Calendario') }}
+</x-nav-link>
                 </div>
             </div>
 
@@ -52,6 +51,15 @@
                     </x-slot>
                     <x-slot name="content">
                         <x-dropdown-link :href="route('profile.edit')">{{ __('Mi Perfil') }}</x-dropdown-link>
+
+                        <!-- ============================================= -->
+                        <!-- ====== ¡ENLACE A CONFIGURACIÓN AÑADIDO! ====== -->
+                        <!-- ============================================= -->
+                        <x-dropdown-link :href="route('settings.index')">{{ __('Configuración') }}</x-dropdown-link>
+
+                        <div class="border-t border-white/10"></div>
+                        
+                        <!-- Authentication -->
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
                             <x-dropdown-link :href="route('logout')" onclick="event.preventDefault(); this.closest('form').submit();">{{ __('Cerrar Sesión') }}</x-dropdown-link>
@@ -72,13 +80,15 @@
     <!-- Responsive Navigation Menu -->
     <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden bg-gray-900/80 backdrop-blur-xl border-t border-white/10">
         <div class="pt-2 pb-3 space-y-1">
-            {{-- CAMBIO 3: RESTAURAMOS TAMBIÉN LOS ENLACES MÓVILES --}}
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">Panel de Control</x-responsive-nav-link>
             <x-responsive-nav-link :href="route('clients.index')" :active="request()->routeIs('clients.*')">{{ __('Clientes') }}</x-responsive-nav-link>
             <x-responsive-nav-link :href="route('deals.index')" :active="request()->routeIs('deals.*')">{{ __('Pipeline') }}</x-responsive-nav-link>
             <x-responsive-nav-link :href="route('leads.index')" :active="request()->routeIs('leads.*')">{{ __('Leads') }}</x-responsive-nav-link>
             <x-responsive-nav-link :href="route('sequences.index')" :active="request()->routeIs('sequences.*')">{{ __('Secuencias') }}</x-responsive-nav-link>
             <x-responsive-nav-link :href="route('reports.sales')" :active="request()->routeIs('reports.sales')">{{ __('Reportes') }}</x-responsive-nav-link>
+            <x-nav-link :href="route('calendar.index')" :active="request()->routeIs('calendar.*')">
+    {{ __('Calendario') }}
+</x-nav-link>
         </div>
         <!-- Responsive Settings Options -->
         <div class="pt-4 pb-1 border-t border-white/10">
@@ -88,6 +98,13 @@
             </div>
             <div class="mt-3 space-y-1">
                 <x-responsive-nav-link :href="route('profile.edit')">{{ __('Mi Perfil') }}</x-responsive-nav-link>
+                
+                <!-- ==================================================== -->
+                <!-- ====== ¡ENLACE A CONFIGURACIÓN (MÓVIL) AÑADIDO! ====== -->
+                <!-- ==================================================== -->
+                <x-responsive-nav-link :href="route('settings.index')">{{ __('Configuración') }}</x-responsive-nav-link>
+
+                <!-- Authentication -->
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
                     <x-responsive-nav-link :href="route('logout')" onclick="event.preventDefault(); this.closest('form').submit();">{{ __('Cerrar Sesión') }}</x-responsive-nav-link>

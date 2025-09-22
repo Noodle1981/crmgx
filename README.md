@@ -1,17 +1,25 @@
-# Proyecto CRMGX
+# CRMGX - Sistema de CRM con Laravel
 
-Este es un sistema CRM desarrollado con el framework Laravel.
+CRMGX es un sistema de Gestión de Relaciones con el Cliente (CRM) robusto y moderno, desarrollado con el framework Laravel. Está diseñado para ayudar a equipos de ventas a gestionar prospectos, oportunidades de venta, clientes y sus actividades relacionadas de una manera eficiente.
 
-## Requisitos Previos
+## Características Principales
 
-Asegúrate de tener instalado el siguiente software en tu máquina de desarrollo:
+- **Gestión de Entidades:** CRUD completo para Clientes, Contactos, Prospectos (Leads) y Oportunidades de Venta (Deals).
+- **Pipeline de Ventas:** Interfaz visual para arrastrar y soltar oportunidades a través de las diferentes etapas del embudo de ventas.
+- **Secuencias de Comunicación:** Creación de secuencias de pasos para estandarizar el contacto con prospectos y clientes.
+- **Calendario de Actividades:** Una vista de calendario, impulsada por FullCalendar, que muestra las tareas pendientes y las fechas de cierre de oportunidades, permitiendo una visión clara de la carga de trabajo.
+- **Configuración de Correo por UI:** Permite a los administradores configurar los detalles del servidor de correo (SMTP) directamente desde la interfaz de usuario, sin necesidad de modificar archivos `.env`.
+- **Reportes de Ventas:** Sección de informes para analizar el rendimiento de las ventas.
+- **API RESTful:** API que utiliza Laravel Sanctum para la autenticación, permitiendo la integración con otras aplicaciones.
 
-- PHP >= 8.2
-- Composer
-- Node.js
-- npm
+## Stack Tecnológico
 
-## Guía de Instalación y Configuración
+- **Backend:** Laravel 11, PHP 8.2
+- **Frontend:** Vite, Tailwind CSS, Alpine.js, FullCalendar.io
+- **Base de Datos:** Preparado para MySQL, PostgreSQL. Usa SQLite para desarrollo.
+- **Autenticación:** Laravel Breeze (Blade)
+
+## Guía de Instalación
 
 Sigue estos pasos para tener una copia local del proyecto funcionando.
 
@@ -21,42 +29,36 @@ Sigue estos pasos para tener una copia local del proyecto funcionando.
     cd crmcx
     ```
 
-2.  **Instalar dependencias de PHP**
+2.  **Instalar dependencias**
     ```bash
     composer install
-    ```
-
-3.  **Instalar dependencias de Node.js**
-    ```bash
     npm install
     ```
 
-4.  **Configurar el entorno**
-    Copia el archivo de ejemplo para las variables de entorno y genera la clave de la aplicación.
+3.  **Configurar el entorno**
+    Copia el archivo `.env.example` y genera la clave de la aplicación.
     ```bash
     cp .env.example .env
     php artisan key:generate
     ```
 
-5.  **Configurar la base de datos**
+4.  **Configurar la base de datos**
     Abre el archivo `.env` y configura los parámetros de conexión a tu base de datos (DB_DATABASE, DB_USERNAME, DB_PASSWORD).
 
-6.  **Ejecutar las migraciones y seeders**
-    Esto creará la estructura de la base de datos y (opcionalmente) la llenará con datos de prueba.
+5.  **Ejecutar migraciones y seeders**
+    Esto creará la estructura de la base de datos y la llenará con datos de prueba.
     ```bash
     php artisan migrate --seed
     ```
 
-## Ejecutando la Aplicación (Desarrollo)
+6.  **Lanzar la aplicación**
+    Este comando ejecutará el servidor de PHP y el compilador de Vite simultáneamente.
+    ```bash
+    npm run dev
+    ```
+    La aplicación estará disponible en `http://localhost:8000`.
 
-Este proyecto incluye un script para lanzar el servidor de PHP y el compilador de Vite simultáneamente.
-
-```bash
-npm run dev
-```
-Este comando ejecutará `php artisan serve` y `vite` al mismo tiempo. La aplicación estará disponible en `http://localhost:8000`.
-
-## Ejecutando las Pruebas
+## Pruebas
 
 Para ejecutar el set de pruebas automatizadas, utiliza el siguiente comando:
 
@@ -66,80 +68,41 @@ php artisan test
 
 ## Estado de la API REST
 
-La API REST del proyecto utiliza autenticación vía Sanctum (Tokens de API). A continuación se detalla el estado actual de los endpoints.
+La API REST del proyecto utiliza autenticación vía Sanctum. A continuación se detalla el estado actual de los endpoints.
 
-### Endpoints Disponibles
+- **Recursos con API CRUD Completa:** `/api/clients`, `/api/contacts`, `/api/leads`, `/api/deals`, `/api/tasks`.
+- **Recursos con API Incompleta o Faltante:** `Activities`, `Sequences`, `Sequence Steps & Enrollments`.
 
-Los siguientes recursos cuentan con una API CRUD completa (`index`, `show`, `store`, `update`, `destroy`):
+## Roadmap de Futuras Funcionalidades
 
-- **`/api/clients`** (Clientes)
-- **`/api/contacts`** (Contactos)
-- **`/api/leads`** (Leads)
-- **`/api/deals`** (Deals/Negocios)
-- **`/api/tasks`** (Tareas)
-
-### Endpoints Faltantes o Incompletos
-
-Para tener una cobertura completa de la API, se necesita desarrollar lo siguiente:
-
-- **Activities (Actividades):**
-  - **Estado:** Incompleto.
-  - **Detalle:** Actualmente solo existe el endpoint para crear (`POST /api/activities`). Faltan las operaciones para listar, ver, actualizar y eliminar.
-
-- **Sequences (Secuencias):**
-  - **Estado:** No implementado.
-  - **Detalle:** No existe ningún endpoint en la API para gestionar las secuencias. Se necesita un `apiResource` completo.
-
-- **Sequence Steps & Enrollments (Pasos e Inscripciones):**
-  - **Estado:** No implementado.
-  - **Detalle:** No existen endpoints para gestionar los pasos de una secuencia ni para inscribir contactos en ellas a través de la API.
-
-## Roadmap y Futuras Funcionalidades
-
-### Versión 1.0 (Actual)
-
-La versión actual del sistema incluye las siguientes funcionalidades base:
-
-- Gestión completa (CRUD) de Clientes, Contactos, Leads y Deals.
-- Pipeline visual para el seguimiento de Deals.
-- Gestión de Tareas y Actividades asociadas a los registros.
-- Sistema de Secuencias (sin automatización de correos).
-- API REST para los módulos principales (ver "Estado de la API REST").
-
-### Próximas Versiones (Roadmap)
-
-Las siguientes funcionalidades están planificadas para futuras versiones:
-
-- **Envío de Correos Automáticos:** Integración completa en el módulo de Secuencias para enviar emails de forma automática según la cadencia definida.
+- **Envío de Correos Automáticos:** Integración completa en el módulo de Secuencias.
+- **Calendario Interactivo:** Añadir funcionalidad de arrastrar y soltar para actualizar fechas.
 - **Integración con Google Calendar:** Para sincronizar tareas y eventos del CRM con el calendario del usuario.
-- **Notificaciones y Recordatorios:** Implementación de un bot o tarea programada (`cron job`) que notifique a los usuarios sobre tareas o eventos próximos (ej. a 3 días de vencer).
-- **Roles y Jerarquías de Usuarios:** Sistema para definir diferentes niveles de acceso y permisos para los usuarios (ej. Agente, Manager, Administrador).
+- **Notificaciones y Recordatorios:** Sistema de alertas para tareas y eventos próximos.
+- **Roles y Permisos de Usuario:** Para definir diferentes niveles de acceso (Agente, Manager, Administrador).
 
 ## Guía de Despliegue (Deploy)
 
 Para desplegar esta aplicación a un servidor de producción, sigue estos pasos generales:
 
 1.  **Instalar dependencias de producción:**
-    En el servidor, ejecuta `composer` con optimizaciones y sin las dependencias de desarrollo.
     ```bash
     composer install --optimize-autoloader --no-dev
     ```
 
 2.  **Construir los assets de frontend:**
-    Instala y compila los archivos de JavaScript y CSS para producción.
     ```bash
     npm install
     npm run build
     ```
 
 3.  **Configurar el `.env` de producción:**
-    Asegúrate de que el archivo `.env` en el servidor tenga la configuración correcta para la base de datos, el correo, y otras variables. Es crucial que `APP_ENV` esté en `production` y `APP_DEBUG` en `false`.
+    Asegúrate de que `APP_ENV=production` y `APP_DEBUG=false`.
 
 4.  **Ejecutar migraciones en producción:**
     ```bash
     php artisan migrate --force
     ```
-    El flag `--force` es necesario porque la operación se considera destructiva y se requiere confirmación en producción.
 
 5.  **Optimizar la configuración:**
     Para mejorar el rendimiento, cachea la configuración y las rutas.
@@ -149,4 +112,4 @@ Para desplegar esta aplicación a un servidor de producción, sigue estos pasos 
     ```
 
 6.  **Configuración del Servidor Web (Nginx/Apache):**
-    Asegúrate de que el "document root" de tu servidor web apunte al directorio `/public` del proyecto. Laravel maneja todas las peticiones desde `public/index.php`.
+    Asegúrate de que el "document root" de tu servidor web apunte al directorio `/public` del proyecto.

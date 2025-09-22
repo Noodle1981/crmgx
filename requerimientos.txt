@@ -1,1 +1,9 @@
 php artisan make:rule ValidPhoneNumber
+
+
+en secuencias mostrar quien las sigue o esta asignada
+
+estapa de correos
+
+calendarios para meet
+
