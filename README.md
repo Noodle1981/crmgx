@@ -93,3 +93,42 @@ composer run dev
 ```
 
 Una vez ejecutado, la aplicación estará disponible en `http://127.0.0.1:8000` o la URL que `artisan serve` indique.
+
+
+
+Opción 1: Usar una cuenta de Gmail
+Sí, es técnicamente factible, pero no es recomendable para un entorno de producción por varias razones importantes:
+
+Seguridad y Autenticación: Para que funcione, tendrías que habilitar la autenticación de dos factores (2FA) en tu cuenta de Google y luego generar una "Contraseña de Aplicación". Ya no puedes usar tu contraseña normal directamente. Google considera la conexión SMTP desde una aplicación externa como un método "menos seguro".
+Límites de Envío: Gmail impone límites estrictos de envío (alrededor de 500 correos en un período de 24 horas para una cuenta estándar). Si usas las "Secuencias" del CRM para enviar correos a muchos contactos, alcanzarás este límite rápidamente y Google podría bloquear tu cuenta temporalmente.
+Reputación y Entregabilidad: Enviar correos masivos o de negocio desde una dirección @gmail.com tiene más probabilidades de ser marcado como spam por los filtros de correo de tus destinatarios. Se ve menos profesional y daña la reputación de tu dominio.
+¿Cuándo usar Gmail? Es una opción viable solo para pruebas iniciales o si el volumen de correos es extremadamente bajo (ej. solo notificaciones para ti mismo).
+
+Opción 2: Usar un correo de tu propio dominio (La opción recomendada)
+Esta es la práctica profesional y la solución robusta y escalable. Sin embargo, no se trata solo de usar el servidor de correo que te da tu hosting. La mejor manera de hacerlo es a través de un servicio de correo transaccional.
+
+¿Qué es un servicio de correo transaccional?
+
+Son plataformas especializadas en enviar correos desde aplicaciones como la tuya. Se encargan de que tus correos lleguen a la bandeja de entrada y no a la de spam.
+
+Ejemplos de servicios populares:
+
+SendGrid (muy popular, tiene un plan gratuito generoso)
+Postmark (conocido por su excelente entregabilidad)
+Amazon SES (potente y económico, pero más técnico de configurar)
+Mailgun
+Pasos para la configuración ideal:
+
+Registras tu dominio (ej. miempresa.com).
+Te das de alta en un servicio como SendGrid.
+Verificas tu dominio con ellos (te pedirán añadir unos registros DNS como SPF y DKIM, lo cual es fundamental para la reputación de tu correo).
+El servicio te proporcionará las credenciales SMTP (host, puerto, usuario y contraseña) que necesitas.
+Esas son las credenciales que debes introducir en la pantalla de "Settings" de tu CRM.
+Conclusión y Recomendación
+Característica	Gmail	Servicio Transaccional (ej. SendGrid)
+Ideal para	Pruebas, desarrollo, uso personal	Producción, cualquier uso profesional
+Límites	Muy bajos (~500/día)	Muy altos (miles o millones)
+Entregabilidad	Baja (riesgo de spam)	Muy Alta
+Profesionalismo	Bajo	Alto
+Configuración	Rápida pero con advertencias	Requiere verificar dominio (más seguro)
+Respuesta corta: Para el correcto funcionamiento y la reputación de tu negocio, deberías usar un servicio de correo transaccional con un correo de tu propio dominio. Usa Gmail solo si estás haciendo pruebas internas.

@@ -129,3 +129,5 @@ Para analizar el rendimiento de tus ventas:
 
 1.  En el menú, ve a **"Reportes"** -> **"Reporte de Ventas"**.
 2.  Aquí encontrarás gráficos y datos sobre las ventas, oportunidades ganadas, y otros indicadores clave a lo largo del tiempo.
+
+

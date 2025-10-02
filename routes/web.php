@@ -52,7 +52,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('leads', LeadController::class);
 
     // Rutas para Deals (Pipeline y CRUD)
-    Route::resource('deals', DealController::class)->except(['show']); // Usamos resource para todo el CRUD
+        Route::resource('deals', DealController::class); // Usamos resource para todo el CRUD
     Route::patch('/deals/{deal}/update-stage', [DealController::class, 'updateStage'])->name('deals.updateStage'); // Mantenemos esta para las flechas
     Route::patch('/deals/{deal}/win', [DealController::class, 'markAsWon'])->name('deals.win');
     Route::patch('/deals/{deal}/lose', [DealController::class, 'markAsLost'])->name('deals.lost');
@@ -64,6 +64,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/clients/{client}/deals/create', [DealController::class, 'create'])->name('clients.deals.create');
     Route::post('/clients/{client}/deals', [DealController::class, 'store'])->name('clients.deals.store');
     Route::post('/clients/{client}/activities', [ActivityController::class, 'storeForClient'])->name('clients.activities.store');
+    Route::post('/deals/{deal}/activities', [ActivityController::class, 'storeForDeal'])->name('deals.activities.store');
 
 
     Route::resource('sequences', SequenceController::class);

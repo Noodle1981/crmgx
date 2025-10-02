@@ -16,7 +16,7 @@ class DealController extends Controller
         $user = Auth::user();
         $dealStages = DealStage::orderBy('order')->get();
         $pipelineData = $dealStages->map(function ($stage) use ($user) {
-            $deals = $stage->deals()->where('user_id', $user->id)->where('status', 'open')->with('client')->get();
+                        $deals = $stage->deals()->where('user_id', $user->id)->where('status', 'open')->with('client')->withCount('activities')->get();
             return ['id' => $stage->id, 'name' => $stage->name, 'deals' => $deals];
         });
         return view('deals.index', ['pipelineData' => $pipelineData]);
@@ -90,6 +90,19 @@ class DealController extends Controller
         ]);
         $deal->update($validated);
         return redirect()->route('deals.index')->with('success', '¡Deal actualizado con éxito!');
+    }
+
+        public function show(Deal $deal)
+    {
+        // Asegurarse que el usuario es el dueño del deal
+        if (Auth::user()->id !== $deal->user_id) {
+            abort(403, 'Acción no autorizada.');
+        }
+
+        // Cargar relaciones necesarias
+        $deal->load('client', 'activities.user');
+
+        return view('deals.show', compact('deal'));
     }
 
     public function destroy(Deal $deal)

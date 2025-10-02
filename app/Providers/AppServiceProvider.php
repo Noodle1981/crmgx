@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Models\Setting;
+use Illuminate\Database\Eloquent\Relations\Relation; // <-- AÑADIDO
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
@@ -22,6 +23,15 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // Definimos un mapa explícito para las relaciones polimórficas.
+        // Esto evita problemas y hace las relaciones más seguras y mantenibles.
+        Relation::morphMap([
+            'deal' => \App\Models\Deal::class,
+            'client' => \App\Models\Client::class,
+            'contact' => \App\Models\Contact::class,
+            'lead' => \App\Models\Lead::class,
+        ]);
+
         // Usamos un try-catch porque esta lógica se ejecuta muy temprano,
         // incluso durante las migraciones, cuando la tabla 'settings' podría no existir.
         try {

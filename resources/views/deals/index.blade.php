@@ -17,7 +17,7 @@
         </div>
     @endif
 
-    <div class="py-12">
+    <div class="py-12" x-data="{ isActivityModalOpen: false, currentDealId: null, currentDealName: '' }">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                 @foreach ($pipelineData as $stage)
@@ -32,29 +32,41 @@
                                     <!-- Parte 1: Contenido Principal -->
                                     <div class="p-4">
                                         <div class="flex justify-between items-start">
-                                            <div>
+                                            <div class="flex-grow">
                                                 <p class="font-semibold text-light-text">{{ $deal->name }}</p>
                                                 <p class="text-sm text-light-text-muted">{{ $deal->client->name }}</p>
                                                 @if($deal->value)
                                                     <p class="text-sm font-bold text-aurora-cyan mt-2">${{ number_format($deal->value, 0) }}</p>
                                                 @endif
                                                 
-                                                {{-- ========================================================== --}}
-                                                {{-- AQUÍ AÑADIMOS LA FECHA INTELIGENTE --}}
-                                                {{-- ========================================================== --}}
                                                 <div class="mt-2">
                                                     <x-smart-date :date="$deal->expected_close_date" with-color="true" with-icon="true" format="d M" />
                                                 </div>
                                             </div>
-                                            <x-dropdown align="right" width="48">
-                                                <x-slot name="trigger">
-                                                    <button class="text-light-text-muted hover:text-light-text transition -mr-2"><i class="fas fa-ellipsis-v"></i></button>
-                                                </x-slot>
-                                                <x-slot name="content">
-                                                    <x-dropdown-link :href="route('deals.edit', $deal)">Editar</x-dropdown-link>
-                                                    <form action="{{ route('deals.destroy', $deal) }}" method="POST" onsubmit="return confirm('¿Estás seguro?');">@csrf @method('DELETE')<button type="submit" class="block w-full px-4 py-2 text-start text-sm leading-5 text-aurora-red-pop/80 hover:text-aurora-red-pop hover:bg-gray-800/50">Eliminar</button></form>
-                                                </x-slot>
-                                            </x-dropdown>
+                                            <div class="flex items-center ml-4 space-x-4">
+                                                @if($deal->activities_count > 0)
+                                                    <a href="{{ route('deals.show', $deal) }}" class="text-gray-400 hover:text-aurora-cyan transition" title="Ver Actividades ({{ $deal->activities_count }})">
+                                                        <i class="fas fa-search text-xl"></i>
+                                                    </a>
+                                                @else
+                                                    <span class="text-gray-600 cursor-not-allowed" title="No hay actividades">
+                                                        <i class="fas fa-search text-xl"></i>
+                                                    </span>
+                                                @endif
+
+                                                <x-dropdown align="right" width="48">
+                                                    <x-slot name="trigger">
+                                                        <button class="text-light-text-muted hover:text-light-text transition"><i class="fas fa-ellipsis-v"></i></button>
+                                                    </x-slot>
+                                                    <x-slot name="content">
+                                                        <x-dropdown-link href="#" @click.prevent="isActivityModalOpen = true; currentDealId = {{ $deal->id }}; currentDealName = '{{ addslashes($deal->name) }}'">
+                                                            Añadir Actividad
+                                                        </x-dropdown-link>
+                                                        <x-dropdown-link :href="route('deals.edit', $deal)">Editar</x-dropdown-link>
+                                                        <form action="{{ route('deals.destroy', $deal) }}" method="POST" onsubmit="return confirm('¿Estás seguro?');">@csrf @method('DELETE')<button type="submit" class="block w-full px-4 py-2 text-start text-sm leading-5 text-aurora-red-pop/80 hover:text-aurora-red-pop hover:bg-gray-800/50">Eliminar</button></form>
+                                                    </x-slot>
+                                                </x-dropdown>
+                                            </div>
                                         </div>
                                     </div>
 
@@ -80,6 +92,45 @@
                         </div>
                     </div>
                 @endforeach
+            </div>
+        </div>
+
+        <!-- Activity Modal -->
+        <div x-show="isActivityModalOpen" 
+             x-transition:enter="transition ease-out duration-300"
+             x-transition:enter-start="opacity-0"
+             x-transition:enter-end="opacity-100"
+             x-transition:leave="transition ease-in duration-200"
+             x-transition:leave-start="opacity-100"
+             x-transition:leave-end="opacity-0"
+             class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" 
+             style="display: none;"
+             @click.away="isActivityModalOpen = false">
+            <div class="bg-gray-900/80 backdrop-blur-xl border border-white/10 rounded-2xl shadow-xl w-full max-w-md p-6 mx-4" @click.stop>
+                <h3 class="text-lg font-bold text-aurora-cyan mb-4">Añadir Actividad a <span x-text="currentDealName"></span></h3>
+                
+                <form :action="`/deals/${currentDealId}/activities`" method="POST">
+                    @csrf
+                    <div class="space-y-4">
+                        <div>
+                            <label for="type" class="block text-sm font-medium text-light-text-muted">Tipo de Actividad</label>
+                            <select name="type" id="type" class="mt-1 block w-full bg-gray-800/70 border-white/10 rounded-md shadow-sm text-light-text focus:ring-aurora-cyan focus:border-aurora-cyan">
+                                <option value="note">Nota</option>
+                                <option value="call">Llamada</option>
+                                <option value="meeting">Reunión</option>
+                                <option value="email">Email</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="description" class="block text-sm font-medium text-light-text-muted">Descripción</label>
+                            <textarea name="description" id="description" rows="4" class="mt-1 block w-full bg-gray-800/70 border-white/10 rounded-md shadow-sm text-light-text focus:ring-aurora-cyan focus:border-aurora-cyan" required></textarea>
+                        </div>
+                    </div>
+                    <div class="mt-6 flex justify-end space-x-4">
+                        <x-secondary-button @click.prevent="isActivityModalOpen = false">Cancelar</x-secondary-button>
+                        <x-primary-button type="submit">Guardar Actividad</x-primary-button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
