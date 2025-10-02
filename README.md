@@ -1,115 +1,95 @@
-# CRMGX - Sistema de CRM con Laravel
+# CRMCX - Un CRM con Laravel
 
-CRMGX es un sistema de Gestión de Relaciones con el Cliente (CRM) robusto y moderno, desarrollado con el framework Laravel. Está diseñado para ayudar a equipos de ventas a gestionar prospectos, oportunidades de venta, clientes y sus actividades relacionadas de una manera eficiente.
+CRMCX es una aplicación web de Gestión de Relaciones con el Cliente (CRM) robusta y con todas las funciones, construida con el framework Laravel. Está diseñada para ayudar a equipos de ventas y negocios a gestionar leads, clientes, oportunidades de venta y tareas de manera eficiente. La aplicación cuenta con un panel de control intuitivo, un pipeline de ventas visual, y capacidades de automatización de marketing a través de secuencias.
 
-## Características Principales
+## ✨ Características Principales
 
-- **Gestión de Entidades:** CRUD completo para Clientes, Contactos, Prospectos (Leads) y Oportunidades de Venta (Deals).
-- **Pipeline de Ventas:** Interfaz visual para arrastrar y soltar oportunidades a través de las diferentes etapas del embudo de ventas.
-- **Secuencias de Comunicación:** Creación de secuencias de pasos para estandarizar el contacto con prospectos y clientes.
-- **Calendario de Actividades:** Una vista de calendario, impulsada por FullCalendar, que muestra las tareas pendientes y las fechas de cierre de oportunidades, permitiendo una visión clara de la carga de trabajo.
-- **Configuración de Correo por UI:** Permite a los administradores configurar los detalles del servidor de correo (SMTP) directamente desde la interfaz de usuario, sin necesidad de modificar archivos `.env`.
-- **Reportes de Ventas:** Sección de informes para analizar el rendimiento de las ventas.
-- **API RESTful:** API que utiliza Laravel Sanctum para la autenticación, permitiendo la integración con otras aplicaciones.
+- **Gestión de Dashboard:** Panel de control centralizado con métricas clave y visualización del pipeline de ventas.
+- **Gestión de Leads:**
+  - CRUD completo para leads.
+  - Conversión de leads a Clientes, Contactos y Oportunidades (Deals).
+  - Actualización de estado de los leads.
+- **Gestión de Clientes:**
+  - CRUD completo para clientes.
+  - Gestión de contactos asociados a cada cliente.
+  - Registro de actividades (llamadas, reuniones, etc.) por cliente.
+- **Gestión de Oportunidades (Deals):**
+  - Pipeline de ventas estilo Kanban para arrastrar y soltar oportunidades entre etapas.
+  - Marcar oportunidades como "ganadas" o "perdidas".
+  - Creación de oportunidades asociadas a clientes.
+- **Automatización con Secuencias:**
+  - Creación de secuencias de seguimiento personalizadas (ej. emails y tareas).
+  - Inscripción de contactos en secuencias para automatizar la comunicación.
+- **Calendario y Gestión de Tareas:**
+  - Un calendario integrado para visualizar tareas, eventos y plazos.
+  - CRUD para tareas.
+- **Reportes:**
+  - Módulo de reportes de ventas para analizar el rendimiento.
+- **Gestión de Perfil y Configuración:**
+  - Los usuarios pueden gestionar su información de perfil.
+  - Configuración de correo electrónico para la integración con las secuencias.
 
-## Stack Tecnológico
+## 🚀 Stack Tecnológico
 
-- **Backend:** Laravel 11, PHP 8.2
-- **Frontend:** Vite, Tailwind CSS, Alpine.js, FullCalendar.io
-- **Base de Datos:** Preparado para MySQL, PostgreSQL. Usa SQLite para desarrollo.
-- **Autenticación:** Laravel Breeze (Blade)
+### Backend
+- PHP 8.2
+- Laravel 12
+- Laravel Sanctum (Autenticación de API)
+- Pest (Testing)
 
-## Guía de Instalación
+### Frontend
+- Vite
+- Tailwind CSS
+- Alpine.js
+- FullCalendar
+- ApexCharts
 
-Sigue estos pasos para tener una copia local del proyecto funcionando.
+### Base de Datos
+- Compatible con MySQL, PostgreSQL, SQLite.
 
-1.  **Clonar el repositorio**
+## 🛠️ Guía de Instalación
+
+Sigue estos pasos para configurar el proyecto en tu entorno de desarrollo local.
+
+1.  **Clonar el repositorio:**
     ```bash
-    git clone <URL-DEL-REPOSITORIO>
+    git clone <URL_DEL_REPOSITORIO>
     cd crmcx
     ```
 
-2.  **Instalar dependencias**
+2.  **Instalar dependencias de PHP:**
     ```bash
     composer install
+    ```
+
+3.  **Instalar dependencias de Node.js:**
+    ```bash
     npm install
     ```
 
-3.  **Configurar el entorno**
-    Copia el archivo `.env.example` y genera la clave de la aplicación.
+4.  **Configurar el entorno:**
+    - Copia el archivo de ejemplo `.env.example` a `.env`.
     ```bash
-    cp .env.example .env
+    copy .env.example .env
+    ```
+    - Genera la clave de la aplicación.
+    ```bash
     php artisan key:generate
     ```
 
-4.  **Configurar la base de datos**
-    Abre el archivo `.env` y configura los parámetros de conexión a tu base de datos (DB_DATABASE, DB_USERNAME, DB_PASSWORD).
-
-5.  **Ejecutar migraciones y seeders**
-    Esto creará la estructura de la base de datos y la llenará con datos de prueba.
+5.  **Configurar la base de datos:**
+    - Abre el archivo `.env` y configura los detalles de tu base de datos (DB_DATABASE, DB_USERNAME, DB_PASSWORD).
+    - Ejecuta las migraciones y los seeders para poblar la base de datos con datos iniciales (como las etapas del pipeline).
     ```bash
     php artisan migrate --seed
     ```
 
-6.  **Lanzar la aplicación**
-    Este comando ejecutará el servidor de PHP y el compilador de Vite simultáneamente.
-    ```bash
-    npm run dev
-    ```
-    La aplicación estará disponible en `http://localhost:8000`.
+## ▶️ Ejecución de la Aplicación
 
-## Pruebas
-
-Para ejecutar el set de pruebas automatizadas, utiliza el siguiente comando:
+Para iniciar la aplicación, puedes usar el script `dev` incluido en `composer.json`, que ejecuta simultáneamente el servidor de PHP, el listener de la cola, el logger de `pail` y el servidor de Vite para el frontend.
 
 ```bash
-php artisan test
+composer run dev
 ```
 
-## Estado de la API REST
-
-La API REST del proyecto utiliza autenticación vía Sanctum. A continuación se detalla el estado actual de los endpoints.
-
-- **Recursos con API CRUD Completa:** `/api/clients`, `/api/contacts`, `/api/leads`, `/api/deals`, `/api/tasks`.
-- **Recursos con API Incompleta o Faltante:** `Activities`, `Sequences`, `Sequence Steps & Enrollments`.
-
-## Roadmap de Futuras Funcionalidades
-
-- **Envío de Correos Automáticos:** Integración completa en el módulo de Secuencias.
-- **Calendario Interactivo:** Añadir funcionalidad de arrastrar y soltar para actualizar fechas.
-- **Integración con Google Calendar:** Para sincronizar tareas y eventos del CRM con el calendario del usuario.
-- **Notificaciones y Recordatorios:** Sistema de alertas para tareas y eventos próximos.
-- **Roles y Permisos de Usuario:** Para definir diferentes niveles de acceso (Agente, Manager, Administrador).
-
-## Guía de Despliegue (Deploy)
-
-Para desplegar esta aplicación a un servidor de producción, sigue estos pasos generales:
-
-1.  **Instalar dependencias de producción:**
-    ```bash
-    composer install --optimize-autoloader --no-dev
-    ```
-
-2.  **Construir los assets de frontend:**
-    ```bash
-    npm install
-    npm run build
-    ```
-
-3.  **Configurar el `.env` de producción:**
-    Asegúrate de que `APP_ENV=production` y `APP_DEBUG=false`.
-
-4.  **Ejecutar migraciones en producción:**
-    ```bash
-    php artisan migrate --force
-    ```
-
-5.  **Optimizar la configuración:**
-    Para mejorar el rendimiento, cachea la configuración y las rutas.
-    ```bash
-    php artisan config:cache
-    php artisan route:cache
-    ```
-
-6.  **Configuración del Servidor Web (Nginx/Apache):**
-    Asegúrate de que el "document root" de tu servidor web apunte al directorio `/public` del proyecto.
+Una vez ejecutado, la aplicación estará disponible en `http://127.0.0.1:8000` o la URL que `artisan serve` indique.
