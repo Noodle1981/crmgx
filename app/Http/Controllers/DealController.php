@@ -44,11 +44,13 @@ class DealController extends Controller
             'name' => 'required|string|max:255',
             'value' => 'nullable|numeric|min:0',
             'client_id' => ['required', 'integer', Rule::in($userClientIds)],
+            'expected_close_date' => 'nullable|date',
         ]);
         $deal = Auth::user()->deals()->create([
             'name' => $validated['name'],
             'value' => $validated['value'],
             'client_id' => $validated['client_id'],
+            'expected_close_date' => $validated['expected_close_date'] ?? null,
             'deal_stage_id' => 1,
             'status' => 'open',
         ]);
@@ -86,7 +88,7 @@ class DealController extends Controller
             'name' => 'required|string|max:255',
             'value' => 'nullable|numeric|min:0',
             'client_id' => ['required', 'integer', Rule::in($userClientIds)],
-            // Añade aquí el resto de campos que quieras actualizar
+            'expected_close_date' => 'nullable|date',
         ]);
         $deal->update($validated);
         return redirect()->route('deals.index')->with('success', '¡Deal actualizado con éxito!');

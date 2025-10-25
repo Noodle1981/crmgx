@@ -12,6 +12,13 @@
     <x-input-error :messages="$errors->get('value')" class="mt-2" />
 </div>
 
+<!-- Fecha de Cierre Prevista -->
+<div class="mb-6">
+    <x-input-label for="expected_close_date" value="Fecha de Cierre Prevista:" />
+    <x-text-input id="expected_close_date" name="expected_close_date" type="date" class="mt-1 block w-full" :value="old('expected_close_date', $deal->expected_close_date ? \Carbon\Carbon::parse($deal->expected_close_date)->format('Y-m-d') : '')" />
+    <x-input-error :messages="$errors->get('expected_close_date')" class="mt-2" />
+</div>
+
 <!-- Cliente Asociado -->
 <div class="mb-6">
     <x-input-label for="client_id" value="Cliente:" />

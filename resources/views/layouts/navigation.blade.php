@@ -33,8 +33,11 @@
                         {{ __('Reportes') }}
                     </x-nav-link>
                     <x-nav-link :href="route('calendar.index')" :active="request()->routeIs('calendar.*')">
-    {{ __('Calendario') }}
-</x-nav-link>
+                        {{ __('Calendario') }}
+                    </x-nav-link>
+                    <x-nav-link :href="route('tasks.index')" :active="request()->routeIs('tasks.*')">
+                        {{ __('Tareas') }}
+                    </x-nav-link>
                 </div>
             </div>
 
@@ -86,9 +89,12 @@
             <x-responsive-nav-link :href="route('leads.index')" :active="request()->routeIs('leads.*')">{{ __('Leads') }}</x-responsive-nav-link>
             <x-responsive-nav-link :href="route('sequences.index')" :active="request()->routeIs('sequences.*')">{{ __('Secuencias') }}</x-responsive-nav-link>
             <x-responsive-nav-link :href="route('reports.sales')" :active="request()->routeIs('reports.sales')">{{ __('Reportes') }}</x-responsive-nav-link>
-            <x-nav-link :href="route('calendar.index')" :active="request()->routeIs('calendar.*')">
-    {{ __('Calendario') }}
-</x-nav-link>
+            <x-responsive-nav-link :href="route('calendar.index')" :active="request()->routeIs('calendar.*')">
+                {{ __('Calendario') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('tasks.index')" :active="request()->routeIs('tasks.*')">
+                {{ __('Tareas') }}
+            </x-responsive-nav-link>
         </div>
         <!-- Responsive Settings Options -->
         <div class="pt-4 pb-1 border-t border-white/10">

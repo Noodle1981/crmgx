@@ -41,6 +41,9 @@ Route::middleware('auth')->group(function () {
 
     // Ruta para editar Tareas (usada por el calendario)
     Route::get('/tasks/{task}/edit', [TaskController::class, 'edit'])->name('tasks.edit');
+
+    // Rutas para Tareas (CRUD completo)
+    Route::resource('tasks', TaskController::class);
 });
 
 
