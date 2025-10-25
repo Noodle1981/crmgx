@@ -1,6 +1,6 @@
 <x-app-layout>
     <x-slot name="header">
-        Panel de Control
+       Dashboard
     </x-slot>
 
     {{-- ========================================================== --}}
