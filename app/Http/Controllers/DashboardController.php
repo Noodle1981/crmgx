@@ -29,6 +29,8 @@ class DashboardController extends Controller
                                 ->whereIn('status', ['nuevo', 'contactado', 'calificado', 'perdido'])
                                 ->groupBy('status')
                                 ->pluck('total', 'status');
+        $activeLeadsCount = $user->leads()->whereIn('status', ['nuevo', 'contactado', 'calificado'])->count();
+
 
         // --- KPIs de Pipeline (Agrupados en una sola variable) ---
         $pipelineStats = [
@@ -56,6 +58,7 @@ class DashboardController extends Controller
             'clientCount',
             'contactCount',
             'activeSequencesCount',
+            'activeLeadsCount',
             'leadStatusCounts',
             'pipelineStats',
             'upcomingTasks',

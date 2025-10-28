@@ -16,7 +16,7 @@ class DealController extends Controller
         $user = Auth::user();
         $dealStages = DealStage::orderBy('order')->get();
         $pipelineData = $dealStages->map(function ($stage) use ($user) {
-                        $deals = $stage->deals()->where('user_id', $user->id)->where('status', 'open')->with('client')->withCount('activities')->get();
+                        $deals = $stage->deals()->where('user_id', $user->id)->where('status', 'open')->with('client', 'activities')->get();
             return ['id' => $stage->id, 'name' => $stage->name, 'deals' => $deals];
         });
         return view('deals.index', ['pipelineData' => $pipelineData]);
@@ -45,6 +45,7 @@ class DealController extends Controller
             'value' => 'nullable|numeric|min:0',
             'client_id' => ['required', 'integer', Rule::in($userClientIds)],
             'expected_close_date' => 'nullable|date',
+            'notes' => 'nullable|string', // <-- AÑADIDO
         ]);
         $deal = Auth::user()->deals()->create([
             'name' => $validated['name'],
@@ -53,6 +54,7 @@ class DealController extends Controller
             'expected_close_date' => $validated['expected_close_date'] ?? null,
             'deal_stage_id' => 1,
             'status' => 'open',
+            'notes' => $validated['notes'], // <-- AÑADIDO
         ]);
         if ($request->input('from_client_show')) {
             return redirect()->route('clients.show', $deal->client_id)->with('success', '¡Deal añadido con éxito!');
@@ -89,6 +91,7 @@ class DealController extends Controller
             'value' => 'nullable|numeric|min:0',
             'client_id' => ['required', 'integer', Rule::in($userClientIds)],
             'expected_close_date' => 'nullable|date',
+            'notes' => 'nullable|string', // <-- AÑADIDO
         ]);
         $deal->update($validated);
         return redirect()->route('deals.index')->with('success', '¡Deal actualizado con éxito!');
@@ -116,15 +119,27 @@ class DealController extends Controller
         return redirect()->route('deals.index')->with('success', '¡Deal eliminado con éxito!');
     }
 
+    
     public function updateStage(Request $request, Deal $deal)
-    {
-        if (Auth::user()->id !== $deal->user_id) {
-            abort(403, 'Acción no autorizada.');
-        }
-        $validated = $request->validate(['deal_stage_id' => 'required|integer|exists:deal_stages,id']);
-        $deal->update(['deal_stage_id' => $validated['deal_stage_id']]);
-        return redirect()->back()->with('success', __('messages.deal_updated'));
+{
+    if (Auth::user()->id !== $deal->user_id) {
+        abort(403, 'Acción no autorizada.');
     }
+    $validated = $request->validate(['deal_stage_id' => 'required|integer|exists:deal_stages,id']);
+
+    $newStage = DealStage::find($validated['deal_stage_id']);
+
+    // Lógica para guardar el valor original al mover a "Negociación"
+    if ($newStage && $newStage->name === 'Negociación' && is_null($deal->original_value)) {
+        $deal->original_value = $deal->value;
+    }
+    
+    $deal->deal_stage_id = $validated['deal_stage_id'];
+    $deal->save();
+
+    return redirect()->back()->with('success', __('messages.deal_updated'));
+}
+
 
 public function markAsWon(Deal $deal)
 {

@@ -3,11 +3,11 @@
     'title' => null,
 ])
 
-<div {{ $attributes->merge(['class' => 'bg-gray-900/60 backdrop-blur-xl border border-white/10 rounded-2xl shadow-xl']) }}>
+<div {{ $attributes->merge(['class' => 'bg-primary border border-primary-dark rounded-2xl shadow-lg text-white']) }}>
     @if ($title || isset($header))
-        <div class="px-6 py-4 border-b border-white/10">
+        <div class="px-6 py-4 border-b border-primary-light/50">
             @if ($title)
-                <h3 class="font-headings text-xl text-light-text">{{ $title }}</h3>
+                <h3 class="font-headings text-xl">{{ $title }}</h3>
             @else
                 {{ $header }}
             @endif
@@ -19,7 +19,7 @@
     </div>
 
     @if (isset($footer))
-        <div class="px-6 py-4 bg-black/20 border-t border-white/10 rounded-b-2xl">
+        <div class="px-6 py-4 bg-primary-dark/50 border-t border-primary-light/50 rounded-b-2xl">
             {{ $footer }}
         </div>
     @endif

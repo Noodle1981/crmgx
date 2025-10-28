@@ -1,15 +1,18 @@
 <x-app-layout>
     <x-slot name="header">
-       Dashboard
+        <h2 class="font-semibold text-xl text-text-main leading-tight">
+            Dashboard
+        </h2>
     </x-slot>
 
     {{-- ========================================================== --}}
     {{-- SECCIÓN 1: TARJETAS DE KPI --}}
     {{-- ========================================================== --}}
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-        <x-kpi-card title="Clientes" value="{{ $clientCount }}" icon="fas fa-users" />
-        <x-kpi-card title="Contactos" value="{{ $contactCount }}" icon="fas fa-address-book" />
-        <x-kpi-card title="Secuencias Activas" value="{{ $activeSequencesCount }}" icon="fas fa-cogs" />
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+        <x-kpi-card title="Clientes" :value="$clientCount" icon="fas fa-users" />
+        <x-kpi-card title="Contactos" :value="$contactCount" icon="fas fa-address-book" />
+        <x-kpi-card title="Leads Activos" :value="$activeLeadsCount" icon="fas fa-filter" />
+        <x-kpi-card title="Secuencias Activas" :value="$activeSequencesCount" icon="fas fa-stream" />
     </div>
 
     {{-- ========================================================== --}}
@@ -20,16 +23,15 @@
             <h3 class="font-headings text-xl">Pipeline de Ventas</h3>
         </x-slot>
         
-        {{-- Contenido del gráfico dentro de la tarjeta de cristal --}}
         <div>
-            <h3 class="text-lg font-semibold text-light-text mb-4">Valor del Pipeline por Etapa</h3>
+            <h3 class="text-lg font-semibold mb-4">Valor del Pipeline por Etapa</h3>
             <div id="pipelineChart"></div>
         </div>
 
         <x-slot name="footer">
             <div class="flex justify-between items-center text-sm">
-                <span>Deals Abiertos: <strong class="text-light-text">{{ $pipelineStats['openDealsCount'] }}</strong></span>
-                <span>Valor Total: <strong class="text-aurora-cyan">${{ number_format($pipelineStats['pipelineValue'], 0) }}</strong></span>
+                <span>Deals Abiertos: <strong>{{ $pipelineStats['openDealsCount'] }}</strong></span>
+                <span>Valor Total: <strong class="text-white">${{ number_format($pipelineStats['pipelineValue'], 0) }}</strong></span>
             </div>
         </x-slot>
     </x-card>
@@ -45,14 +47,14 @@
             <div class="space-y-4">
                 @forelse ($upcomingTasks as $task)
                     <div class="flex items-start space-x-4">
-                        <div class="flex-shrink-0 mt-1 h-3 w-3 rounded-full @if($task->status == 'pendiente') bg-aurora-red-pop animate-pulse @else bg-aurora-blue @endif"></div>
+                        <div class="flex-shrink-0 mt-1 h-3 w-3 rounded-full @if($task->status == 'pendiente') bg-white animate-pulse @else bg-primary-light @endif"></div>
                         <div>
-                            <p class="font-semibold text-light-text">{{ $task->title }}</p>
+                            <p class="font-semibold">{{ $task->title }}</p>
                             <x-smart-date :date="$task->due_date" with-color="true" with-icon="true" />
                         </div>
                     </div>
                 @empty
-                    <div class="text-center py-8 text-light-text-muted">
+                    <div class="text-center py-8">
                         <i class="fas fa-check-circle text-4xl mb-3"></i>
                         <p>¡No tienes tareas pendientes!</p>
                     </div>
@@ -64,14 +66,14 @@
             <x-slot name="header">
                 <h3 class="font-headings text-xl">Deals Abiertos Recientemente</h3>
             </x-slot>
-            <div class="space-y-4 divide-y divide-white/10">
+            <div class="space-y-4 divide-y divide-primary-light/50">
                 @forelse ($recentDeals as $deal)
                     <div class="pt-4 first:pt-0">
-                        <p class="font-semibold text-light-text">{{ $deal->name }}</p>
-                        <p class="text-sm text-light-text-muted">Cliente: {{ $deal->client->name }}</p>
+                        <p class="font-semibold">{{ $deal->name }}</p>
+                        <p class="text-sm text-primary-light">Cliente: {{ $deal->client->name }}</p>
                     </div>
                 @empty
-                    <div class="text-center py-8 text-light-text-muted">
+                    <div class="text-center py-8">
                         <i class="fas fa-folder-open text-4xl mb-3"></i>
                         <p>No hay deals abiertos recientemente.</p>
                     </div>
@@ -81,15 +83,12 @@
     </div>
 </x-app-layout>
 
-
-
 {{-- ========================================================== --}}
 {{-- SECCIÓN 4: SCRIPT PARA EL GRÁFICO --}}
 {{-- ========================================================== --}}
 @push('scripts')
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        // Opciones del gráfico
         const options = {
             series: [{
                 name: 'Valor',
@@ -99,16 +98,16 @@
                 type: 'bar',
                 height: 350,
                 toolbar: { show: false },
-                foreColor: '#9ca3af' // Color del texto de los ejes (gris para modo oscuro)
+                foreColor: '#FFFFFF' // Texto blanco para los ejes
             },
             plotOptions: {
                 bar: {
                     horizontal: false,
                     columnWidth: '55%',
-                    borderRadius: 4, // Bordes redondeados para las barras
+                    borderRadius: 4,
                 },
             },
-            colors: ['#30EEE2'], // Usamos nuestro color --aurora-cyan
+            colors: ['#FFAC4E'], // Naranja claro para las barras
             dataLabels: { enabled: false },
             stroke: {
                 show: true,
@@ -119,41 +118,41 @@
                 categories: [],
                 labels: {
                     style: {
-                        colors: '#9ca3af',
+                        colors: '#FFFFFF',
                     },
                 },
                 axisBorder: {
-                    color: '#4A5568' // Color del eje X
+                    color: '#FFAC4E' 
                 },
                 axisTicks: {
-                    color: '#4A5568' // Color de las marcas del eje X
+                    color: '#FFAC4E'
                 }
             },
             yaxis: {
                 title: { 
                     text: '$ (Valor)',
                     style: {
-                        color: '#9ca3af'
+                        color: '#FFFFFF'
                     }
                 },
                 labels: {
                     style: {
-                        colors: '#9ca3af',
+                        colors: '#FFFFFF',
                     },
                     formatter: function (val) {
                         if (val >= 1000) {
-                            return '$' + (val / 1000).toFixed(0) + 'k';
+                            return ' + (val / 1000).toFixed(0) + 'k';
                         }
-                        return '$' + val;
+                        return ' + val;
                     }
                 }
             },
             grid: {
-                borderColor: '#2d3748' // Color de las líneas de la cuadrícula
+                borderColor: '#FFFFFF30' // Lineas de la grilla blancas con transparencia
             },
             fill: { opacity: 1 },
             tooltip: {
-                theme: 'dark', // Usamos el tema oscuro para el tooltip
+                theme: 'dark',
                 y: {
                     formatter: function (val) {
                         return "$ " + val.toLocaleString('es-ES');
@@ -162,20 +161,12 @@
             }
         };
 
-        // Creamos la instancia del gráfico
         const chart = new ApexCharts(document.querySelector("#pipelineChart"), options);
         chart.render();
 
-        // Hacemos la petición a nuestra API para obtener los datos reales
         fetch("{{ route('charts.pipeline') }}")
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('La respuesta de la red no fue correcta');
-                }
-                return response.json();
-            })
+            .then(response => response.json())
             .then(data => {
-                // Actualizamos el gráfico con los datos del servidor
                 chart.updateOptions({
                     xaxis: {
                         categories: data.labels
@@ -187,7 +178,7 @@
             })
             .catch(error => {
                 console.error('Hubo un problema con la operación fetch:', error);
-                document.querySelector("#pipelineChart").innerHTML = '<p class="text-center text-aurora-red-pop">No se pudieron cargar los datos del gráfico.</p>';
+                document.querySelector("#pipelineChart").innerHTML = '<p class="text-center text-white">No se pudieron cargar los datos del gráfico.</p>';
             });
     });
 </script>

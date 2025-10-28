@@ -1,16 +1,9 @@
-{{-- resources/views/components/responsive-nav-link.blade.php --}}
 @props(['active'])
 
 @php
-$baseClasses = 'block w-full ps-3 pe-4 py-3 border-l-4 text-start text-base font-medium
-                transition-all duration-300 ease-in-out focus:outline-none';
-
-$activeClasses = 'border-aurora-cyan bg-aurora-cyan/10 text-light-text';
-
-$inactiveClasses = 'border-transparent text-light-text-muted hover:text-light-text
-                    hover:bg-gray-800/50 hover:border-aurora-cyan/50';
-
-$classes = $baseClasses . ' ' . ($active ?? false ? $activeClasses : $inactiveClasses);
+$classes = ($active ?? false)
+            ? 'block w-full ps-3 pe-4 py-2 border-l-4 border-white text-start text-base font-medium text-white bg-primary-dark transition duration-150 ease-in-out'
+            : 'block w-full ps-3 pe-4 py-2 border-l-4 border-transparent text-start text-base font-medium text-gray-200 hover:text-white hover:bg-primary-dark hover:border-gray-300 transition duration-150 ease-in-out';
 @endphp
 
 <a {{ $attributes->merge(['class' => $classes]) }}>

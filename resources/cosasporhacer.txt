@@ -1,0 +1,63 @@
+Misión: Transformar el Pipeline para Higiene y Seguridad
+Vamos a adaptar el pipeline y el flujo de trabajo para que refleje el proceso de venta de un servicio de HyS.
+
+Paso 1: Adaptar las Etapas del Pipeline (DealStageSeeder)
+El primer paso es cambiar los nombres de las columnas de nuestro tablero Kanban. La fuente de la verdad para esto es nuestro DealStageSeeder.
+Abre el archivo: database/seeders/DealStageSeeder.php.
+Modifica el método run() para que refleje tus nuevas etapas. Vamos a añadir una cuarta etapa también.
+code
+PHP
+<?php
+
+namespace Database\Seeders;
+
+use App.Models.DealStage;
+use Illuminate.Database.Seeder;
+
+class DealStageSeeder extends Seeder
+{
+    public function run(): void
+    {
+        DealStage::updateOrCreate(['name' => 'Calificación'], ['order' => 1]);
+        DealStage::updateOrCreate(['name' => 'Propuesta Enviada'], ['order' => 2]);
+        DealStage::updateOrCreate(['name' => 'Negociación'], ['order' => 3]);
+        // Podríamos añadir una cuarta etapa "Contrato Pendiente de Firma" si el proceso lo requiere
+    }
+}
+(He quitado la etapa "Cerrado Ganado" de aquí porque un Deal "ganado" ya no pertenece al pipeline activo, sino al reporte de ventas. El pipeline es para trabajo en curso).
+Ejecuta el comando para actualizar la base de datos con estos nuevos nombres:
+code
+Bash
+php artisan db:seed --class=DealStageSeeder
+(db:seed --class=... ejecuta solo ese seeder específico sin borrar toda la base de datos).
+Resultado: ¡Tu pipeline web ahora mostrará las nuevas columnas "Calificación", "Propuesta Enviada" y "Negociación"!
+
+Paso 2: Adaptar el Formulario de "Crear Deal" (Eliminar el importe)
+Tienes toda la razón. En la etapa de "Calificación", el importe (value) aún no se conoce o no es relevante. Debería ser opcional desde el principio y quizás obligatorio más adelante.
+Abre la vista del formulario: resources/views/deals/_form.blade.php.
+Busca el campo "Valor ($)". Podemos simplemente comentarlo o eliminarlo por ahora para simplificar el proceso de creación inicial. O, mejor aún, lo dejamos como opcional. Ya está configurado como nullable en el controlador, ¡así que no hay que cambiar nada en el backend!
+Acción: No es necesario cambiar nada. El usuario simplemente puede dejar el campo "Valor" en blanco al crear el deal. La validación ('value' => 'nullable|numeric|min:0') ya lo permite.
+
+Paso 3: Potenciar la Etapa de "Propuesta Enviada"
+Mencionas: "El CRMCX permite generar y enviar estas propuestas y presupuestos (Quotations)."
+¡Esta es una funcionalidad de V2.0 excelente!
+Cómo lo implementaríamos:
+Añadiríamos un nuevo módulo de "Presupuestos" (Quotations).
+En la ficha de un Deal, habría un botón "Generar Presupuesto".
+Esto abriría una interfaz para añadir líneas de servicio (ej: "Estudio de Riesgos", "Capacitación Anual"), con sus precios.
+Al guardar, se generaría un PDF con el presupuesto, que se podría enviar por email y quedaría registrado en el historial de actividades del Deal.
+Por ahora, el vendedor registrará manualmente el envío de la propuesta como una Actividad en la ficha del cliente/deal.
+
+Paso 4: Potenciar la Etapa de "Negociación"
+Mencionas: "La visibilidad del historial de actividades y notas (activities) en el CRM es vital aquí."
+¡Felicidades, esta funcionalidad ya la has construido! La "Ficha del Cliente" con su historial consolidado de 360 grados es precisamente la herramienta que un vendedor usaría en esta etapa para tener todo el contexto de la conversación.
+Paso 5: La Transición a "Cerrado Ganado"
+Mencionas: "El Deal ganado se convierte en el Contrato de Servicio Activo, que dispara la transición del cliente y del proyecto a la plataforma técnica..."
+¡Has descrito perfectamente una integración entre el CRM y un ERP (o una plataforma de gestión de proyectos)!
+Cómo lo implementaríamos:
+Cuando un usuario hace clic en el botón "Ganado" de un Deal (funcionalidad que ya tienes), se ejecuta el método markAsWon en el DealController.
+Dentro de ese método, además de cambiar el status, dispararíamos un Evento de Laravel. Por ejemplo: DealWon::dispatch($deal).
+Podríamos tener un "Listener" (un oyente) para ese evento que se encargue de la "transición":
+Llamaría a la API de la "plataforma técnica" para crear un nuevo proyecto.
+Crearía un registro en una nueva tabla contracts en nuestro propio CRM.
+Enviaría una notificación por email al equipo técnico.

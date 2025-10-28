@@ -4,7 +4,13 @@
     <x-text-input id="name" name="name" type="text" class="mt-1 block w-full" :value="old('name', $deal->name ?? '')" required autofocus />
     <x-input-error :messages="$errors->get('name')" class="mt-2" />
 </div>
-
+<div class="mb-4">
+    <label for="notes" class="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2">
+        Descripción / Necesidad del Cliente:
+    </label>
+    <textarea name="notes" id="notes" rows="4" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 dark:text-gray-300 dark:bg-gray-900 leading-tight focus:outline-none focus:shadow-outline">{{ old('notes', $deal->notes ?? '') }}</textarea>
+    @error('notes') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+</div>
 <!-- Valor -->
 <div class="mb-6">
     <x-input-label for="value" value="Valor ($):" />

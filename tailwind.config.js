@@ -9,53 +9,35 @@ export default {
         './resources/views/**/*.blade.php',
     ],
 
+    darkMode: 'class', // O 'media' si lo prefieres
+
     theme: {
-        extend: {
-            // ===============================================================
-            // INICIO DE LA PERSONALIZACIÓN "AURORA GLASS"
-            // ===============================================================
-
-            // 1. PALETA DE COLORES PERSONALIZADA
-            colors: {
-                'aurora-purple': '#65005E',
-                'aurora-blue': '#3C84CE',
-                'aurora-cyan': '#30EEE2',
-                'aurora-red-pop': '#FF1919',
-                'dark-void': '#0A0C10',
-                'light-text': '#F0F2F5',
-                'light-text-muted': 'rgba(240, 242, 245, 0.7)',
-            },
-
-            // 2. FUENTES PERSONALIZADAS
+        extend: { // <-- LA CLAVE ESTÁ AQUÍ
             fontFamily: {
-                sans: ['Inter', ...defaultTheme.fontFamily.sans], // Fuente base para el cuerpo
-                headings: ['Poppins', 'sans-serif'], // Fuente para títulos
+                sans: ['Figtree', ...defaultTheme.fontFamily.sans],
+                headings: ['Poppins', 'sans-serif'], // Ejemplo de fuente personalizada
             },
+            colors: {
+                // Tu paleta de colores de marca
+                'primary': {
+                    'light': '#FFAC4E',
+                    'DEFAULT': '#FF8F12', // Naranja principal
+                    'dark': '#D97706',
+                },
+                'secondary': '#4B5563',
 
-            // 3. ANIMACIÓN PARA EL GRADIENTE DEL FONDO
-            keyframes: {
-                'gradient-xy': {
-                    '0%, 100%': {
-                        'background-position': '0% 50%'
-                    },
-                    '50%': {
-                        'background-position': '100% 50%'
-                    },
-                }
+                // Esquema de colores para el modo claro (fondo blanco)
+                'background': '#FFFFFF',
+                'surface': '#F9FAFB',
+                'text-main': '#1F2937',
+                'text-muted': '#6B7280',
+
+                // Esquema de colores para el modo oscuro (¡los que te gustan!)
+                'dark-background': '#021745ff', // Un gris muy oscuro
+                'dark-surface': '#ef680eff',    // Un gris un poco más claro para tarjetas
+                'dark-text-main': '#F9FAFB',
+                'dark-text-muted': '#9CA3AF',
             },
-            animation: {
-                'gradient-xy': 'gradient-xy 15s ease infinite',
-            },
-
-            // 4. VALORES DE BLUR PARA EL EFECTO GLASSMORPHISM
-            // Puedes añadir más si los necesitas, ej: 'sm': '4px', etc.
-            backdropBlur: {
-                'xl': '24px',
-            }
-
-            // ===============================================================
-            // FIN DE LA PERSONALIZACIÓN
-            // ===============================================================
         },
     },
 

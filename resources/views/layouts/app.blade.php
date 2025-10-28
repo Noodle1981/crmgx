@@ -26,7 +26,7 @@
     <body class="font-sans antialiased text-light-text">
         
         {{-- Contenedor principal con el fondo --}}
-        <div class="min-h-screen bg-dark-void">
+        <div class="min-h-screen bg-white-void">
             
             {{-- La barra de navegación ahora es un componente nuestro --}}
             @include('layouts.navigation')

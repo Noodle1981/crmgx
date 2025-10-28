@@ -1,0 +1,227 @@
+La aplicación de un sistema CRM basado en Laravel, como el descrito por sus tablas y funcionalidades (**CRMCX**), es **altamente viable y ventajosa** para una consultora de Higiene y Seguridad Laboral (HyS). Sin embargo, su adecuación varía dependiendo de si se utiliza principalmente para la gestión comercial y de clientes (CRM puro) o para la gestión operativa profunda de los servicios de consultoría (Gestión de Proyectos y Cumplimiento).
+
+A continuación, se detalla el análisis de la adecuación del sistema, el proceso propuesto y las sugerencias de nomenclatura.
+
+---
+
+## 1. Cumplimiento de Requisitos para una Consultora de Higiene y Seguridad Laboral
+
+El sistema CRMCX, construido sobre Laravel, cumple con los requisitos esenciales para gestionar las relaciones comerciales y el seguimiento de cumplimiento de una consultora de HyS, aunque requeriría **adaptación y posible extensión** del módulo de Proyectos/Tareas para cubrir la complejidad técnica de la *prevención de riesgos*.
+
+### Áreas que cubre el CRMCX (CRM Puro)
+
+1.  **Gestión Comercial y Prospección (Ventas):** Es la función principal del sistema y es perfectamente adecuada.
+    *   **Leads (Prospectos):** Permite registrar a las empresas que muestran interés o a las que se desea prospectar activamente. Este es el primer paso para ofrecer un servicio de HyS.
+    *   **Clientes y Contactos:** Permite almacenar la información fiscal, de contacto y los datos de las personas clave (Gerente, Director de RR.HH., etc.) dentro de la **Empresa Cliente**.
+    *   **Oportunidades (Deals):** Fundamental para seguir el "pipeline" de venta de servicios de HyS, desde el primer contacto hasta el cierre del contrato (marcar como "ganado" o "perdido").
+
+2.  **Seguimiento y Registro (Trazabilidad):** Esto es crucial en la consultoría de HyS, donde la trazabilidad legal es vital.
+    *   **Registro de Actividades:** El módulo `activities` permite registrar cada interacción con el cliente (llamadas, reuniones, envío de propuestas, envío de informes de inspección). Esto crea un historial completo del cliente.
+    *   **Automatización (Secuencias):** El módulo `sequences` permite automatizar el seguimiento de correos o la creación de tareas, lo cual es útil para recordar al consultor que debe contactar al cliente antes de que venza un certificado o un hito de auditoría.
+
+### Áreas que requieren adaptación o podrían ser limitantes
+
+1.  **Gestión de Proyectos Técnicos:** La consultoría de HyS se basa en la ejecución de **Planes de Prevención de Riesgos** y la documentación de cumplimiento.
+    *   El CRMCX tiene **Tareas (`tasks`)** y un **Calendario**. Esto permite desglosar un contrato (Deal ganado) en tareas operativas ("Realizar relevamiento de riesgos eléctricos", "Capacitar a personal de planta").
+    *   **Limitación:** El sistema carece de un módulo nativo de **Timesheets (Hojas de Tiempo)** y **Facturación por Hitos** como se ve en soluciones más completas. Si la consultora factura por hora de servicio profesional o necesita calcular el costo real de un proyecto basado en horas dedicadas, esta funcionalidad necesitaría ser agregada o complementada externamente.
+
+2.  **Manejo de Documentación Legal/Técnica:** La consultoría de HyS genera documentación obligatoria (Legajo Técnico, Programas de Seguridad, informes de evaluación de riesgos).
+    *   Si bien el CRM puede registrar la actividad de envío de estos documentos, se requeriría un sistema robusto de almacenamiento o vinculación de archivos. Idealmente, los **Clientes/Establecimientos** deberían tener un **Portal de Cliente** para ver sus documentos y el estado de cumplimiento.
+
+---
+
+## 2. Proceso y Casos de Uso para una Consultora de HyS
+
+El flujo de trabajo se adapta de un modelo comercial estándar (como el de una empresa de software) al ciclo de prevención de riesgos laborales.
+
+| Fase del CRM (CRMCX) | Nomenclatura Adaptada | Proceso Clave de HyS |
+| :--- | :--- | :--- |
+| **Lead** | **Prospecto/Establecimiento Potencial** | Identificación de empresas en industrias de alto riesgo (como construcción, frigoríficos, minería o bodegas) que requieran cumplimiento de la Ley 19587. |
+| **Opportunity (Deal)** | **Propuesta de Plan de Prevención (HyS)** | Cuando el prospecto es calificado, se genera una propuesta detallando los servicios requeridos (e.g., Evaluación de Riesgos, Programas de Capacitación, o la creación del Servicio de HyS en Argentina). |
+| **Winning the Deal** | **Contrato de Servicios/Plan HyS Aprobado** | El cliente acepta la propuesta. Este es el punto que **dispara las acciones operativas**. |
+| **Task Management** | **Ejecución de Hitos de Cumplimiento** | El proyecto (Contrato) se desglosa en **Tareas** técnicas para el consultor (ej: "Relevamiento de Condiciones y Medio Ambiente de Trabajo (CyMAT)", "Medición de Ruido y Vibraciones", "Entrega de EPP"). |
+| **Activities** | **Registro de Inspecciones y Reportes** | Registrar llamadas, visitas de obra, reuniones del Comité Paritario de Seguridad e Higiene (si aplica), o la denuncia de incumplimientos ante la ART/SRT. |
+| **Sequences** | **Automatización de Vencimientos** | Inscribir al cliente en una secuencia para notificar al consultor o al cliente sobre vencimientos de auditorías, renovaciones de matrículas, o la periodicidad de exámenes médicos. |
+| **Reporting** | **Análisis de Cartera de Riesgos** | Generar reportes sobre qué clientes tienen planes activos, qué etapas del servicio están pendientes (visibilidad del proceso de implementación), y qué oportunidades se perdieron (para analizar la causa de accidentes o enfermedades evitables). |
+
+### Casos de Uso Específicos de HyS
+
+1.  **Gestión de la Prospección B2B:** Uso de Leads y Automatización de Marketing (Secuencias) para dirigirse a industrias donde es obligatorio el Servicio de HyS y existe alta siniestralidad (ej. Minería, Construcción). El CRM envía contenido de valor sobre prevención de riesgos y notifica al consultor cuando el lead está "caliente" (Calificación de Leads).
+2.  **Trazabilidad y Control de Auditoría:** El CRM se convierte en el registro centralizado de la relación. Todas las actividades (visitas, informes, acciones preventivas) se registran. Si el cliente tiene una contingencia (Accidente de Trabajo o Enfermedad Profesional), el consultor puede acceder rápidamente al historial para demostrar la gestión preventiva realizada.
+3.  **Gestión de Hitos de Prevención:** Después de ganar un contrato (Deal `won`), se generan tareas para realizar la **Evaluación de Riesgos** (visualizar el entorno, identificar peligros, evaluar riesgos) y definir las prioridades de prevención (Eliminar, Limitar, Proteger Individualmente). Estas tareas se visualizan en el Kanban/Calendario.
+
+---
+
+## 3. Adaptación de la Nomenclatura (Cambio de Nombre de Pasos)
+
+Para que el sistema se adapte mejor al contexto de una consultora de Higiene y Seguridad Laboral, es altamente conveniente cambiar la terminología comercial estándar (centrada en software o ventas de productos) por términos que reflejen el ciclo de consultoría, cumplimiento y prevención.
+
+| Elemento del CRMCX | Nombre de la Consultoría HyS Recomendado | Justificación |
+| :--- | :--- | :--- |
+| **Leads** | **Prospectos / Empresas a Cumplir** | Se enfoca en las empresas que necesitan cumplir con la legislación. |
+| **Customers** | **Empresas Clientes / Establecimientos** | El término "Establecimiento" se alinea con la Ley de HyS. |
+| **Contacts** | **Contactos Clave / Referentes HyS** | Se refiere a la persona dentro de la empresa (gerente de planta, referente de RRHH). |
+| **Deals/Opportunities** | **Proyectos de Cumplimiento HyS** | Refleja que la oportunidad es un servicio técnico y legal, no solo una venta. |
+| **Pipeline Stages** | **Ciclo de Servicios de Prevención** | Las etapas deben reflejar la madurez de la relación de consultoría: |
+| *— Stage 1: Qualification* | **— Etapa 1: Diagnóstico Inicial / Visita de Detección** | Implica la primera revisión del entorno y riesgos. |
+| *— Stage 2: Proposal Sent* | **— Etapa 2: Propuesta Técnica-Legal Generada** | Envío formal del plan de servicios. |
+| *— Stage 3: Negotiation* | **— Etapa 3: Revisión y Ajuste de Plan HyS** | Fase de discusión del alcance del servicio y costos. |
+| *— Stage 4: Closed Won* | **— Etapa 4: Contrato de Servicio Activo** | El Plan de Prevención y Seguridad ha sido aceptado. |
+| **Tasks** | **Actividades de Prevención / Tareas de Auditoría** | Vincula las tareas con el cumplimiento normativo (ej. "Relevamiento de CyMAT - Riesgos Físicos"). |
+| **Activities** | **Registro de Intervenciones** | Clarifica que se están registrando acciones profesionales (inspecciones, capacitaciones, denuncias). |
+| **Sequences** | **Alertas de Cumplimiento y Renovación** | Énfasis en la función preventiva de evitar que se venzan los plazos legales (ej. envío de recordatorios de capacitación obligatoria). |
+
+Esta adaptación terminológica facilitará que el equipo de consultores y profesionales de Higiene y Seguridad se sientan más cómodos y que el sistema refleje directamente sus obligaciones y procesos regulados.
+
+
+Es excelente la estrategia de **separar las responsabilidades** entre dos plataformas: una para la gestión comercial (el CRMCX basado en Laravel) y otra dedicada a la gestión técnica de Higiene y Seguridad Laboral (HyS) (firmas digitales, capacitaciones, controles, etc.).
+
+Esta división es **fundamental y altamente recomendada**, ya que permite que el CRMCX se concentre en su función principal, que es **generar y cerrar ingresos**.
+
+A continuación, se detalla la justificación del sustento de los *stages* propuestos y cómo se mantiene la coherencia entre ambos sistemas:
+
+---
+
+## 1. Sustento de las Etapas del Pipeline de Ventas (Stages)
+
+La recomendación de utilizar las etapas clásicas de ventas (Qualification, Proposal Sent, Negotiation, Closed Won) sigue teniendo un **excelente y sólido sustento** para la consultora de Higiene y Seguridad Laboral, ya que el sistema CRMCX está explícitamente diseñado para gestionar este flujo comercial.
+
+El propósito del módulo de **Oportunidades (`Deals`)** en el CRMCX es permitir al personal comercial gestionar su **"pipeline" de ventas**.
+
+### Justificación de las Etapas en el Contexto HyS (Comercial)
+
+| Etapa del CRMCX (Ventas) | Razón de Sustento |
+| :--- | :--- |
+| **Stage 1: Qualification (Calificación)** | **Propósito:** Determinar si el **Lead (Prospecto)** realmente necesita servicios de HyS y tiene capacidad de contratación. Esto es crucial en HyS, donde las empresas deben ser calificadas por su actividad y tamaño (ej. si son mineras o frigoríficos), ya que están obligadas por ley (como la Ley 19587 en Argentina). Un *Lead* calificado se convierte en una *Oportunidad*. |
+| **Stage 2: Proposal Sent (Propuesta Enviada)** | **Propósito:** Registrar el envío formal de la **Propuesta de Plan de Prevención (HyS)** que detalla los servicios de cumplimiento y prevención. El CRMCX permite generar y enviar estas propuestas y presupuestos (`Quotations`). |
+| **Stage 3: Negotiation (Negociación)** | **Propósito:** Etapa donde se discuten el alcance de la consultoría, los aranceles y los derechos (que son obligatorios según la Ley 1509-A). La visibilidad del historial de actividades y notas (`activities`) en el CRM es vital aquí. |
+| **Stage 4: Closed Won (Cerrado Ganado)** | **Propósito:** El trato se cierra y la Oportunidad se convierte en un **Cliente**. Este es el **punto de conexión clave**. El Deal ganado se convierte en el **Contrato de Servicio Activo**, que dispara la transición del cliente y del proyecto a la *plataforma técnica* que manejarán los técnicos. |
+
+### La Importancia de la Separación de Roles
+
+Dado que el CRMCX está destinado **solo al personal de ventas**:
+
+1.  **Enfoque y Métrica Comercial:** El sistema se centra en el **embudo de ventas** (`Pipeline de Ventas`) y los **KPIs** (Indicadores Clave de Rendimiento) relacionados con la prospección y el cierre de contratos. Esto permite al equipo comercial enfocarse en **"nutrir a sus leads"** y trabajar solo con aquellos que están **"calientes"**.
+2.  **Eficiencia en la Prospección:** El CRMCX, al tener módulos como **Secuencias**, puede automatizar correos y tareas de seguimiento para que el vendedor **"se enfoque solo en leads de alta calidad"**, mientras la automatización se encarga del seguimiento.
+3.  **Transición de la Venta a la Operación:** Cuando un **Deal** es `Closed Won` (Ganado) en el CRMCX, este evento funciona como un **disparador** para la otra plataforma técnica. En sistemas como el descrito (ERPNext), al crearse el Pedido de Venta, se crea automáticamente un **Proyecto**. En su caso, el `Closed Won` debe notificar a la plataforma técnica que inicie la gestión operativa (registro de capacitaciones, controles de cumplimiento, etc.).
+
+## 2. La Plataforma Técnica (Gestión de Cumplimiento)
+
+Usted menciona la existencia de una plataforma dedicada a **firmas digitales, registros de capacitaciones y controles**. Esta plataforma está alineada al contexto técnico porque la consultoría de HyS requiere una gestión operativa detallada que va más allá de un CRM comercial.
+
+Las actividades específicas de HyS que esta plataforma manejaría incluyen:
+
+*   **Registro y Trazabilidad Legal:** La Ley 1509-A de San Juan, por ejemplo, exige llevar un **legajo especial** de cada profesional matriculado donde se anoten sus circunstancias personales, títulos, empleo, domicilio, méritos y **sanciones**. Aunque el CRM podría registrar la actividad (una reunión), la plataforma técnica es la ideal para gestionar estos **legajos y certificaciones oficiales**.
+*   **Gestión de Tareas Operativas (Cumplimiento):** El trabajo técnico implica la aplicación de conocimientos para la **reducción, control y eliminación de accidentes**. Esto se desglosa en:
+    *   **Evaluación y Ponderación de Riesgos:** Determinar la Gravedad (G) y la Probabilidad (P) de ocurrencia para calcular el Riesgo (R = G x P). Esto no es una tarea comercial.
+    *   **Medidas Preventivas:** La plataforma técnica idealmente debe registrar la implementación de las prioridades de prevención: **Eliminar o Impedir**, **Limitar**, y **Proteger Individualmente**.
+    *   **Registros de Capacitación:** Es una obligación del empleador capacitar a su personal en prevención. La plataforma técnica registraría el cumplimiento de estas capacitaciones, posiblemente con firmas digitales.
+    *   **Controles e Inspecciones:** Registrar actividades como la verificación de la puesta a tierra, el uso de EPP, o el cumplimiento de las normas de seguridad e higiene en el trabajo.
+
+**Conclusión sobre la división:** Mantener el CRMCX centrado en el **ciclo de venta** (Leads, Oportunidades, Clientes) y la plataforma técnica centrada en el **ciclo de cumplimiento** (Tareas, Registros, Certificaciones) es la forma más efectiva de garantizar el control y la eficiencia en ambos dominios.
+
+
+
+
+
+Este es un análisis detallado del flujo de datos en el CRMCX, la identificación de posibles inconsistencias en el diseño de las tablas y una sugerencia para el esquema de comisiones del equipo de ventas de su consultora de Higiene y Seguridad Laboral (HyS).
+
+---
+
+## 1. Flujo de Carga del CRM (Basado en Tablas)
+
+El sistema CRMCX, construido con Laravel, utiliza un flujo estándar de CRM (Lead $\rightarrow$ Oportunidad $\rightarrow$ Cliente) con la posibilidad de registrar actividades y automatizar seguimientos mediante secuencias.
+
+A continuación, se presenta la simulación del flujo a través de las tablas (`users`, `leads`, `clients`, `contacts`, `deals`, `activities`, `tasks`) y el uso de etapas (`deal_stages`).
+
+### Etapas Predefinidas (Ejemplo de `deal_stages`)
+Asumiremos las etapas recomendadas:
+1.  **Qualification**
+2.  **Proposal Sent**
+3.  **Negotiation**
+
+### Escenario A: Deal Ganado (Ejemplo: Frigorifico San Juan)
+
+Este escenario culmina con la firma del contrato para el Plan de Prevención y Cumplimiento de Higiene y Seguridad.
+
+| Paso | Acción del Vendedor (Vendedor ID 1) | Tablas Afectadas y Registros Clave |
+| :--- | :--- | :--- |
+| **1. Captura de Prospecto** | El vendedor identifica a "Frigorifico San Juan" (industria de alto riesgo) como un prospecto clave. | **`leads`**: Se inserta un nuevo registro. `name`: 'Frigorifico San Juan', `status`: 'nuevo', `user_id`: 1. |
+| **2. Calificación (Activity)** | El vendedor contacta al Frigorífico y confirma que, por su actividad, necesita un Servicio de HyS obligatorio. | **`activities`**: Se registra la llamada/reunión. `type`: 'call', `description`: 'Calificación inicial, se confirma necesidad de Legajo Técnico y Programa de Seguridad.', `loggable_type`: 'Lead', `user_id`: 1. |
+| **3. Conversión** | El Lead se califica como potencial (Listo para avanzar a Deal). | **`leads`**: Se actualiza el lead original. `status`: 'convertido'. **`clients`**: Se crea el cliente principal. **`contacts`**: Se crea el contacto clave (ej. Gerente de Planta). **`deals`**: Se crea la oportunidad. `name`: 'Contrato Anual HyS F. San Juan', `client_id`, `user_id`: 1, `deal_stage_id`: (ID 'Qualification'). |
+| **4. Propuesta Enviada** | Se envía el presupuesto formal de servicios profesionales de HyS (Presupuesto/Propuesta). | **`deals`**: Se actualiza el `deal_stage_id` al ID 'Proposal Sent'. **`activities`**: Se registra el envío. `type`: 'email', `description`: 'Propuesta de consultoría enviada (Cumplimiento Ley 19587)'. |
+| **5. Negociación** | Se ajustan los alcances del Plan de Prevención de Riesgos. | **`deals`**: Se actualiza el `deal_stage_id` al ID 'Negotiation'. **`activities`**: Se registra la reunión de ajustes del contrato. |
+| **6. Cierre Ganado (Won)** | El cliente acepta y firma el contrato. | **`deals`**: Se actualiza el `status` a 'won'. **`tasks`**: Se crea una tarea para el equipo de operaciones/técnico. `title`: 'Inicio Plan de Prevención F. San Juan', `status`: 'pendiente', `taskable_type`: 'Deal', `taskable_id`: (Deal ID). |
+| **7. Seguimiento Post-Venta** | El vendedor programa una tarea para revisar la satisfacción a los 3 meses. | **`tasks`**: Se crea una tarea futura asociada al cliente. `title`: 'Check-in satisfacción Cliente F. San Juan', `taskable_type`: 'Client'. |
+
+***
+
+### Escenario B: Deal Perdido (Ejemplo: Bodega Merced del Estero)
+
+Este escenario muestra un Deal que se pierde después de la calificación, por ejemplo, debido a restricciones presupuestarias o cambio de prioridades.
+
+| Paso | Acción del Vendedor (Vendedor ID 1) | Tablas Afectadas y Registros Clave |
+| :--- | :--- | :--- |
+| **1. Captura y Conversión** | El prospecto es convertido a Cliente/Contacto para poder incluirlo en una Secuencia de nutrición. | **`leads`**: Se convierte a 'convertido'. **`clients`**: Se crea 'Bodega Merced del Estero'. **`contacts`**: Se crea el contacto principal. **`deals`**: Se crea la Oportunidad. `deal_stage_id`: (ID 'Qualification'). |
+| **2. Automatización** | El contacto es inscrito en una secuencia (ej. correos sobre la obligatoriedad del Servicio de HyS). | **`sequence_enrollments`**: Se inserta un registro. `contact_id`, `sequence_id`, `status`: 'active'. |
+| **3. Seguimiento Manual** | El vendedor nota el interés del cliente y registra un contacto. | **`activities`**: Se registra un `type`: 'email' de seguimiento manual, vinculado al `Deal`. |
+| **4. Deal Perdido (Lost)** | El contacto informa que la bodega ha decidido posponer indefinidamente la inversión en consultoría de seguridad. | **`deals`**: Se actualiza el `status` a 'lost'. **`notes`**: 'Perdido: Falta de presupuesto/prioridad, pospuesto indefinidamente.' |
+| **5. Cierre de Automatización** | Para evitar seguir enviando correos irrelevantes, se cancela la secuencia. | **`sequence_enrollments`**: Se actualiza `status`: 'cancelled'. |
+
+---
+
+## 2. Inconsistencias Potenciales en el Diseño del CRMCX
+
+Basado en el esquema de la base de datos Laravel proporcionado, y considerando las necesidades de trazabilidad en un entorno de consultoría regulado (HyS), se identifican las siguientes áreas de posible inconsistencia o falta de funcionalidad crucial:
+
+### A. Trazabilidad de Leads Convertidos
+*   **Problema:** Cuando un `lead` se convierte, el sistema crea nuevos registros en `clients`, `contacts` y `deals`.
+*   **Inconsistencia de Diseño:** La estructura de las tablas **`clients`**, **`contacts`**, y **`deals`** no incluye una *foreign key* (FK) para vincular directamente estos nuevos registros con el `lead` original que generó la conversión.
+*   **Impacto HyS/Ventas:** Si el Lead es la fuente principal de prospectos (como los listados de alto riesgo), perder la trazabilidad de qué Lead exacto generó el `Client` o el `Deal` dificulta el análisis del Retorno de la Inversión (ROI) o el rendimiento de las fuentes de prospección.
+
+### B. Falta de Módulo Formal de Cotizaciones/Propuestas
+*   **Problema:** Aunque la venta requiere la generación de Propuestas/Presupuestos (`Quotations`), la estructura del CRMCX carece de una tabla dedicada a gestionar estos documentos.
+*   **Inconsistencia/Falta de Funcionalidad:** El valor del `deal` (`value` en `deals`) es un campo numérico simple. No hay forma de rastrear:
+    1.  Múltiples versiones de propuestas enviadas durante la **Negociación** (`Negotiation`).
+    2.  El PDF de la propuesta técnica que detalla el Plan de Prevención de Riesgos.
+    3.  El estado legal/técnico de esa propuesta (crucial en HyS para el cumplimiento de aranceles y obligaciones).
+
+### C. Ausencia de Tablas para Proyectos Operativos y Seguimiento Técnico
+*   **Problema:** Usted mencionó que el trabajo técnico (capacitaciones, firmas digitales, controles) se gestiona en **otra plataforma**.
+*   **Inconsistencia de Diseño (Visibilidad):** Aunque el CRMCX tiene la tabla **`tasks`** que puede vincularse polimórficamente a un **`deal`** o **`client`**, el diseño carece de tablas necesarias para la visión post-venta de un servicio HyS:
+    1.  **Timesheets/Horas Hombre:** Faltan tablas para que los consultores técnicos registren las horas dedicadas (`Timesheets`). Esto es vital para calcular el **costo real** del servicio de HyS y garantizar que se cumpla la planificación.
+    2.  **Módulo de Contabilidad/Facturación por Hitos:** La estructura carece de módulos explícitos para facturación o suscripciones, lo cual es necesario para cobrar por los servicios, ya sea por hitos o recurrentes.
+
+---
+
+## 3. Esquema Sugerido de Comisión para Ventas HyS
+
+La compensación debe reflejar la naturaleza de la consultoría HyS: **adquisición inicial compleja** seguida de **servicios recurrentes a largo plazo** (manteniendo el cumplimiento normativo).
+
+Se sugiere un **Modelo de Comisión Híbrido** enfocado en el valor del contrato anual y la retención del cliente:
+
+### A. Componente de Adquisición (Upfront Commission)
+
+Se paga un alto porcentaje sobre el valor del contrato inicial cuando el `deal` es marcado como **`won`**.
+
+| Característica | Propuesta | Justificación |
+| :--- | :--- | :--- |
+| **Base de Cálculo** | **Valor del Contrato Anual (VCA)**. Basado en el `value` del `deal`. | Incentiva la venta de contratos de alto valor. |
+| **Porcentaje de Comisión** | **Alto** (Ej. 10% - 20% del VCA). | Compensa el esfuerzo de prospección y cierre, especialmente en industrias complejas como minería o frigoríficos. |
+| **Momento de Pago** | **30 días después del `Deal Won`** (o tras el primer pago del cliente). | Alinea la comisión con el ingreso real de la consultora. |
+
+### B. Componente Residual (Retention/Renewal Commission)
+
+Se paga un porcentaje menor anualmente sobre la renovación del contrato, siempre que el cliente se mantenga activo.
+
+| Característica | Propuesta | Justificación |
+| :--- | :--- | :--- |
+| **Base de Cálculo** | Valor Neto de la Renovación (VNR). | Incentiva la venta a clientes con bases sólidas que minimicen la rotación. |
+| **Porcentaje de Comisión** | **Bajo** (Ej. 2% - 5% del VNR). | Recompensa la lealtad y el valor a largo plazo del cliente, sin ser una carga financiera significativa. |
+| **Duración** | Limitada a los primeros 2 o 3 años de renovación (o mientras el vendedor siga empleando la consultora). | |
+
+### Consideraciones Clave para HyS
+
+1.  **Margen de Beneficio:** El valor del `deal` debe ser revisado para asegurar que la comisión se aplique solo sobre **el margen de beneficio (profit margin)** y no sobre el valor bruto total. Los servicios de HyS tienen altos costos operativos de personal especializado (Licenciados, técnicos, equipos de medición), por lo que el enfoque debe ser en la **rentabilidad**.
+2.  **Calidad del Cliente:** En HyS, un "buen cliente" es el que es **cooperativo** y sigue las indicaciones para reducir los riesgos. Se podría considerar un *bonus* si el cliente mantiene un bajo índice de siniestralidad o no recibe sanciones de la SRT durante el primer año.
+3.  **Registro de Matrícula y Legajos:** El equipo de ventas debe estar incentivado a captar clientes que cumplan con la obligación de matriculación profesional si aplica (Ley N° 1509-A). Esto se puede reflejar en la "Calificación" del lead.
