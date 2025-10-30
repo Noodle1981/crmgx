@@ -3,12 +3,24 @@ namespace App\Http\Controllers;
 
 use App\Models\Contact;
 use App\Models\Sequence;
+use App\Models\SequenceEnrollment;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 
 class EnrollmentController extends Controller
 {
+    public function index()
+    {
+        $enrollments = SequenceEnrollment::where('user_id', Auth::id())
+            ->where('status', 'active')
+            ->with(['enrollable', 'sequence', 'currentStep'])
+            ->latest('next_step_due_at')
+            ->get();
+
+        return view('enrollments.index', compact('enrollments'));
+    }
+
     public function create(Contact $contact)
     {
         // Seguridad: El cliente debe pertenecer al usuario.
@@ -55,5 +67,16 @@ public function store(Request $request, Contact $contact)
         ]);
 
         return redirect()->route('clients.show', $contact->client_id)->with('success', "¡{$contact->name} inscrito en la secuencia '{$sequence->name}'!");
+    }
+
+    public function destroy(SequenceEnrollment $enrollment)
+    {
+        if ($enrollment->user_id !== Auth::id()) {
+            abort(403, 'Acción no autorizada.');
+        }
+
+        $enrollment->delete();
+
+        return redirect()->route('enrollments.index')->with('success', 'Inscripción eliminada con éxito.');
     }
 }

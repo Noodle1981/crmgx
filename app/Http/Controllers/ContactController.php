@@ -54,6 +54,16 @@ class ContactController extends Controller
         return redirect()->route('clients.show', $client)->with('success', '¡Contacto añadido con éxito!');
     }
 
+    public function show(Contact $contact)
+    {
+        // Seguridad: Asegurarse de que el contacto pertenece al usuario autenticado.
+        if ($contact->client->user_id !== Auth::id()) {
+            abort(403, 'Acción no autorizada.');
+        }
+
+        return view('contacts.show', compact('contact'));
+    }
+
 
     public function setPhoneAttribute($value)
 {

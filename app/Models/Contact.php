@@ -5,7 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany; // <-- ¡EL 'USE' CORRECTO!
+use Illuminate\Database\Eloquent\Relations\MorphMany;
+use App\Models\Client;
+use App\Models\SequenceEnrollment;
+
+
 
 class Contact extends Model
 {
@@ -36,8 +40,8 @@ class Contact extends Model
     /**
      * Get the sequence enrollments for the contact.
      */
-    public function sequenceEnrollments(): HasMany // <-- ¡EL 'TYPE HINT' CORRECTO!
+    public function sequenceEnrollments(): MorphMany
     {
-        return $this->hasMany(SequenceEnrollment::class);
+        return $this->morphMany(SequenceEnrollment::class, 'enrollable');
     }
 }

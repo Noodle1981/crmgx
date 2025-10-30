@@ -9,6 +9,9 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 use App\Models\Activity;
 use App\Models\Task;
 use App\Models\DealStage;
+use App\Models\User;
+use App\Models\Client;
+use App\Models\SequenceEnrollment;
 
 class Deal extends Model
 {
@@ -63,5 +66,10 @@ class Deal extends Model
 {
     return $this->belongsTo(DealStage::class, 'deal_stage_id');
 }
+
+    public function sequenceEnrollments(): MorphMany
+    {
+        return $this->morphMany(SequenceEnrollment::class, 'enrollable');
+    }
 
 }

@@ -4,14 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class SequenceEnrollment extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'contact_id',
+        'enrollable_id',
+        'enrollable_type',
         'sequence_id',
         'user_id',
         'current_step_id',
@@ -20,26 +20,34 @@ class SequenceEnrollment extends Model
         'notes',
     ];
 
-    protected $casts = [
-        'next_step_due_at' => 'datetime',
-    ];
-    
-    public function contact(): BelongsTo
+    /**
+     * Get the parent enrollable model (contact, deal, etc.).
+     */
+    public function enrollable()
     {
-        return $this->belongsTo(Contact::class);
+        return $this->morphTo();
     }
 
-    public function sequence(): BelongsTo
+    /**
+     * Get the sequence template for this enrollment.
+     */
+    public function sequence()
     {
         return $this->belongsTo(Sequence::class);
     }
 
-    public function user(): BelongsTo
+    /**
+     * Get the user who enrolled this.
+     */
+    public function user()
     {
         return $this->belongsTo(User::class);
     }
-
-    public function currentStep(): BelongsTo
+    
+    /**
+     * Get the current step for this enrollment.
+     */
+    public function currentStep()
     {
         return $this->belongsTo(SequenceStep::class, 'current_step_id');
     }

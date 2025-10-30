@@ -1,14 +1,4 @@
-{{-- resources/views/components/primary-button.blade.php --}}
-<button {{ $attributes->merge([
-    'type' => 'submit',
-    'class' => 'inline-flex items-center justify-center px-6 py-3
-                border border-transparent rounded-full
-                font-bold text-sm text-dark-void uppercase tracking-widest
-                bg-gradient-to-r from-aurora-blue to-aurora-cyan
-                transition-all duration-300 ease-in-out
-                transform hover:scale-105 hover:shadow-lg hover:shadow-aurora-cyan/40
-                focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-aurora-cyan focus:ring-offset-dark-void
-                active:scale-100'
-]) }}>
+<button {{ $attributes->merge(['type' => 'submit', 'class' => 'inline-flex items-center px-4 py-2 bg-white border border-transparent rounded-md font-semibold text-xs text-orange-xamanen uppercase tracking-widest hover:bg-gray-100 focus:bg-gray-100 active:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-orange-xamanen focus:ring-offset-2 transition ease-in-out duration-150']) }}>
+    {{-- ^^^ Clases ajustadas: Fondo blanco, texto naranja, hover/focus en tonos grises para contraste --}}
     {{ $slot }}
 </button>

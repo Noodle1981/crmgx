@@ -64,6 +64,7 @@ Route::middleware('auth')->group(function () {
     Route::patch('/leads/{lead}/update-status', [LeadController::class, 'updateStatus'])->name('leads.updateStatus');
 
     Route::resource('clients.contacts', ContactController::class)->scoped()->except(['index', 'show']);
+    Route::get('/contacts/{contact}', [ContactController::class, 'show'])->name('contacts.show');
     Route::get('/clients/{client}/deals/create', [DealController::class, 'create'])->name('clients.deals.create');
     Route::post('/clients/{client}/deals', [DealController::class, 'store'])->name('clients.deals.store');
     Route::post('/clients/{client}/activities', [ActivityController::class, 'storeForClient'])->name('clients.activities.store');
@@ -74,6 +75,8 @@ Route::middleware('auth')->group(function () {
     Route::resource('sequences.steps', SequenceStepController::class)->scoped();
 
     // --- BLOQUE PARA LA INSCRIPCIÓN! ---
+    Route::get('/enrollments', [EnrollmentController::class, 'index'])->name('enrollments.index');
+    Route::delete('/enrollments/{enrollment}', [EnrollmentController::class, 'destroy'])->name('enrollments.destroy');
     Route::get('/contacts/{contact}/enroll', [EnrollmentController::class, 'create'])->name('contacts.enroll.create');
     Route::post('/contacts/{contact}/enroll', [EnrollmentController::class, 'store'])->name('contacts.enroll.store');
 

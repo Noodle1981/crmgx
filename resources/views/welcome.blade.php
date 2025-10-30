@@ -14,42 +14,51 @@
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="font-sans antialiased text-light-text">
-    <div class="min-h-screen w-full bg-gradient-to-br from-aurora-purple via-aurora-blue to-aurora-cyan animate-gradient-xy bg-[size:400%_400%] relative">
+<body class="font-sans antialiased text-white"> {{-- Texto principal blanco --}}
+    {{-- Fondo naranja sólido --}}
+    <div class="min-h-screen w-full bg-orange-xamanen relative overflow-hidden">
         <div id="particles-js" class="absolute inset-0"></div>
         <div class="relative z-10 flex flex-col min-h-screen">
             <header class="w-full">
                 <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
-                    <a href="/" class="font-headings text-2xl font-bold bg-gradient-to-r from-aurora-cyan to-light-text bg-clip-text text-transparent">Grupo Xamanen</a>
+                    {{-- Logo EP.png y texto Grupo Xamanen --}}
+                    <a href="/" class="flex items-center space-x-2"> {{-- <-- Añade esto aquí --}}
+    <div class="bg-white p-1 rounded-md shadow">
+        <img src="{{ asset('img/EP.png') }}" alt="EP Consultora Logo" class="block h-9 w-auto">
+    </div>
+    <span class="font-headings text-2xl font-bold text-white"> & Grupo Xamanen</span>
+</a>
                     
                     {{-- BOTONES SIEMPRE VISIBLES PARA VISITANTES --}}
                     <div class="flex items-center space-x-4">
-                        <a href="{{ route('login') }}" class="font-semibold text-light-text-muted hover:text-light-text transition">Log in</a>
-                        @if (Route::has('register'))
-                            <a href="{{ route('register') }}"><x-primary-button>Regístrate</x-primary-button></a>
-                        @endif
+                        <a href="{{ route('login') }}"><x-primary-button class="bg-white text-orange-xamanen hover:bg-gray-100">Login</x-primary-button></a>
                     </div>
                 </nav>
             </header>
-            <main class="flex-grow flex items-center justify-center text-center px-4">
-                <div class="max-w-4xl">
-                    <h1 class="font-headings text-4xl md:text-6xl lg:text-7xl font-extrabold text-light-text mb-4">
-                        Gestiona tu Futuro. <br/>
-                        <span class="bg-gradient-to-r from-aurora-cyan to-aurora-blue bg-clip-text text-transparent">Cierra más Deals.</span>
+            <main class="flex-grow flex items-center justify-center text-center px-4 relative">
+                {{-- Imagen vertical decorativa (posicionada absolutamente) --}}
+                <img src="{{ asset('img/logotipos.png') }}" alt="Figuras de higiene y seguridad"
+                     class="absolute right-0 top-1/2 -translate-y-1/2 h-[80vh] object-contain opacity-20 hidden md:block z-0">
+                
+                <div class="max-w-4xl relative z-10"> {{-- z-10 para asegurar que el texto esté sobre la imagen --}}
+                    <h1 class="font-headings text-4xL md:text-6xl lg:text-7xl font-extrabold text-white mb-4">
+                        CRM. <br/>
+                        <span class="text-white">HSE 4.0 & Deals.</span> {{-- Sin gradiente para el span --}}
                     </h1>
-                    <p class="max-w-2xl mx-auto text-lg md:text-xl text-light-text-muted mb-8">Nuestra plataforma CRM combina un diseño futurista con herramientas potentes para llevar tus ventas al siguiente nivel.</p>
-                    <a href="{{ route('register') }}">
-                        <button class="px-10 py-4 font-bold text-dark-void rounded-full bg-gradient-to-r from-aurora-blue to-aurora-cyan transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-aurora-cyan/40">Comienza Ahora</button>
+                    <p class="max-w-2xl mx-auto text-lg md:text-xl text-white text-opacity-80 mb-8">Version 1.0.0</p>
+                    <a href="{{ route('login') }}">
+                        {{-- Estilo del botón "Comienza Ahora" --}}
+                        <button class="px-10 py-4 font-bold text-orange-xamanen rounded-full bg-white transition-all duration-300 hover.:scale-105 hover:shadow-2xl hover:shadow-white/40">Iniciar</button>
                     </a>
                 </div>
             </main>
-            <footer class="w-full py-6 text-center text-sm text-light-text-muted">
-                <p>&copy; {{ date('Y') }} Grupo Xamanen. Todos los derechos reservados.</p>
+            <footer class="w-full py-6 text-center text-sm text-white text-opacity-60">
+                <p>&copy; {{ date('Y') }}Plataforma Creada por Grupo Xamanen. Todos los derechos reservados.</p>
             </footer>
         </div>
     </div>
 
-    {{-- SCRIPT PARA LAS PARTÍCULAS --}}
+    {{-- SCRIPT PARA LAS PARTÍCULAS (no necesita cambios, el blanco se verá bien en naranja) --}}
     <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
