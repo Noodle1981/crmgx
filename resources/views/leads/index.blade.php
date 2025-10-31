@@ -46,10 +46,10 @@
                                     <td class="p-4">
                                         <span @class([
                                             'px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full',
-                                            'bg-blue-500/10 text-blue-300' => $lead->status == 'nuevo',
-                                            'bg-yellow-500/10 text-yellow-300' => $lead->status == 'contactado',
-                                            'bg-green-500/10 text-green-300' => $lead->status == 'calificado',
-                                            'bg-red-500/10 text-red-300' => $lead->status == 'perdido',
+                                            'bg-blue-500 text-back-900' => $lead->status == 'nuevo',
+                                            'bg-yellow-500 text-back-900' => $lead->status == 'contactado',
+                                            'bg-green-500 text-back-900' => $lead->status == 'calificado',
+                                            'bg-red-500 text-back-900' => $lead->status == 'perdido',
                                         ])>
                                             {{ ucfirst($lead->status) }}
                                         </span>

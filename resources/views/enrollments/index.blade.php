@@ -41,7 +41,7 @@
                                             {{ $enrollment->sequence->name ?? 'N/A' }}
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                            {{ $enrollment->currentStep->name ?? 'N/A' }}
+                                            {{ $enrollment->currentStep->subject ?? 'N/A' }}
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                             {{ $enrollment->next_step_due_at ? \Carbon\Carbon::parse($enrollment->next_step_due_at)->format('d/m/Y') : 'N/A' }}
