@@ -29,10 +29,14 @@ class ClientController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
+            'cuit' => 'required|string|max:255',
             'company' => 'nullable|string|max:255',
             'email' => 'nullable|email|max:255|unique:clients,email',
-             'phone' => ['nullable', 'string', 'max:255', new ValidPhoneNumber], // <-- ¡REGLA MEJORADA!
+            'phone' => ['nullable', 'string', 'max:255', new ValidPhoneNumber],
             'notes' => 'nullable|string',
+            'fiscal_address_street' => 'nullable|string|max:255',
+            'economic_activity' => 'nullable|string|max:255',
+            'art_provider' => 'nullable|string|max:255',
         ]);
         Auth::user()->clients()->create($validated);
         return redirect()->route('clients.index')->with('success', '¡Cliente creado con éxito!');
@@ -74,7 +78,10 @@ public function show(Client $client)
         'deals.activities.user', 
         
         // Carga las actividades directas del cliente, y por cada actividad, su usuario
-        'activities.user'
+        'activities.user',
+
+        // Carga los establecimientos
+        'establishments'
     ]);
 
     // --- El resto de la lógica para consolidar el historial se queda exactamente igual ---
@@ -106,6 +113,9 @@ public function show(Client $client)
             'email' => ['nullable', 'email', 'max:255', Rule::unique('clients')->ignore($client->id)],
             'phone' => 'nullable|string|max:255',
             'notes' => 'nullable|string',
+            'fiscal_address_street' => 'nullable|string|max:255',
+            'economic_activity' => 'nullable|string|max:255',
+            'art_provider' => 'nullable|string|max:255',
         ]);
         $client->update($validated);
         return redirect()->route('clients.index')->with('success', '¡Cliente actualizado con éxito!');

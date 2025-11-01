@@ -21,16 +21,32 @@
 
             <!-- Columna Izquierda: Detalles y Contactos -->
             <div class="lg:col-span-1 space-y-8">
-                <!-- Tarjeta de Detalles del Cliente -->
+                <!-- Tarjeta de Información Fiscal -->
+                <x-card>
+                    <x-slot name="header">
+                        <div class="flex items-center space-x-3">
+                            <i class="fas fa-building text-xl text-aurora-cyan"></i>
+                            <h3 class="font-headings text-xl text-light-text">Información Fiscal</h3>
+                        </div>
+                    </x-slot>
+                    <div class="space-y-3 text-light-text-muted">
+                        <p><strong>Razón Social:</strong> <span class="text-light-text">{{ $client->company ?? 'N/A' }}</span></p>
+                        <p><strong>CUIT:</strong> <span class="text-light-text">{{ $client->cuit ?? 'N/A' }}</span></p>
+                        <p><strong>Dirección Fiscal:</strong> <span class="text-light-text">{{ $client->fiscal_address_street ?? 'N/A' }}</span></p>
+                        <p><strong>Actividad Económica:</strong> <span class="text-light-text">{{ $client->economic_activity ?? 'N/A' }}</span></p>
+                        <p><strong>ART:</strong> <span class="text-light-text">{{ $client->art_provider ?? 'N/A' }}</span></p>
+                    </div>
+                </x-card>
+
+                <!-- Tarjeta de Información de Contacto -->
                 <x-card>
                     <x-slot name="header">
                         <div class="flex items-center space-x-3">
                             <i class="fas fa-info-circle text-xl text-aurora-cyan"></i>
-                            <h3 class="font-headings text-xl text-light-text">Información</h3>
+                            <h3 class="font-headings text-xl text-light-text">Información de Contacto</h3>
                         </div>
                     </x-slot>
                     <div class="space-y-3 text-light-text-muted">
-                        <p><strong>Compañía:</strong> <span class="text-light-text">{{ $client->company ?? 'N/A' }}</span></p>
                         <p><strong>Email:</strong> <span class="text-light-text">{{ $client->email ?? 'N/A' }}</span></p>
                         <div class="flex justify-between items-center">
                             <p><strong>Teléfono:</strong> <span class="text-light-text">{{ $client->phone ?? 'N/A' }}</span></p>
@@ -70,6 +86,9 @@
                     <div>
                         <p class="font-semibold text-light-text">{{ $contact->name }}</p>
                         <p class="text-sm text-light-text-muted">{{ $contact->position }}</p>
+                        @if($contact->establishment)
+                            <p class="text-sm text-aurora-cyan">{{ $contact->establishment->name }}</p>
+                        @endif
                         <p class="text-sm text-light-text-muted">{{ $contact->email }}</p>
                         
                         {{-- Icono de WhatsApp con comprobación de existencia --}}
@@ -119,6 +138,45 @@
 
             <!-- Columna Derecha: Deals y Actividades -->
             <div class="lg:col-span-2 space-y-8">
+                <!-- Tarjeta de Establecimientos -->
+                <x-card>
+                    <x-slot name="header">
+                        <div class="flex justify-between items-center">
+                            <div class="flex items-center space-x-3">
+                                <i class="fas fa-store-alt text-xl text-aurora-cyan"></i>
+                                <h3 class="font-headings text-xl text-light-text">Establecimientos</h3>
+                            </div>
+                            <a href="{{ route('clients.establishments.create', $client) }}"><x-secondary-button type="button" class="!px-3 !py-1 text-xs">+ Añadir</x-secondary-button></a>
+                        </div>
+                    </x-slot>
+                    <div class="space-y-4 divide-y divide-white/10">
+                        @forelse($client->establishments as $establishment)
+                            <div class="pt-4 first:pt-0">
+                                <div class="flex justify-between items-start">
+                                    <div>
+                                        <p class="font-semibold text-light-text">{{ $establishment->name }}</p>
+                                        <p class="text-sm text-light-text-muted">{{ $establishment->address_street }}</p>
+                                    </div>
+                                    <div class="flex items-center space-x-4 flex-shrink-0 ml-2">
+                                        <a href="{{ route('clients.establishments.edit', [$client, $establishment]) }}" class="text-light-text-muted hover:text-aurora-cyan transition" title="Editar Establecimiento">
+                                            <i class="fas fa-pen"></i>
+                                        </a>
+                                        <form action="{{ route('clients.establishments.destroy', [$client, $establishment]) }}" method="POST" class="inline" onsubmit="return confirm('¿Seguro?');">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="text-light-text-muted hover:text-aurora-red-pop transition" title="Eliminar Establecimiento">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        @empty
+                            <p class="text-center text-light-text-muted py-8">No hay establecimientos para este cliente.</p>
+                        @endforelse
+                    </div>
+                </x-card>
+
                 <!-- Tarjeta de Deals -->
                 <x-card>
                     <x-slot name="header">

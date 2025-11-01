@@ -26,12 +26,25 @@ class Client extends Model
      */
     protected $fillable = [
         'name',
+        'company',
+        'cuit',
+        'website',
         'email',
         'phone',
-        'company',
+        'fiscal_address_street',
+        'fiscal_address_zip_code',
+        'fiscal_address_city',
+        'fiscal_address_state',
+        'fiscal_address_country',
+        'economic_activity',
+        'art_provider',
+        'art_registration_date',
+        'hs_manager_name',
+        'hs_manager_contact',
         'notes',
         'active',
         'user_id',
+        'hs_platform_empresa_id', // <-- Importante para la integración
     ];
 
     /**
@@ -70,6 +83,11 @@ class Client extends Model
     public function contacts(): HasMany
     {
         return $this->hasMany(Contact::class);
+    }
+
+    public function establishments(): HasMany
+    {
+        return $this->hasMany(Establishment::class);
     }
 
     public function deals(): HasMany

@@ -7,16 +7,16 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\LeadConversionController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\ActivityController; 
+use App\Http\Controllers\ActivityController;
 use App\Http\Controllers\SequenceController;
 use App\Http\Controllers\SequenceStepController;
 use App\Http\Controllers\EnrollmentController;
 use App\Http\Controllers\SalesReportController;
-use App\Models\Step;
-use App\Http\Controllers\Api\ChartController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\CalendarController;
 use App\Http\Controllers\TaskController;
+use App\Http\Controllers\EstablishmentController;
+use App\Http\Controllers\UserController;
 
 use Illuminate\Support\Facades\Route;
 
@@ -44,24 +44,22 @@ Route::middleware('auth')->group(function () {
 
     // Rutas para Tareas (CRUD completo)
     Route::resource('tasks', TaskController::class);
-});
 
-
-
-    // Rutas para Clientes
+    // Rutas para Clientes y sus establecimientos
     Route::resource('clients', ClientController::class);
+    Route::resource('clients.establishments', EstablishmentController::class)->scoped();
 
     // Rutas para Leads
     Route::resource('leads', LeadController::class);
+    Route::post('/leads/{lead}/convert', [LeadConversionController::class, 'convert'])->name('leads.convert');
+    Route::patch('/leads/{lead}/update-status', [LeadController::class, 'updateStatus'])->name('leads.updateStatus');
+
 
     // Rutas para Deals (Pipeline y CRUD)
-        Route::resource('deals', DealController::class); // Usamos resource para todo el CRUD
+    Route::resource('deals', DealController::class); // Usamos resource para todo el CRUD
     Route::patch('/deals/{deal}/update-stage', [DealController::class, 'updateStage'])->name('deals.updateStage'); // Mantenemos esta para las flechas
     Route::patch('/deals/{deal}/win', [DealController::class, 'markAsWon'])->name('deals.win');
     Route::patch('/deals/{deal}/lose', [DealController::class, 'markAsLost'])->name('deals.lost');
-   
-    Route::post('/leads/{lead}/convert', [LeadConversionController::class, 'convert'])->name('leads.convert');
-    Route::patch('/leads/{lead}/update-status', [LeadController::class, 'updateStatus'])->name('leads.updateStatus');
 
     Route::resource('clients.contacts', ContactController::class)->scoped()->except(['index', 'show']);
     Route::get('/contacts/{contact}', [ContactController::class, 'show'])->name('contacts.show');
@@ -83,7 +81,13 @@ Route::middleware('auth')->group(function () {
     Route::get('/reports/sales', [SalesReportController::class, 'index'])->name('reports.sales');
 
     Route::get('/charts/pipeline', [DashboardController::class, 'getPipelineData'])->name('charts.pipeline');
-  
+    Route::get('/dashboard/user', [UserController::class, 'showCurrentUser'])->middleware(['auth'])->name('dashboard.user');
+
+});
+
+
+Route::middleware(['auth', 'admin'])->group(function () {
+    Route::resource('users', UserController::class);
+});
+
 require __DIR__.'/auth.php';
-
-

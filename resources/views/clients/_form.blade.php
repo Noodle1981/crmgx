@@ -2,16 +2,44 @@
 <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6">
     <!-- Nombre -->
     <div class="mb-6">
-        <x-input-label for="name" value="Nombre" />
+        <x-input-label for="name" value="Nombre de Fantasía" />
         <x-text-input id="name" name="name" type="text" class="mt-1 block w-full" :value="old('name', $client->name ?? '')" required autofocus />
         <x-input-error :messages="$errors->get('name')" class="mt-2" />
     </div>
 
-    <!-- Compañía -->
+    <!-- Razón Social -->
     <div class="mb-6">
-        <x-input-label for="company" value="Compañía" />
+        <x-input-label for="company" value="Razón Social" />
         <x-text-input id="company" name="company" type="text" class="mt-1 block w-full" :value="old('company', $client->company ?? '')" />
         <x-input-error :messages="$errors->get('company')" class="mt-2" />
+    </div>
+
+    <!-- CUIT -->
+    <div class="mb-6">
+        <x-input-label for="cuit" value="CUIT" />
+        <x-text-input id="cuit" name="cuit" type="text" class="mt-1 block w-full" :value="old('cuit', $client->cuit ?? '')" required />
+        <x-input-error :messages="$errors->get('cuit')" class="mt-2" />
+    </div>
+
+    <!-- Dirección Fiscal -->
+    <div class="mb-6">
+        <x-input-label for="fiscal_address_street" value="Dirección Fiscal" />
+        <x-text-input id="fiscal_address_street" name="fiscal_address_street" type="text" class="mt-1 block w-full" :value="old('fiscal_address_street', $client->fiscal_address_street ?? '')" />
+        <x-input-error :messages="$errors->get('fiscal_address_street')" class="mt-2" />
+    </div>
+
+    <!-- Actividad Económica -->
+    <div class="mb-6">
+        <x-input-label for="economic_activity" value="Actividad Económica" />
+        <x-text-input id="economic_activity" name="economic_activity" type="text" class="mt-1 block w-full" :value="old('economic_activity', $client->economic_activity ?? '')" />
+        <x-input-error :messages="$errors->get('economic_activity')" class="mt-2" />
+    </div>
+
+    <!-- ART -->
+    <div class="mb-6">
+        <x-input-label for="art_provider" value="ART" />
+        <x-text-input id="art_provider" name="art_provider" type="text" class="mt-1 block w-full" :value="old('art_provider', $client->art_provider ?? '')" />
+        <x-input-error :messages="$errors->get('art_provider')" class="mt-2" />
     </div>
 
     <!-- Email -->

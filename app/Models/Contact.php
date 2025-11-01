@@ -17,6 +17,7 @@ class Contact extends Model
 
     protected $fillable = [
         'client_id',
+        'establishment_id', // <-- El nuevo campo
         'name',
         'email',
         'phone',
@@ -43,5 +44,10 @@ class Contact extends Model
     public function sequenceEnrollments(): MorphMany
     {
         return $this->morphMany(SequenceEnrollment::class, 'enrollable');
+    }
+
+    public function establishment(): BelongsTo
+    {
+        return $this->belongsTo(Establishment::class);
     }
 }

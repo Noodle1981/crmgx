@@ -31,16 +31,21 @@
         </x-card>
 
         <!-- KPIs Principales -->
-        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 mb-8">
-            <div class="col-span-2 md:col-span-3 lg:col-span-1 bg-gradient-to-br from-green-400 to-aurora-cyan p-6 rounded-2xl shadow-xl flex flex-col justify-center text-center">
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-6 mb-8">
+            <div class="bg-gradient-to-br from-green-400 to-aurora-cyan p-6 rounded-2xl shadow-xl flex flex-col justify-center text-center">
                 <h3 class="font-headings text-lg text-dark-void/80">Total Ganado</h3>
                 <p class="text-5xl font-bold text-dark-void mt-1">${{ number_format($totalWonValue, 0) }}</p>
             </div>
+
+            <div class="bg-gradient-to-br from-purple-400 to-pink-500 p-6 rounded-2xl shadow-xl flex flex-col justify-center text-center">
+                <h3 class="font-headings text-lg text-dark-void/80">Comisión Ganada</h3>
+                <p class="text-5xl font-bold text-dark-void mt-1">${{ number_format($commissionAmount, 0) }}</p>
+            </div>
             
-            <x-kpi-card title="Deals Ganados" value="{{ $wonCount }}" icon="fas fa-trophy" class="lg:col-span-1" />
-            <x-kpi-card title="Deals Perdidos" value="{{ $lostCount }}" icon="fas fa-times-circle" class="lg:col-span-1" />
-            <x-kpi-card title="Ticket Promedio" value="${{ number_format($averageDealSize, 0) }}" icon="fas fa-dollar-sign" class="lg:col-span-1" />
-            <x-kpi-card title="Tasa de Conversión" value="{{ number_format($conversionRate, 1) }}%" icon="fas fa-chart-line" class="lg:col-span-1" />
+            <x-kpi-card title="Deals Ganados" value="{{ $wonCount }}" icon="fas fa-trophy" />
+            <x-kpi-card title="Deals Perdidos" value="{{ $lostCount }}" icon="fas fa-times-circle" />
+            <x-kpi-card title="Ticket Promedio" value="${{ number_format($averageDealSize, 0) }}" icon="fas fa-dollar-sign" />
+            <x-kpi-card title="Tasa de Conversión" value="{{ number_format($conversionRate, 1) }}%" icon="fas fa-chart-line" />
         </div>
 
         <!-- Listas de Deals Cerrados -->

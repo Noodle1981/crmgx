@@ -4,18 +4,16 @@
         <div class="flex justify-between h-16">
             <div class="flex">
                 <!-- Logo -->
-                <!-- Logo con Fondo Blanco -->
-<div class="shrink-0 flex items-center">
-    <a href="{{ route('dashboard') }}">
-        {{-- El contenedor que crea la caja blanca --}}
-        <div class="bg-white p-1 rounded-md shadow">
-            <img src="{{ asset('img/EP.png') }}" alt="EP Consultora Logo" class="block h-9 w-auto">
-        </div>
-    </a>
-</div>
+                <div class="shrink-0 flex items-center">
+                    <a href="{{ route('dashboard') }}">
+                        <div class="bg-white p-1 rounded-md shadow">
+                            <img src="{{ asset('img/EP.png') }}" alt="EP Consultora Logo" class="block h-9 w-auto">
+                        </div>
+                    </a>
+                </div>
 
                 <!-- Navigation Links -->
-                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                <div class="hidden space-x-9 sm:-my-px sm:ms-10 sm:flex">
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">Dashboard</x-nav-link>
                     <x-nav-link :href="route('clients.index')" :active="request()->routeIs('clients.*')">Clientes</x-nav-link>
                     <x-nav-link :href="route('deals.index')" :active="request()->routeIs('deals.*')">Pipeline</x-nav-link>
@@ -25,6 +23,7 @@
                     <x-nav-link :href="route('reports.sales')" :active="request()->routeIs('reports.sales')">Reportes</x-nav-link>
                     <x-nav-link :href="route('calendar.index')" :active="request()->routeIs('calendar.*')">Calendario</x-nav-link>
                     <x-nav-link :href="route('tasks.index')" :active="request()->routeIs('tasks.*')">Tareas</x-nav-link>
+                    <x-nav-link :href="route('users.index')" :active="request()->routeIs('users.*')">Users</x-nav-link>
                 </div>
             </div>
 
@@ -69,8 +68,8 @@
             <x-responsive-nav-link :href="route('enrollments.index')" :active="request()->routeIs('enrollments.*')">Inscripciones</x-responsive-nav-link>
             <x-responsive-nav-link :href="route('reports.sales')" :active="request()->routeIs('reports.sales')">Reportes</x-responsive-nav-link>
             <x-responsive-nav-link :href="route('calendar.index')" :active="request()->routeIs('calendar.*')">Calendario</x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('tasks.index')" :active="request()->routeIs('tasks.*')">Tareas</x-responsive-nav-link>
-        </div>
+                        <x-responsive-nav-link :href="route('tasks.index')" :active="request()->routeIs('tasks.*')">Tareas</x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('users.index')" :active="request()->routeIs('users.*')">Users</x-responsive-nav-link>        </div>
         <!-- Responsive Settings Options -->
         <div class="pt-4 pb-1 border-t border-primary-dark">
             <div class="px-4">
