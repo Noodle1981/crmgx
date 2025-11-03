@@ -61,3 +61,17 @@ Podríamos tener un "Listener" (un oyente) para ese evento que se encargue de la
 Llamaría a la API de la "plataforma técnica" para crear un nuevo proyecto.
 Crearía un registro en una nueva tabla contracts en nuestro propio CRM.
 Enviaría una notificación por email al equipo técnico.
+
+
+
+
+ Te permitirá registrar al "asesor" como contacto principal y luego añadir al "técnico" como un contacto adicional en el mismo "Deal", manteniendo todo organizado.
+
+Empecemos con la implementación. El primer paso es modificar la estructura de la base de datos. Para ello, haré dos cosas:
+
+Crear una tabla intermedia (pivote): Se llamará contact_deal y su única función será vincular los "Deals" con sus múltiples "Contactos".
+Renombrar la columna existente: Para mayor claridad, cambiaré el nombre de la columna contact_id en tu tabla deals a primary_contact_id.
+
+Renombrar la columna existente: Para mayor claridad, cambiaré el nombre de la columna contact_id en tu tabla deals a primary_contact_id.
+
+Modelos actualizados. Ahora, a los controladores y vistas. En DealController, adaptaré create, store, edit y update para manejar primary_contact_id y la relación contacts. En la vista _form.blade.php, renombraré el desplegable de contacto a "Contacto Principal" y agregaré un multiselector para "Contactos Adicionales". Empiezo por releer DealController.

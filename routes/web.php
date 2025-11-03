@@ -47,6 +47,7 @@ Route::middleware('auth')->group(function () {
 
     // Rutas para Clientes y sus establecimientos
     Route::resource('clients', ClientController::class);
+    Route::get('/clients/{client}/data', [ClientController::class, 'data'])->name('clients.data');
     Route::resource('clients.establishments', EstablishmentController::class)->scoped();
 
     // Rutas para Leads
@@ -89,5 +90,6 @@ Route::middleware('auth')->group(function () {
 Route::middleware(['auth', 'admin'])->group(function () {
     Route::resource('users', UserController::class);
 });
+
 
 require __DIR__.'/auth.php';

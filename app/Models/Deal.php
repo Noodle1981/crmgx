@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use App\Models\Activity;
 use App\Models\Task;
@@ -24,8 +25,12 @@ class Deal extends Model
         'user_id',
         'deal_stage_id',
         'expected_close_date',
-        'notes',
+        'notes_contact',
+        'notes_proposal',
+        'notes_negotiation',
         'status',
+        'establishment_id',
+        'primary_contact_id',
     ];
     
     protected $casts = [
@@ -48,6 +53,21 @@ class Deal extends Model
     public function dealStage(): BelongsTo
     {
         return $this->belongsTo(DealStage::class);
+    }
+
+    public function establishment(): BelongsTo
+    {
+        return $this->belongsTo(Establishment::class);
+    }
+
+    public function primaryContact(): BelongsTo
+    {
+        return $this->belongsTo(Contact::class, 'primary_contact_id');
+    }
+
+    public function contacts(): BelongsToMany
+    {
+        return $this->belongsToMany(Contact::class, 'contact_deal');
     }
 
     // Relación polimórfica para tareas

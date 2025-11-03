@@ -115,3 +115,124 @@ La sección "Establecimientos" iterará sobre $client->establishments y mostrar�
 Al mostrar un contacto (contacts.show), se debe verificar si $contact->establishment existe para mostrar a qué sede pertenece.
 
 
+
+Bodega Merced Del estero
+
+Bodega Merced Del estero
+
+$10,000
+Contacto Inicial
+
+Nota o Descripción Contacto Inicial
+
+Detalle del de Nota o Descripción Contacto Inicial, tenia un recuadro grande
+
+Notes
+3
+Calls
+1
+Meetings
+1
+Propuesta Enviada
+
+Nota o Descripción Propuesta Enviada
+
+Detalle del de Nota o Descripción Propuesta Enviada tenia un recuadro grande
+
+
+Notes
+1
+Emails
+1
+Negociación
+
+Nota o Descripción Negociación
+
+Detalle del de Nota o Descripción Negociacióntenia un recuadro grande
+
+
+Notes
+1
+Emails
+1
+Fecha Inicio:
+03 Nov, 2025
+Fecha Cierre:
+30 Nov, 2025
+
+
+
+¡Absolutamente! Ahora te entiendo perfectamente. Mil disculpas por la confusión. La distinción entre "Notas" (como un resumen o descripción de la etapa) y "Notes" (como un tipo de actividad contable) es la clave.
+
+Mi implementación anterior eliminó por completo el campo de descripción de la etapa, lo cual no era tu intención.
+
+Vamos a corregirlo y dejarlo exactamente como lo necesitas.
+
+Este es el plan:
+
+Reintroducir la "Descripción de la Etapa":
+
+Voy a crear una nueva migración para añadir una columna description (o descripcion) de tipo TEXT a la tabla deal_stages. Esto nos permitirá tener un campo de texto largo para cada etapa del pipeline ("Contacto Inicial", "Negociación", etc.).
+En este campo guardaremos esa "Nota o Descripción" general de la etapa que mencionas.
+Actualizar las Vistas:
+
+Modificaré la vista deals/show.blade.php para que muestre este nuevo campo description de la etapa actual del deal. Así tendrás ese recuadro grande con el resumen del proceso.
+Cuando el deal avance a la siguiente etapa, la vista mostrará automáticamente la descripción correspondiente a la nueva etapa.
+Mantener las Actividades por Etapa:
+
+La lógica que ya implementamos para que las actividades (Notes, Calls, Meetings, Emails) se asocien a una etapa específica (deal_stage_id) se mantiene. Eso ya funciona y es correcto.
+El resultado final será:
+
+Tendrás un campo de texto grande y descriptivo para cada etapa del deal, que no será editable una vez que el deal avanza.
+Seguirás teniendo el conteo de actividades (Notes, Calls, etc.) agrupado por la etapa en la que ocurrieron.
+Si estás de acuerdo con este plan, procedo a crear la nueva migración para añadir el campo de descripción a las etapas del deal.
+
+
+
+
+
+Si estás de acuerdo con este plan, procedo a crear la nueva migración para añadir el campo de descripción a las etapas del deal.
+
+
+
+bien ahora se ve asi Negociación
+Bodega Merced Del estero
+
+Bodega Merced Del estero
+
+Notas: Contacto Inicial
+
+Este es el contenido de de Notas de Contacto Inicial
+
+Notas: Propuesta Enviada
+
+Este es el contenido de de Notas de Propuesta Enviada
+
+Notas: Negociación
+
+Este es el contenido de de Notas de Negociación Enviada
+
+Fecha Inicio:
+03 Nov, 2025
+Fecha Cierre:
+30 Nov, 2025 , cumple con lo que le pedí, gracias pero estaria faltando las actividades perteneciente a cada etapa, y que se muestre en la tarjeta como un recuadro con Historial de Actividades, las actividades siguientes Call, Note, Meeting, Reunion
+
+
+¡Excelente! Me alegra que la parte de las descripciones esté funcionando como esperabas.
+
+Tienes toda la razón, falta mostrar el historial de actividades (llamadas, notas de actividad, etc.) agrupadas por etapa en la tarjeta del deal. La lógica para asociar cada actividad a su etapa ya está en la base de datos, solo necesitamos mostrarla correctamente.
+
+Aquí está el plan para añadirlo:
+
+Actualizar el Controlador:
+
+En DealController, dentro del método show, voy a volver a cargar las actividades y a agruparlas por deal_stage_id. Esto es necesario para poder iterar sobre ellas en la vista de forma ordenada.
+Actualizar la Vista (deals/show.blade.php):
+
+Justo después de mostrar las descripciones de las etapas, añadiré una nueva sección llamada "Historial de Actividades".
+Dentro de esta sección, crearé un bucle que recorra cada etapa que tenga actividades.
+Para cada etapa, mostraré el nombre de la etapa (ej. "Contacto Inicial") y luego listaré todas las actividades (llamadas, reuniones, etc.) que se registraron en esa etapa, con su fecha y descripción.
+El resultado será que en la vista de detalle de un deal, verás primero el historial de descripciones de cada etapa y, justo debajo, el historial de todas las demás actividades, perfectamente agrupado por la etapa en la que sucedieron.
+
+Si estás de acuerdo, procedo a implementar estos cambios en el controlador y la vista.
+

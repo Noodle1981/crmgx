@@ -54,42 +54,58 @@
     @endif
 @endif
                                                 
-                                                @if ($deal->notes)
-                <div class="mt-3 pt-2 border-t border-white/10 text-xs text-white/80">
-                    <p class="font-bold mb-1">Notas:</p>
-                    <p class="whitespace-pre-wrap">{{ $deal->notes }}</p>
-                </div>
-                @endif
+                                
 
-                @php
-                $activityCounts = $deal->activities->groupBy('type')->map->count();
-                $activityIcons = [
-                    'note' => 'fa-sticky-note',
-                    'call' => 'fa-phone',
-                    'meeting' => 'fa-users',
-                    'email' => 'fa-envelope',
-                ];
-                @endphp
-
-                @if($deal->activities->isNotEmpty())
-                <div class="mt-3 pt-2 border-t border-white/10 text-xs text-white/80">
-                    <div class="space-y-1">
-                    @foreach ($activityCounts as $type => $count)
-                        <div class="flex items-center justify-between">
-                            <span class="capitalize flex items-center">
-                                <i class="fas {{ $activityIcons[$type] ?? 'fa-question-circle' }} mr-2 w-4 text-center"></i>
-                                <span>{{ ucfirst(__($type)) }}s</span>
-                            </span>
-                            <span class="font-semibold">{{ $count }}</span>
+                @if ($deal->notes_contact || $deal->notes_proposal || $deal->notes_negotiation)
+                <div class="mt-3 pt-2 border-t border-white/10 text-xs">
+                    <div class="space-y-3">
+                        @if ($deal->notes_contact)
+                        <div class="bg-primary-light rounded-md p-3">
+                            <p class="font-bold mb-1 text-white/90">Notas: Contacto Inicial</p>
+                            <p class="whitespace-pre-wrap text-white/80">{{ $deal->notes_contact }}</p>
                         </div>
-                    @endforeach
+                        @endif
+                        @if ($deal->notes_proposal)
+                        <div class="bg-primary-light rounded-md p-3">
+                            <p class="font-bold mb-1 text-white/90">Notas: Propuesta Enviada</p>
+                            <p class="whitespace-pre-wrap text-white/80">{{ $deal->notes_proposal }}</p>
+                        </div>
+                        @endif
+                        @if ($deal->notes_negotiation)
+                        <div class="bg-primary-light rounded-md p-3">
+                            <p class="font-bold mb-1 text-white/90">Notas: Negociación</p>
+                            <p class="whitespace-pre-wrap text-white/80">{{ $deal->notes_negotiation }}</p>
+                        </div>
+                        @endif
                     </div>
                 </div>
                 @endif
 
-                                                <div class="mt-2">
-                                                    <x-smart-date :date="$deal->expected_close_date" with-color="true" with-icon="true" format="d M" />
+                                                <div class="mt-3 pt-2 border-t border-white/10 text-xs">
+                                                    <div class="flex justify-between">
+                                                        <span class="font-bold text-white/80">Fecha Inicio:</span>
+                                                        <x-smart-date :date="$deal->created_at" format="d M, Y" />
+                                                    </div>
+                                                    <div class="flex justify-between mt-1">
+                                                        <span class="font-bold text-white/80">Fecha Cierre:</span>
+                                                        <x-smart-date :date="$deal->expected_close_date" with-color="true" format="d M, Y" />
+                                                    </div>
                                                 </div>
+
+                                                @if ($deal->activity_summary->isNotEmpty())
+                                                    <div class="mt-3 pt-2 border-t border-white/10 text-xs">
+                                                        <p class="font-bold text-white/90 mb-2">Resumen de Actividades:</p>
+                                                        @foreach ($deal->activity_summary as $stageName => $activityCounts)
+                                                            <p class="font-semibold text-white/80">{{ $stageName }}:</p>
+                                                            <ul class="list-disc list-inside ml-2">
+                                                                @foreach ($activityCounts as $type => $count)
+                                                                    <li class="text-white/70">{{ ucfirst($type) }}: {{ $count }}</li>
+                                                                @endforeach
+                                                            </ul>
+                                                        @endforeach
+                                                    </div>
+                                                @endif
+
                                             </div>
                                             <div class="flex items-center ml-4 space-x-4">
                                                 <a href="{{ route('deals.show', $deal) }}" class="text-white/70 hover:text-white transition" title="Ver Deal">

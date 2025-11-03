@@ -15,25 +15,49 @@ class DealController extends Controller
     {
         $user = Auth::user();
         $dealStages = DealStage::orderBy('order')->get();
+
         $pipelineData = $dealStages->map(function ($stage) use ($user) {
-                        $deals = $stage->deals()->where('user_id', $user->id)->where('status', 'open')->with('client', 'activities')->get();
+            $deals = $stage->deals()
+                ->where('user_id', $user->id)
+                ->where('status', 'open')
+                ->with('client', 'activities.stage') // Cargar actividades y su etapa
+                ->get();
+
+            // Procesar cada deal para añadir el resumen de actividades
+            $deals->each(function ($deal) {
+                $activitySummary = $deal->activities
+                    ->groupBy('stage.name') // Agrupar por nombre de la etapa
+                    ->map(function ($activitiesInStage) {
+                        return $activitiesInStage->countBy('type'); // Contar por tipo
+                    });
+                $deal->activity_summary = $activitySummary;
+            });
+
             return ['id' => $stage->id, 'name' => $stage->name, 'deals' => $deals];
         });
+
         return view('deals.index', ['pipelineData' => $pipelineData]);
     }
 
     public function create(Client $client = null)
     {
-        // Esta lógica es un poco compleja, pero la mantenemos si es necesaria para tu app.
         $clients = $client ? collect([$client]) : Auth::user()->clients()->orderBy('name')->get();
-        
-        // Creamos un deal vacío para que el formulario no de error al buscar `$deal->client_id`
         $deal = new Deal();
+
+        $establishments = collect([]);
+        $contacts = collect([]);
+
+        if ($client) {
+            $establishments = $client->establishments()->orderBy('name')->get();
+            $contacts = $client->contacts()->orderBy('name')->get();
+        }
 
         return view('deals.create', [
             'clients' => $clients,
-            'deal' => $deal, // Pasamos el deal vacío
-            'selectedClient' => $client
+            'deal' => $deal,
+            'selectedClient' => $client,
+            'establishments' => $establishments,
+            'contacts' => $contacts,
         ]);
     }
 
@@ -45,8 +69,13 @@ class DealController extends Controller
             'value' => 'nullable|numeric|min:0',
             'client_id' => ['required', 'integer', Rule::in($userClientIds)],
             'expected_close_date' => 'nullable|date',
-            'notes' => 'nullable|string', // <-- AÑADIDO
+            'notes_contact' => 'nullable|string',
+            'establishment_id' => 'nullable|exists:establishments,id',
+            'primary_contact_id' => 'nullable|exists:contacts,id',
+            'contacts' => 'nullable|array',
+            'contacts.*' => 'exists:contacts,id',
         ]);
+
         $deal = Auth::user()->deals()->create([
             'name' => $validated['name'],
             'value' => $validated['value'],
@@ -54,8 +83,15 @@ class DealController extends Controller
             'expected_close_date' => $validated['expected_close_date'] ?? null,
             'deal_stage_id' => 1,
             'status' => 'open',
-            'notes' => $validated['notes'], // <-- AÑADIDO
+            'notes_contact' => $validated['notes_contact'] ?? null,
+            'establishment_id' => $validated['establishment_id'] ?? null,
+            'primary_contact_id' => $validated['primary_contact_id'] ?? null,
         ]);
+
+        if (isset($validated['contacts'])) {
+            $deal->contacts()->attach($validated['contacts']);
+        }
+
         if ($request->input('from_client_show')) {
             return redirect()->route('clients.show', $deal->client_id)->with('success', '¡Deal añadido con éxito!');
         }
@@ -67,17 +103,17 @@ class DealController extends Controller
     // ==========================================================
     public function edit(Deal $deal)
     {
-        // 1. Asegurarse que el usuario es el dueño del deal
         if (Auth::user()->id !== $deal->user_id) {
             abort(403, 'Acción no autorizada.');
         }
-        
-        // 2. Obtener la lista de todos los clientes del usuario
-        $clients = Auth::user()->clients()->orderBy('name')->get();
 
-        // 3. Simplemente pasar el 'deal' y los 'clients'. 
-        // ¡No necesitamos $selectedClient! El formulario se encargará de todo.
-        return view('deals.edit', compact('deal', 'clients'));
+        $deal->load('client.establishments', 'client.contacts');
+
+        $clients = Auth::user()->clients()->orderBy('name')->get();
+        $establishments = $deal->client->establishments()->orderBy('name')->get();
+        $contacts = $deal->client->contacts()->orderBy('name')->get();
+
+        return view('deals.edit', compact('deal', 'clients', 'establishments', 'contacts'));
     }
 
     public function update(Request $request, Deal $deal)
@@ -91,13 +127,26 @@ class DealController extends Controller
             'value' => 'nullable|numeric|min:0',
             'client_id' => ['required', 'integer', Rule::in($userClientIds)],
             'expected_close_date' => 'nullable|date',
-            'notes' => 'nullable|string', // <-- AÑADIDO
+            'notes_contact' => 'nullable|string',
+            'notes_proposal' => 'nullable|string',
+            'notes_negotiation' => 'nullable|string',
+            'primary_contact_id' => 'nullable|exists:contacts,id',
+            'contacts' => 'nullable|array',
+            'contacts.*' => 'exists:contacts,id',
         ]);
+
         $deal->update($validated);
+
+        if (isset($validated['contacts'])) {
+            $deal->contacts()->sync($validated['contacts']);
+        } else {
+            $deal->contacts()->detach();
+        }
+
         return redirect()->route('deals.index')->with('success', '¡Deal actualizado con éxito!');
     }
 
-        public function show(Deal $deal)
+    public function show(Deal $deal)
     {
         // Asegurarse que el usuario es el dueño del deal
         if (Auth::user()->id !== $deal->user_id) {
@@ -105,9 +154,16 @@ class DealController extends Controller
         }
 
         // Cargar relaciones necesarias
-        $deal->load('client', 'activities.user');
+        $deal->load('client', 'dealStage', 'primaryContact', 'contacts');
 
-        return view('deals.show', compact('deal'));
+        $activities = $deal->activities()->with('user', 'stage')->orderBy('created_at', 'desc')->get();
+
+        $groupedActivities = $activities->groupBy('deal_stage_id');
+
+        $dealStages = DealStage::whereIn('id', $groupedActivities->keys())->get()->keyBy('id');
+
+
+        return view('deals.show', compact('deal', 'groupedActivities', 'dealStages'));
     }
 
     public function destroy(Deal $deal)

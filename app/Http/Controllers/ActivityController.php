@@ -57,6 +57,7 @@ class ActivityController extends Controller
             'type' => $validated['type'],
             'description' => $validated['description'],
             'user_id' => Auth::id(),
+            'deal_stage_id' => $deal->deal_stage_id,
         ]);
 
         // 4. Redirección de vuelta al pipeline de deals

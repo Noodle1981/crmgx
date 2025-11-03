@@ -18,6 +18,7 @@ class Activity extends Model
         'type',
         'description',
         'details',
+        'deal_stage_id',
     ];
 
     protected $casts = [
@@ -35,5 +36,10 @@ class Activity extends Model
     public function loggable(): MorphTo
     {
         return $this->morphTo();
+    }
+
+    public function stage(): BelongsTo
+    {
+        return $this->belongsTo(DealStage::class, 'deal_stage_id');
     }
 }

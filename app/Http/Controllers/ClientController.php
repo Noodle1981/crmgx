@@ -127,4 +127,19 @@ public function show(Client $client)
         $client->delete();
         return redirect()->route('clients.index')->with('success', '¡Cliente eliminado con éxito!');
     }
+
+    public function data(Client $client)
+    {
+        if (Auth::user()->id !== $client->user_id) {
+            abort(404);
+        }
+
+        $establishments = $client->establishments()->orderBy('name')->get();
+        $contacts = $client->contacts()->orderBy('name')->get();
+
+        return response()->json([
+            'establishments' => $establishments,
+            'contacts' => $contacts,
+        ]);
+    }
 }

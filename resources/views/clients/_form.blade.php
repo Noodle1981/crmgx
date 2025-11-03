@@ -2,7 +2,7 @@
 <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6">
     <!-- Nombre -->
     <div class="mb-6">
-        <x-input-label for="name" value="Nombre de Fantasía" />
+        <x-input-label for="name" value="Empresa" />
         <x-text-input id="name" name="name" type="text" class="mt-1 block w-full" :value="old('name', $client->name ?? '')" required autofocus />
         <x-input-error :messages="$errors->get('name')" class="mt-2" />
     </div>
