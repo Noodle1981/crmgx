@@ -16,6 +16,7 @@
                 <div class="hidden space-x-9 sm:-my-px sm:ms-10 sm:flex">
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">Dashboard</x-nav-link>
                     <x-nav-link :href="route('clients.index')" :active="request()->routeIs('clients.*')">Clientes</x-nav-link>
+                    <x-nav-link :href="route('establishments.indexAll')" :active="request()->routeIs('establishments.*')">Sedes</x-nav-link>
                     <x-nav-link :href="route('deals.index')" :active="request()->routeIs('deals.*')">Pipeline</x-nav-link>
                     <x-nav-link :href="route('leads.index')" :active="request()->routeIs('leads.*')">Leads</x-nav-link>
                     <x-nav-link :href="route('sequences.index')" :active="request()->routeIs('sequences.*')">Secuencias</x-nav-link>
@@ -62,6 +63,7 @@
         <div class="pt-2 pb-3 space-y-1">
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">Dashboard</x-responsive-nav-link>
             <x-responsive-nav-link :href="route('clients.index')" :active="request()->routeIs('clients.*')">Clientes</x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('establishments.indexAll')" :active="request()->routeIs('establishments.*')">Sedes</x-responsive-nav-link>
             <x-responsive-nav-link :href="route('deals.index')" :active="request()->routeIs('deals.*')">Pipeline</x-responsive-nav-link>
             <x-responsive-nav-link :href="route('leads.index')" :active="request()->routeIs('leads.*')">Leads</x-responsive-nav-link>
             <x-responsive-nav-link :href="route('sequences.index')" :active="request()->routeIs('sequences.*')">Secuencias</x-responsive-nav-link>

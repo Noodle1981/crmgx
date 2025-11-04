@@ -9,6 +9,15 @@ use Illuminate\Http\Request;
 class EstablishmentController extends Controller
 {
     /**
+     * Display a listing of all resources.
+     */
+    public function indexAll()
+    {
+        $establishments = Establishment::with('client', 'contacts')->get()->groupBy('client_id');
+        return view('establishments.index', compact('establishments'));
+    }
+
+    /**
      * Display a listing of the resource.
      */
     public function index(Client $client)

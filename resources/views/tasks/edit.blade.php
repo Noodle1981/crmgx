@@ -25,6 +25,12 @@
                             <textarea name="description" id="description" rows="4" class="mt-1 block w-full bg-gray-900/60 border border-white/10 rounded-lg text-light-text transition-all duration-300 focus:border-aurora-cyan focus:ring-2 focus:ring-aurora-cyan/40 focus:outline-none">{{ old('description', $task->description) }}</textarea>
                         </div>
 
+                        <!-- Video Link -->
+                        <div class="mb-4">
+                            <label for="video_link" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Enlace del video</label>
+                            <input type="text" name="video_link" id="video_link" value="{{ old('video_link', $task->video_link) }}" class="mt-1 block w-full bg-gray-900/60 border border-white/10 rounded-lg text-light-text transition-all duration-300 focus:border-aurora-cyan focus:ring-2 focus:ring-aurora-cyan/40 focus:outline-none">
+                        </div>
+
                         <!-- Due Date -->
                         <div class="mb-4">
                             <label for="due_date" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Fecha de Vencimiento</label>

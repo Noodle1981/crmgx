@@ -49,6 +49,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('clients', ClientController::class);
     Route::get('/clients/{client}/data', [ClientController::class, 'data'])->name('clients.data');
     Route::resource('clients.establishments', EstablishmentController::class)->scoped();
+    Route::get('/establishments', [EstablishmentController::class, 'indexAll'])->name('establishments.indexAll');
 
     // Rutas para Leads
     Route::resource('leads', LeadController::class);
@@ -76,6 +77,7 @@ Route::middleware('auth')->group(function () {
     // --- BLOQUE PARA LA INSCRIPCIÓN! ---
     Route::get('/enrollments', [EnrollmentController::class, 'index'])->name('enrollments.index');
     Route::delete('/enrollments/{enrollment}', [EnrollmentController::class, 'destroy'])->name('enrollments.destroy');
+    Route::patch('/enrollments/{enrollment}/complete-step', [EnrollmentController::class, 'completeStep'])->name('enrollments.completeStep');
     Route::get('/contacts/{contact}/enroll', [EnrollmentController::class, 'create'])->name('contacts.enroll.create');
     Route::post('/contacts/{contact}/enroll', [EnrollmentController::class, 'store'])->name('contacts.enroll.store');
 

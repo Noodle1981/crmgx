@@ -21,7 +21,7 @@ class SequenceStepController extends Controller
         if (auth()->user()->id !== $sequence->user_id) abort(403);
 
         $validated = $request->validate([
-            'type' => 'required|in:task,email',
+            'type' => 'required|in:task,email,call,video_call',
             'delay_days' => 'required|integer|min:0',
             'subject' => 'nullable|string|max:255',
             'body' => 'required|string',
@@ -44,7 +44,7 @@ class SequenceStepController extends Controller
     public function update(Request $request, Sequence $sequence, SequenceStep $step)
     {
         $validated = $request->validate([
-            'type' => 'required|in:task,email',
+            'type' => 'required|in:task,email,call,video_call',
             'delay_days' => 'required|integer|min:0',
             'subject' => 'nullable|string|max:255',
             'body' => 'required|string',

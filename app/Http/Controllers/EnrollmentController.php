@@ -7,6 +7,7 @@ use App\Models\SequenceEnrollment;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use App\Models\Task;
 
 class EnrollmentController extends Controller
 {
@@ -18,7 +19,40 @@ class EnrollmentController extends Controller
             ->latest('next_step_due_at')
             ->get();
 
-        return view('enrollments.index', compact('enrollments'));
+        // Group enrollments by their polymorphic type
+        $enrollmentsByEnrollableType = $enrollments->groupBy('enrollable_type');
+
+        $tasks = collect();
+
+        // For each type, fetch the relevant tasks in a single query
+        foreach ($enrollmentsByEnrollableType as $type => $enrollmentsOfType) {
+            $ids = $enrollmentsOfType->pluck('enrollable_id');
+            $tasks = $tasks->merge(
+                Task::where('taskable_type', $type)
+                    ->whereIn('taskable_id', $ids)
+                    ->where('type', 'video_call')
+                    ->get()
+            );
+        }
+
+        // Group tasks by their polymorphic parent for easy lookup
+        $tasksByEnrollable = $tasks->groupBy(function ($task) {
+            return $task->taskable_type . '-' . $task->taskable_id;
+        });
+
+        // Attach the latest task to each enrollment
+        foreach ($enrollments as $enrollment) {
+            $key = $enrollment->enrollable_type . '-' . $enrollment->enrollable_id;
+            if (isset($tasksByEnrollable[$key])) {
+                $enrollment->setRelation('latestVideoCallTask', $tasksByEnrollable[$key]->sortByDesc('created_at')->first());
+            } else {
+                $enrollment->setRelation('latestVideoCallTask', null);
+            }
+        }
+
+        $notifications = Auth::user()->unreadNotifications()->where('type', 'App\\Notifications\\SequenceStepDueNotification')->get();
+
+        return view('enrollments.index', compact('enrollments', 'notifications'));
     }
 
     public function create(Contact $contact)
@@ -78,5 +112,46 @@ public function store(Request $request, Contact $contact)
         $enrollment->delete();
 
         return redirect()->route('enrollments.index')->with('success', 'Inscripción eliminada con éxito.');
+    }
+
+    public function completeStep(Request $request, SequenceEnrollment $enrollment)
+    {
+        if ($enrollment->user_id !== Auth::id()) {
+            abort(403, 'Acción no autorizada.');
+        }
+
+        $request->validate([
+            'task_id' => 'required|exists:tasks,id',
+        ]);
+
+        $task = Task::find($request->task_id);
+
+        if (!$task || $task->taskable_id !== $enrollment->enrollable_id || $task->taskable_type !== $enrollment->enrollable_type) {
+            return redirect()->back()->with('error', 'La tarea no corresponde a esta inscripción.');
+        }
+
+        // Mark the task as completed
+        $task->update(['status' => 'completed']);
+
+        // Advance the enrollment to the next step
+        $currentStep = $enrollment->currentStep;
+        $nextStep = $enrollment->sequence->steps()
+                                         ->where('order', '>', $currentStep->order)
+                                         ->first();
+
+        if ($nextStep) {
+            $enrollment->update([
+                'current_step_id' => $nextStep->id,
+                'next_step_due_at' => Carbon::now()->addDays($nextStep->delay_days),
+            ]);
+            return redirect()->back()->with('success', 'Paso completado y secuencia avanzada.');
+        } else {
+            $enrollment->update([
+                'status' => 'completed',
+                'current_step_id' => null,
+                'next_step_due_at' => null,
+            ]);
+            return redirect()->back()->with('success', 'Paso completado y secuencia finalizada.');
+        }
     }
 }

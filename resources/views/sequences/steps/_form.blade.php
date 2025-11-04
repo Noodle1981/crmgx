@@ -9,6 +9,8 @@
             <select name="type" id="type" x-model="type" class="mt-1 block w-full bg-gray-900/60 border border-white/10 rounded-lg text-light-text transition-all duration-300 focus:border-aurora-cyan focus:ring-2 focus:ring-aurora-cyan/40" required>
                 <option value="task">Crear Tarea</option>
                 <option value="email">Enviar Email</option>
+                <option value="call">Llamada Telefónica</option>
+                <option value="video_call">Videollamada</option>
             </select>
         </div>
 
@@ -27,12 +29,16 @@
         <x-input-error :messages="$errors->get('subject')" class="mt-2" />
     </div>
 
+
+
     <!-- Cuerpo del Email / Título de la Tarea -->
     <div class="mb-6">
         {{-- La etiqueta cambia dinámicamente según la selección --}}
         <label for="body" class="block font-medium text-sm text-light-text-muted">
             <span x-show="type === 'email'">Cuerpo del Email</span>
             <span x-show="type === 'task'">Título y Descripción de la Tarea</span>
+            <span x-show="type === 'call'">Instrucciones para la Llamada</span>
+            <span x-show="type === 'video_call'">Instrucciones para la Videollamada</span>
         </label>
         <textarea name="body" id="body" rows="5" class="mt-1 block w-full bg-gray-900/60 border border-white/10 rounded-lg text-light-text placeholder:text-light-text-muted/50 transition-all duration-300 focus:border-aurora-cyan focus:ring-2 focus:ring-aurora-cyan/40" required>{{ old('body', $step->body ?? '') }}</textarea>
         <x-input-error :messages="$errors->get('body')" class="mt-2" />

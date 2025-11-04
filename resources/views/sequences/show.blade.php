@@ -34,11 +34,15 @@
                                 <p class="font-bold text-light-text">
                                     Paso {{ $step->order }}: 
                                     <span class="font-semibold">
-                                        @if($step->type == 'email')
-                                            <i class="fas fa-envelope text-aurora-cyan mr-1"></i> Enviar Email
-                                        @else
-                                            <i class="fas fa-check-square text-aurora-yellow mr-1"></i> Crear Tarea
-                                        @endif
+                                            @if($step->type == 'email')
+                                                <i class="fas fa-envelope text-aurora-cyan mr-1"></i> Enviar Email
+                                            @elseif($step->type == 'call')
+                                                <i class="fas fa-phone text-aurora-green mr-1"></i> Llamada Telefónica
+                                            @elseif($step->type == 'video_call')
+                                                <i class="fas fa-video text-aurora-purple mr-1"></i> Videollamada
+                                            @else
+                                                <i class="fas fa-check-square text-aurora-yellow mr-1"></i> Crear Tarea
+                                            @endif
                                     </span>
                                     <span class="text-sm font-normal text-light-text-muted">(después de {{ $step->delay_days }} días)</span>
                                 </p>

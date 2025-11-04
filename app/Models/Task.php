@@ -15,10 +15,12 @@ class Task extends Model
         'title',
         'description',
         'status',
+        'type',
         'due_date',
         'user_id',
         'taskable_type',
         'taskable_id',
+        'video_link',
     ];
 
     protected $casts = [

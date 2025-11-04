@@ -36,6 +36,42 @@ class TaskController extends Controller
     }
 
     /**
+     * Display the specified resource.
+     */
+    public function show(Task $task)
+    {
+        if ($task->user_id !== auth()->id()) {
+            abort(403, 'Acceso no autorizado');
+        }
+
+        $task->load('taskable');
+
+        return view('tasks.show', compact('task'));
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, Task $task)
+    {
+        if ($task->user_id !== auth()->id()) {
+            abort(403, 'Acceso no autorizado');
+        }
+
+        $request->validate([
+            'title' => 'sometimes|required|string|max:255',
+            'description' => 'nullable|string',
+            'due_date' => 'sometimes|required|date',
+            'status' => 'sometimes|required|in:pendiente,en_proceso,completado',
+            'video_link' => 'nullable|url',
+        ]);
+
+        $task->update($request->all());
+
+        return redirect()->route('tasks.show', $task)->with('success', '¡Tarea actualizada con éxito!');
+    }
+
+    /**
      * Remove the specified resource from storage.
      */
     public function destroy(Task $task)
