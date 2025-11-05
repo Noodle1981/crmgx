@@ -11,13 +11,14 @@ use App\Models\Activity;
 use App\Models\Contact;
 use App\Models\Deal;
 use App\Models\Task;
-use libphonenumber\PhoneNumberUtil;
-use libphonenumber\PhoneNumberFormat;
+use App\Models\Concerns\NormalizesPhone;
+use App\Models\Concerns\BelongsToUser;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 
 class Client extends Model
 {
-    use HasFactory;
+    use HasFactory, NormalizesPhone, SoftDeletes, BelongsToUser;
 
     /**
      * The attributes that are mass assignable.
@@ -56,23 +57,22 @@ class Client extends Model
         'active' => 1, // <-- ¡LA LÍNEA MÁGICA!
     ];
 
-    protected function setPhoneAttribute($value)
-{
-    if (empty($value)) {
-        $this->attributes['phone'] = null;
-        return;
+    /**
+     * Casts por defecto para este modelo
+     */
+    protected $casts = [
+        'active' => 'boolean',
+        'deleted_at' => 'datetime',
+    ];
+    
+    /**
+     * Normaliza email (trim + lowercase)
+     */
+    public function setEmailAttribute($value)
+    {
+        $this->attributes['email'] = $value ? strtolower(trim($value)) : null;
     }
-
-    $phoneUtil = PhoneNumberUtil::getInstance();
-    try {
-        $phoneNumber = $phoneUtil->parse($value, 'AR');
-        // Guardamos el número en formato E.164
-        $this->attributes['phone'] = $phoneUtil->format($phoneNumber, PhoneNumberFormat::E164);
-    } catch (\libphonenumber\NumberParseException $e) {
-        // Si la validación falló por alguna razón, guardamos el valor original
-        $this->attributes['phone'] = $value;
-    }
-}
+    
     // ----- RELACIONES -----
 
     public function user(): BelongsTo
@@ -103,5 +103,37 @@ class Client extends Model
     public function activities(): MorphMany
     {
         return $this->morphMany(Activity::class, 'loggable');
+    }
+
+    /**
+     * Boot the model.
+     * Configura eventos para propagar soft-delete y restore a establishments y contacts
+     */
+    protected static function booted()
+    {
+        // Propagar soft-delete a establishments y contacts al borrar un cliente
+        static::deleting(function ($client) {
+            // solo si el borrado es soft-delete (deleted_at será establecido)
+            if (method_exists($client, 'establishments')) {
+                foreach ($client->establishments as $est) {
+                    $est->delete();
+                }
+            }
+            if (method_exists($client, 'contacts')) {
+                foreach ($client->contacts as $c) {
+                    $c->delete();
+                }
+            }
+        });
+
+        // Al restaurar un cliente restaurar establishments y contacts asociados
+        static::restoring(function ($client) {
+            foreach ($client->establishments()->withTrashed()->get() as $est) {
+                $est->restore();
+            }
+            foreach ($client->contacts()->withTrashed()->get() as $c) {
+                $c->restore();
+            }
+        });
     }
 }

@@ -51,4 +51,34 @@ class SequenceEnrollment extends Model
     {
         return $this->belongsTo(SequenceStep::class, 'current_step_id');
     }
+
+    /**
+     * Get the completed steps for this enrollment.
+     */
+    public function completedSteps()
+    {
+        return $this->belongsToMany(SequenceStep::class, 'sequence_step_completions', 'enrollment_id', 'step_id')
+                    ->withPivot('completed_at')
+                    ->orderBy('completed_at');
+    }
+
+    /**
+     * Check if a specific step is completed.
+     */
+    public function isStepCompleted($stepId)
+    {
+        return $this->completedSteps()->where('sequence_steps.id', $stepId)->exists();
+    }
+
+    /**
+     * Get the progress percentage of this enrollment.
+     */
+    public function getProgressPercentage()
+    {
+        $totalSteps = $this->sequence->steps()->count();
+        if ($totalSteps === 0) return 0;
+        
+        $completedSteps = $this->completedSteps()->count();
+        return ($completedSteps / $totalSteps) * 100;
+    }
 }

@@ -8,15 +8,23 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 use App\Rules\ValidPhoneNumber;
 use App\Http\Controllers\DealController;
-
+use App\Http\Requests\ClientRequest;
 
 
 class ClientController extends Controller
 {
     public function index()
     {
-        $clients = Auth::user()->clients()->latest()->paginate(10);
-        return view('clients.index', compact('clients'));
+        $query = Client::forCurrentUser();
+        
+        $stats = [
+            'total_clients' => $query->count(),
+            'active_clients' => $query->where('active', true)->count(),
+            'total_value' => $query->withSum('deals', 'value')->get()->sum('deals_sum_value')
+        ];
+        
+        $clients = $query->latest()->paginate(10);
+        return view('clients.index', compact('clients', 'stats'));
     }
 
     public function create()
@@ -25,19 +33,9 @@ class ClientController extends Controller
     }
 
 
-    public function store(Request $request)
+    public function store(ClientRequest $request)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'cuit' => 'required|string|max:255',
-            'company' => 'nullable|string|max:255',
-            'email' => 'nullable|email|max:255|unique:clients,email',
-            'phone' => ['nullable', 'string', 'max:255', new ValidPhoneNumber],
-            'notes' => 'nullable|string',
-            'fiscal_address_street' => 'nullable|string|max:255',
-            'economic_activity' => 'nullable|string|max:255',
-            'art_provider' => 'nullable|string|max:255',
-        ]);
+        $validated = $request->validated();
         Auth::user()->clients()->create($validated);
         return redirect()->route('clients.index')->with('success', '¡Cliente creado con éxito!');
     }
@@ -104,19 +102,10 @@ public function show(Client $client)
         return view('clients.edit', compact('client'));
     }
 
-    public function update(Request $request, Client $client)
+    public function update(ClientRequest $request, Client $client)
     {
         if (Auth::user()->id !== $client->user_id) abort(404);
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'company' => 'nullable|string|max:255',
-            'email' => ['nullable', 'email', 'max:255', Rule::unique('clients')->ignore($client->id)],
-            'phone' => 'nullable|string|max:255',
-            'notes' => 'nullable|string',
-            'fiscal_address_street' => 'nullable|string|max:255',
-            'economic_activity' => 'nullable|string|max:255',
-            'art_provider' => 'nullable|string|max:255',
-        ]);
+        $validated = $request->validated();
         $client->update($validated);
         return redirect()->route('clients.index')->with('success', '¡Cliente actualizado con éxito!');
     }

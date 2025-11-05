@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 use App\Rules\ValidPhoneNumber;
-
+use App\Http\Requests\ContactRequest;
 
 
 class ContactController extends Controller
@@ -31,20 +31,14 @@ class ContactController extends Controller
      * Store a newly created contact in storage.
      * (Lógica adaptada de tu controlador de API)
      */
-    public function store(Request $request, Client $client)
+    public function store(ContactRequest $request, Client $client)
     {
         // Seguridad: El cliente debe pertenecer al usuario.
         if (Auth::user()->id !== $client->user_id) {
             abort(403);
         }
 
-        // Validación (la misma que tenías en la API, ¡perfecta!)
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'nullable|email|max:255|unique:contacts,email',
-             'phone' => ['nullable', 'string', 'max:255', new ValidPhoneNumber], // <-- ¡REGLA MEJORADA!
-            'position' => 'nullable|string',
-        ]);
+        $validated = $request->validated();
 
         // Creación del contacto (la misma lógica)
         $client->contacts()->create($validated);
@@ -87,14 +81,9 @@ class ContactController extends Controller
         return view('contacts.edit', compact('client', 'contact'));
     }
 
-    public function update(Request $request, Client $client, Contact $contact)
+    public function update(ContactRequest $request, Client $client, Contact $contact)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => ['nullable', 'email', 'max:255', Rule::unique('contacts')->ignore($contact->id)],
-            'phone' => 'nullable|string',
-            'position' => 'nullable|string',
-        ]);
+        $validated = $request->validated();
 
         $contact->update($validated);
 

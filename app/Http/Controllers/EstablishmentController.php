@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Client;
 use App\Models\Establishment;
 use Illuminate\Http\Request;
+use App\Http\Requests\EstablishmentRequest;
 
 class EstablishmentController extends Controller
 {
@@ -30,25 +31,28 @@ class EstablishmentController extends Controller
      */
     public function create(Client $client)
     {
-        return view('establishments.create', compact('client'));
+        $contacts = $client->contacts()->get();
+        return view('establishments.create', compact('client', 'contacts'));
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request, Client $client)
+    public function store(EstablishmentRequest $request, Client $client)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'address_street' => 'required|string|max:255',
-            'address_city' => 'required|string|max:255',
-            'address_zip_code' => 'required|string|max:255',
-            'address_state' => 'required|string|max:255',
-            'address_country' => 'required|string|max:255',
-            'notes' => 'nullable|string',
-        ]);
+        $validated = $request->validated();
 
-        $client->establishments()->create($validated);
+        $establishment = $client->establishments()->create($validated);
+        
+        // Actualizar los contactos seleccionados
+        if (!empty($validated['contacts'])) {
+            foreach ($validated['contacts'] as $contactId) {
+                $contact = $client->contacts()->find($contactId);
+                if ($contact) {
+                    $contact->update(['establishment_id' => $establishment->id]);
+                }
+            }
+        }
 
         return redirect()->route('clients.show', $client)->with('success', '¡Sede creada con éxito!');
     }
@@ -66,25 +70,31 @@ class EstablishmentController extends Controller
      */
     public function edit(Client $client, Establishment $establishment)
     {
-        return view('establishments.edit', compact('client', 'establishment'));
+        $contacts = $client->contacts()->get();
+        return view('establishments.edit', compact('client', 'establishment', 'contacts'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Client $client, Establishment $establishment)
+    public function update(EstablishmentRequest $request, Client $client, Establishment $establishment)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'address_street' => 'required|string|max:255',
-            'address_city' => 'required|string|max:255',
-            'address_zip_code' => 'required|string|max:255',
-            'address_state' => 'required|string|max:255',
-            'address_country' => 'required|string|max:255',
-            'notes' => 'nullable|string',
-        ]);
+        $validated = $request->validated();
 
         $establishment->update($validated);
+        
+        // Desasociar todos los contactos actuales del establecimiento
+        $client->contacts()->where('establishment_id', $establishment->id)->update(['establishment_id' => null]);
+        
+        // Asociar los contactos seleccionados
+        if (!empty($validated['contacts'])) {
+            foreach ($validated['contacts'] as $contactId) {
+                $contact = $client->contacts()->find($contactId);
+                if ($contact) {
+                    $contact->update(['establishment_id' => $establishment->id]);
+                }
+            }
+        }
 
         return redirect()->route('clients.show', $client)->with('success', '¡Sede actualizada con éxito!');
     }

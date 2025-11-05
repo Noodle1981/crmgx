@@ -6,30 +6,41 @@ use Illuminate\Http\Request;
 
 class SettingsController extends Controller
 {
+    /**
+     * Muestra las preferencias del usuario
+     */
     public function index()
     {
-        // Obtenemos todos los ajustes de correo para rellenar el formulario
-        $settings = Setting::where('key', 'like', 'mail_%')->pluck('value', 'key');
+        $settings = Setting::where('user_id', auth()->id())
+                        ->whereIn('key', ['email_notifications', 'task_reminders', 'date_format', 'timezone'])
+                        ->pluck('value', 'key');
+
         return view('settings.index', compact('settings'));
     }
 
-    public function store(Request $request)
+    /**
+     * Actualiza las preferencias del usuario
+     */
+    public function update(Request $request)
     {
         $validated = $request->validate([
-            'mail_mailer' => 'required|string',
-            'mail_host' => 'required|string',
-            'mail_port' => 'required|integer',
-            'mail_username' => 'nullable|string',
-            'mail_password' => 'nullable|string',
-            'mail_encryption' => 'nullable|string',
-            'mail_from_address' => 'required|email',
-            'mail_from_name' => 'required|string',
+            'email_notifications' => 'boolean',
+            'task_reminders' => 'boolean',
+            'date_format' => 'required|string|in:d/m/Y,Y-m-d,m/d/Y',
+            'timezone' => 'required|string|timezone',
         ]);
 
         foreach ($validated as $key => $value) {
-            Setting::updateOrCreate(['key' => $key], ['value' => $value ?? '']);
+            Setting::updateOrCreate(
+                [
+                    'user_id' => auth()->id(),
+                    'key' => $key,
+                ],
+                ['value' => $value]
+            );
         }
 
-        return redirect()->route('settings.index')->with('success', '¡Configuración de correo guardada!');
+        return redirect()->route('settings.index')
+                ->with('success', 'Tus preferencias han sido actualizadas correctamente.');
     }
 }

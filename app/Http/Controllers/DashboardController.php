@@ -89,4 +89,59 @@ class DashboardController extends Controller
         ]);
     }
 
+    /**
+     * Muestra las estadísticas personales del usuario
+     */
+    public function personalStats()
+    {
+        $user = Auth::user();
+        $data = [
+            'leads_count' => Lead::where('user_id', $user->id)->count(),
+            'deals_count' => Deal::where('user_id', $user->id)->count(),
+            'tasks_count' => Task::where('user_id', $user->id)->count(),
+        ];
+        
+        return view('dashboard.personal-stats', compact('data'));
+    }
+
+    /**
+     * Muestra el pipeline personal del usuario
+     */
+    public function personalPipeline()
+    {
+        $user = Auth::user();
+        $deals = Deal::where('user_id', $user->id)
+                    ->with(['stage'])
+                    ->get()
+                    ->groupBy('stage.name');
+        
+        return view('dashboard.personal-pipeline', compact('deals'));
+    }
+
+    /**
+     * Muestra las estadísticas del mes actual
+     */
+    public function currentMonth()
+    {
+        $user = Auth::user();
+        $startOfMonth = now()->startOfMonth();
+        $endOfMonth = now()->endOfMonth();
+        
+        $data = [
+            'new_leads' => Lead::where('user_id', $user->id)
+                              ->whereBetween('created_at', [$startOfMonth, $endOfMonth])
+                              ->count(),
+            'closed_deals' => Deal::where('user_id', $user->id)
+                                 ->where('status', 'won')
+                                 ->whereBetween('closed_at', [$startOfMonth, $endOfMonth])
+                                 ->count(),
+            'completed_tasks' => Task::where('user_id', $user->id)
+                                   ->where('status', 'completed')
+                                   ->whereBetween('completed_at', [$startOfMonth, $endOfMonth])
+                                   ->count(),
+        ];
+        
+        return view('dashboard.current-month', compact('data'));
+    }
+
 }

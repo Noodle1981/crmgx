@@ -29,7 +29,11 @@
         <div class="min-h-screen bg-white-void">
             
             {{-- La barra de navegación ahora es un componente nuestro --}}
-            @include('layouts.navigation')
+            @if(auth()->check() && auth()->user()->isAdmin())
+                @include('layouts.admin-navigation')
+            @else
+                @include('layouts.navigation')
+            @endif
 
             <!-- Page Heading -->
             @isset($header)
@@ -47,8 +51,12 @@
             <!-- Page Content -->
             <main class="pb-12">
                 <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                    {{-- El contenido principal ya no necesita un fondo blanco o gris --}}
-                    {{ $slot }}
+                    {{-- Soporta tanto layout por secciones (@extends/@section) como componentes ({{ $slot }}) --}}
+                    @hasSection('content')
+                        @yield('content')
+                    @else
+                        {{ $slot ?? '' }}
+                    @endif
                 </div>
             </main>
         </div>

@@ -7,10 +7,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Establishment extends Model
 {
     use HasFactory;
+    use SoftDeletes;
 
     /**
      * The attributes that are mass assignable.
@@ -29,6 +31,23 @@ class Establishment extends Model
         'active',
         'notes',
         'hs_platform_sede_id', // <-- Importante para la integración
+    ];
+
+    /**
+     * Valores por defecto
+     */
+    protected $attributes = [
+        'active' => 1,
+    ];
+
+    /**
+     * Casts por defecto
+     */
+    protected $casts = [
+        'active' => 'boolean',
+        'latitude' => 'float',
+        'longitude' => 'float',
+        'deleted_at' => 'datetime',
     ];
 
     // ----- RELACIONES ELOQUENT -----

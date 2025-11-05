@@ -12,12 +12,12 @@ use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
 use App\Models\Activity;
 use App\Models\Sequence;
-
+use App\Traits\HasAdminCapabilities;
 
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable, HasAdminCapabilities;
 
     /**
      * The attributes that are mass assignable.

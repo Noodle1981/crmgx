@@ -9,12 +9,14 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use App\Models\Client;
 use App\Models\SequenceEnrollment;
+use App\Models\Concerns\NormalizesPhone;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 
 
 class Contact extends Model
 {
-    use HasFactory;
+    use HasFactory, NormalizesPhone, SoftDeletes;
 
     protected $fillable = [
         'client_id',
@@ -30,6 +32,22 @@ class Contact extends Model
     protected $attributes = [
         'active' => 1,
     ];
+
+    /**
+     * Casts por defecto para Contact
+     */
+    protected $casts = [
+        'active' => 'boolean',
+        'deleted_at' => 'datetime',
+    ];
+
+    /**
+     * Normaliza email (trim + lowercase)
+     */
+    public function setEmailAttribute($value)
+    {
+        $this->attributes['email'] = $value ? strtolower(trim($value)) : null;
+    }
 
     /**
      * Get the client that owns the contact.

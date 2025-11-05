@@ -15,7 +15,12 @@ class EnrollmentController extends Controller
     {
         $enrollments = SequenceEnrollment::where('user_id', Auth::id())
             ->where('status', 'active')
-            ->with(['enrollable', 'sequence', 'currentStep'])
+            ->with([
+                'enrollable', 
+                'sequence.steps', 
+                'currentStep',
+                'completedSteps'
+            ])
             ->latest('next_step_due_at')
             ->get();
 
@@ -133,8 +138,23 @@ public function store(Request $request, Contact $contact)
         // Mark the task as completed
         $task->update(['status' => 'completed']);
 
-        // Advance the enrollment to the next step
+        // Register the step completion
         $currentStep = $enrollment->currentStep;
+        if ($currentStep) {
+            DB::table('sequence_step_completions')->updateOrInsert(
+                [
+                    'enrollment_id' => $enrollment->id,
+                    'step_id' => $currentStep->id
+                ],
+                [
+                    'completed_at' => now(),
+                    'created_at' => now(),
+                    'updated_at' => now()
+                ]
+            );
+        }
+
+        // Find the next step
         $nextStep = $enrollment->sequence->steps()
                                          ->where('order', '>', $currentStep->order)
                                          ->first();

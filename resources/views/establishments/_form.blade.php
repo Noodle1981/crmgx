@@ -50,6 +50,32 @@
     <textarea name="notes" id="notes" rows="4" class="mt-1 block w-full bg-gray-900/60 border border-white/10 rounded-lg text-light-text placeholder:text-light-text-muted/50 transition-all duration-300 focus:border-aurora-cyan focus:ring-2 focus:ring-aurora-cyan/40 focus:outline-none" placeholder="Añade cualquier detalle relevante aquí...">{{ old('notes', $establishment->notes ?? '') }}</textarea>
 </div>
 
+<!-- Contactos -->
+<div class="mb-6">
+    <x-input-label value="Contactos Asociados" />
+    @if($contacts->isEmpty())
+        <p class="text-light-text-muted mt-2">Este cliente no tiene contactos registrados.</p>
+    @else
+        <div class="mt-2 space-y-2">
+            @foreach($contacts as $contact)
+            <label class="flex items-center space-x-3">
+                <input type="checkbox" 
+                       name="contacts[]" 
+                       value="{{ $contact->id }}"
+                       class="rounded bg-gray-900/60 border-white/10 text-aurora-cyan focus:ring-aurora-cyan/40"
+                       {{ in_array($contact->id, old('contacts', $establishment->contacts->pluck('id')->toArray() ?? [])) ? 'checked' : '' }}>
+                <span class="text-light-text">
+                    {{ $contact->name }} 
+                    @if($contact->position)
+                        <span class="text-light-text-muted">- {{ $contact->position }}</span>
+                    @endif
+                </span>
+            </label>
+            @endforeach
+        </div>
+    @endif
+</div>
+
 <!-- Botones de Acción -->
 <div class="flex items-center justify-end mt-8 space-x-4">
     <a href="{{ route('clients.show', $client) }}">

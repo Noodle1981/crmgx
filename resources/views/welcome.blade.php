@@ -46,9 +46,33 @@
                         <span class="text-white">HSE 4.0 & Deals.</span> {{-- Sin gradiente para el span --}}
                     </h1>
                     <p class="max-w-2xl mx-auto text-lg md:text-xl text-white text-opacity-80 mb-8">Version 1.0.0</p>
+                    
+                    <!-- Información de Roles -->
+                    <div class="grid md:grid-cols-2 gap-6 mb-8 max-w-3xl mx-auto">
+                        <div class="bg-white/10 backdrop-blur-sm rounded-lg p-6 border-2 border-white/20 hover:bg-white/20 transition">
+                            <div class="text-4xl mb-3">
+                                <i class="fas fa-user-shield"></i>
+                            </div>
+                            <h3 class="text-xl font-bold mb-2">Administrador</h3>
+                            <p class="text-sm text-white/80">
+                                Gestión completa del sistema, usuarios, configuraciones y monitoreo de rendimiento
+                            </p>
+                        </div>
+                        
+                        <div class="bg-white/10 backdrop-blur-sm rounded-lg p-6 border-2 border-white/20 hover:bg-white/20 transition">
+                            <div class="text-4xl mb-3">
+                                <i class="fas fa-briefcase"></i>
+                            </div>
+                            <h3 class="text-xl font-bold mb-2">Usuario CRM</h3>
+                            <p class="text-sm text-white/80">
+                                Gestión de leads, clientes, oportunidades de venta y seguimiento de actividades
+                            </p>
+                        </div>
+                    </div>
+                    
                     <a href="{{ route('login') }}">
                         {{-- Estilo del botón "Comienza Ahora" --}}
-                        <button class="px-10 py-4 font-bold text-orange-xamanen rounded-full bg-white transition-all duration-300 hover.:scale-105 hover:shadow-2xl hover:shadow-white/40">Iniciar</button>
+                        <button class="px-10 py-4 font-bold text-orange-xamanen rounded-full bg-white transition-all duration-300 hover.:scale-105 hover:shadow-2xl hover:shadow-white/40">Iniciar Sesión</button>
                     </a>
                 </div>
             </main>

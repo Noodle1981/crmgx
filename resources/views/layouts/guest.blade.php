@@ -31,7 +31,11 @@
                 {{-- FIN Bloque del logo y título ajustado --}}
 
                 <div class="w-full sm:max-w-md mt-6 px-6 py-4 bg-white/10 backdrop-blur-sm shadow-xl overflow-hidden rounded-lg border border-white/20">
-                    {{ $slot }}
+                    @hasSection('content')
+                        @yield('content')
+                    @else
+                        {{ $slot ?? '' }}
+                    @endif
                 </div>
             </div>
         </div>

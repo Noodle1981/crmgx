@@ -13,10 +13,11 @@ use App\Models\DealStage;
 use App\Models\User;
 use App\Models\Client;
 use App\Models\SequenceEnrollment;
+use App\Models\Concerns\BelongsToUser;
 
 class Deal extends Model
 {
-    use HasFactory;
+    use HasFactory, BelongsToUser;
 
     protected $fillable = [
         'name',

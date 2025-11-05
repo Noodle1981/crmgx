@@ -1,67 +1,79 @@
-<x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            Detalles de la Tarea
-        </h2>
-    </x-slot>
+@extends('layouts.app')
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900 dark:text-gray-100">
-                    <h3 class="text-lg font-medium">{{ $task->title }}</h3>
-                    <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">{{ $task->description }}</p>
+@section('content')
+<div class="py-6">
+    <div class="mb-6">
+        <h2 class="text-2xl font-bold text-text-main">Detalles de la Tarea</h2>
+        <p class="text-sm text-text-muted">Información y acciones rápidas</p>
+    </div>
 
-                    <div class="mt-4">
-                        <p><strong>Vence:</strong> {{ $task->due_date->format('d/m/Y') }}</p>
-                        <p><strong>Estado:</strong> {{ $task->status }}</p>
-                        @if ($task->taskable)
-                            <p><strong>Relacionado con:</strong> {{ $task->taskable->name }} ({{ class_basename($task->taskable_type) }})</p>
-                        @endif
-                    </div>
+    <div class="bg-white border border-primary/20 rounded-xl shadow-sm overflow-hidden">
+        <div class="p-6">
+            <h3 class="text-lg font-semibold text-gray-900">{{ $task->title }}</h3>
+            <p class="mt-2 text-sm text-gray-600">{{ $task->description }}</p>
 
-                    <div class="mt-6">
-                        <form action="{{ route('tasks.update', $task) }}" method="POST">
-                            @csrf
-                            @method('PATCH')
-                            <div class="mb-4">
-                                <label for="video_link" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Enlace de Videollamada</label>
-                                <input type="text" name="video_link" id="video_link" value="{{ old('video_link', $task->video_link) }}" class="mt-1 block w-full bg-gray-900/60 border border-white/10 rounded-lg text-light-text transition-all duration-300 focus:border-aurora-cyan focus:ring-2 focus:ring-aurora-cyan/40 focus:outline-none">
-                            </div>
-                            <button type="submit" class="ml-4 inline-flex items-center px-4 py-2 bg-gray-800 dark:bg-gray-200 border border-transparent rounded-md font-semibold text-xs text-white dark:text-gray-800 uppercase tracking-widest hover:bg-gray-700 dark:hover:bg-white focus:bg-gray-700 dark:focus:bg-white active:bg-gray-900 dark:active:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 transition ease-in-out duration-150">
-                                Guardar Enlace
-                            </button>
-                        </form>
-                    </div>
-
-                    <div class="mt-6">
-                        @php
-                            $phone = null;
-                            $name = null;
-                            if ($task->taskable) {
-                                if ($task->taskable_type === 'App\\Models\\Contact' || $task->taskable_type === 'App\\Models\\Lead') {
-                                    $phone = $task->taskable->phone;
-                                    $name = $task->taskable->name;
-                                } elseif ($task->taskable_type === 'App\\Models\\Deal' && $task->taskable->contact) {
-                                    $phone = $task->taskable->contact->phone;
-                                    $name = $task->taskable->contact->name;
-                                }
-                            }
-                        @endphp
-
-                        @if($phone)
-                            @php
-                                $phoneDigits = preg_replace('/\D+/', '', $phone);
-                                $waMessage = rawurlencode("Hola {$name}, sobre la tarea: {$task->title}");
-                                $waUrl = "https://wa.me/{$phoneDigits}?text={$waMessage}";
-                            @endphp
-                            <a href="{{ $waUrl }}" target="_blank" class="text-green-600 hover:text-green-900" title="Enviar WhatsApp">
-                                <i class="fab fa-whatsapp fa-lg"></i> Enviar WhatsApp
-                            </a>
-                        @endif
-                    </div>
+            <div class="mt-4 grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm">
+                <div class="bg-orange-50 border border-orange-100 rounded-lg p-3">
+                    <span class="text-gray-500 block">Vence</span>
+                    <span class="font-medium text-gray-800">{{ $task->due_date->format('d/m/Y') }}</span>
                 </div>
+                <div class="bg-orange-50 border border-orange-100 rounded-lg p-3">
+                    <span class="text-gray-500 block">Estado</span>
+                    <span class="font-medium text-gray-800 capitalize">{{ str_replace('_',' ', $task->status) }}</span>
+                </div>
+                <div class="bg-orange-50 border border-orange-100 rounded-lg p-3">
+                    <span class="text-gray-500 block">Relacionado con</span>
+                    <span class="font-medium text-gray-800">
+                        @if ($task->taskable)
+                            {{ $task->taskable->name }} ({{ class_basename($task->taskable_type) }})
+                        @else
+                            N/A
+                        @endif
+                    </span>
+                </div>
+            </div>
+
+            <div class="mt-6">
+                <form action="{{ route('tasks.update', $task) }}" method="POST">
+                    @csrf
+                    @method('PATCH')
+                    <div class="mb-4">
+                        <label for="video_link" class="block text-sm font-medium text-gray-700">Enlace de Videollamada</label>
+                        <input type="text" name="video_link" id="video_link" value="{{ old('video_link', $task->video_link) }}" class="mt-1 block w-full border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary/40 focus:border-primary px-3 py-2">
+                    </div>
+                    <button type="submit" class="inline-flex items-center px-4 py-2 bg-primary text-white rounded-md hover:bg-primary-dark transition">
+                        Guardar Enlace
+                    </button>
+                </form>
+            </div>
+
+            <div class="mt-6">
+                @php
+                    $phone = null;
+                    $name = null;
+                    if ($task->taskable) {
+                        if ($task->taskable_type === 'App\\Models\\Contact' || $task->taskable_type === 'App\\Models\\Lead') {
+                            $phone = $task->taskable->phone;
+                            $name = $task->taskable->name;
+                        } elseif ($task->taskable_type === 'App\\Models\\Deal' && $task->taskable->contact) {
+                            $phone = $task->taskable->contact->phone;
+                            $name = $task->taskable->contact->name;
+                        }
+                    }
+                @endphp
+
+                @if($phone)
+                    @php
+                        $phoneDigits = preg_replace('/\D+/', '', $phone);
+                        $waMessage = rawurlencode("Hola {$name}, sobre la tarea: {$task->title}");
+                        $waUrl = "https://wa.me/{$phoneDigits}?text={$waMessage}";
+                    @endphp
+                    <a href="{{ $waUrl }}" target="_blank" class="inline-flex items-center text-green-600 hover:text-green-700 mt-2" title="Enviar WhatsApp">
+                        <i class="fab fa-whatsapp fa-lg mr-2"></i> Enviar WhatsApp
+                    </a>
+                @endif
             </div>
         </div>
     </div>
-</x-app-layout>
+</div>
+@endsection

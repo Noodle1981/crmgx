@@ -7,6 +7,12 @@ use Illuminate\Database\Eloquent\Relations\Relation; // <-- AÑADIDO
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
+use App\Models\Client;
+use App\Models\Contact;
+use App\Models\Establishment;
+use App\Observers\ClientObserver;
+use App\Observers\ContactObserver;
+use App\Observers\EstablishmentObserver;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -23,8 +29,13 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // Definimos un mapa explícito para las relaciones polimórficas.
-        // Esto evita problemas y hace las relaciones más seguras y mantenibles.
+        // Registrar observers para auditoría y eventos
+        Client::observe(ClientObserver::class);
+        Contact::observe(ContactObserver::class);
+        Establishment::observe(EstablishmentObserver::class);
+
+        // Definimos un mapa explícito para las relaciones polimórficas
+        // Esto evita problemas y hace las relaciones más seguras y mantenibles
         Relation::morphMap([
             'deal' => \App\Models\Deal::class,
             'client' => \App\Models\Client::class,

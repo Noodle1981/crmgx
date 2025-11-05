@@ -17,6 +17,7 @@ use App\Http\Controllers\CalendarController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\EstablishmentController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\LeadReminderController;
 
 use Illuminate\Support\Facades\Route;
 
@@ -24,18 +25,28 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/dashboard', function () {
+    // Redirigir a administradores a su panel
+    if (auth()->check() && auth()->user()->isAdmin()) {
+        return redirect()->route('admin.dashboard');
+    }
+    return app(DashboardController::class)->index();
+})->middleware(['auth', 'verified', 'user'])->name('dashboard');
 
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', 'user'])->group(function () {
+    // Estadísticas personales se manejan en el DashboardController
+    Route::get('/my-stats', [DashboardController::class, 'personalStats'])->name('user.stats');
+    Route::get('/my-pipeline', [DashboardController::class, 'personalPipeline'])->name('user.pipeline');
+    Route::get('/my-month', [DashboardController::class, 'currentMonth'])->name('user.month');
+
     // Rutas de Perfil
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-    // Rutas de Configuración de correo electrónico
+    
+    // Rutas de Configuración personal
     Route::get('/settings', [SettingsController::class, 'index'])->name('settings.index');
-    Route::post('/settings', [SettingsController::class, 'store'])->name('settings.store');
-
-    // Rutas para el Calendario
+    Route::put('/settings', [SettingsController::class, 'update'])->name('settings.update');    // Rutas para el Calendario
     Route::get('/calendar', [CalendarController::class, 'index'])->name('calendar.index');
     Route::get('/calendar/events', [CalendarController::class, 'events'])->name('calendar.events');
 
@@ -55,6 +66,11 @@ Route::middleware('auth')->group(function () {
     Route::resource('leads', LeadController::class);
     Route::post('/leads/{lead}/convert', [LeadConversionController::class, 'convert'])->name('leads.convert');
     Route::patch('/leads/{lead}/update-status', [LeadController::class, 'updateStatus'])->name('leads.updateStatus');
+
+    // Rutas para Recordatorios de Leads
+    Route::post('/lead-reminders', [LeadReminderController::class, 'store'])->name('lead-reminders.store');
+    Route::patch('/lead-reminders/{reminder}/complete', [LeadReminderController::class, 'complete'])->name('lead-reminders.complete');
+    Route::delete('/lead-reminders/{reminder}', [LeadReminderController::class, 'destroy'])->name('lead-reminders.destroy');
 
 
     // Rutas para Deals (Pipeline y CRUD)
@@ -89,9 +105,30 @@ Route::middleware('auth')->group(function () {
 });
 
 
-Route::middleware(['auth', 'admin'])->group(function () {
-    Route::resource('users', UserController::class);
+    Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
+    // Panel de control del administrador
+    Route::get('/dashboard', [App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/stats', [App\Http\Controllers\Admin\DashboardController::class, 'stats'])->name('stats');
+    
+    // Gestión de usuarios
+    Route::resource('users', App\Http\Controllers\Admin\UserController::class);
+    
+    // Métricas de rendimiento
+    Route::get('/performance', [App\Http\Controllers\Admin\PerformanceController::class, 'index'])->name('performance.index');
+    Route::get('/performance/export', [App\Http\Controllers\Admin\PerformanceController::class, 'export'])->name('performance.export');
+    
+    // Logs y mantenimiento
+    Route::get('/system-logs', [App\Http\Controllers\Admin\DashboardController::class, 'logs'])->name('logs');
+    Route::get('/maintenance', [App\Http\Controllers\Admin\MaintenanceController::class, 'index'])->name('maintenance');
+    Route::post('/maintenance/backup', [App\Http\Controllers\Admin\MaintenanceController::class, 'backup'])->name('maintenance.backup');
+    Route::post('/maintenance/optimize', [App\Http\Controllers\Admin\MaintenanceController::class, 'optimize'])->name('maintenance.optimize');
+    Route::post('/maintenance/clear-cache', [App\Http\Controllers\Admin\MaintenanceController::class, 'clearCache'])->name('maintenance.clear-cache');
+    Route::post('/maintenance/clear-views', [App\Http\Controllers\Admin\MaintenanceController::class, 'clearViews'])->name('maintenance.clear-views');
+    Route::post('/maintenance/clean-logs', [App\Http\Controllers\Admin\MaintenanceController::class, 'cleanLogs'])->name('maintenance.clean-logs');
+    Route::post('/maintenance/clean-sessions', [App\Http\Controllers\Admin\MaintenanceController::class, 'cleanSessions'])->name('maintenance.clean-sessions');
+    
+    // Configuraciones del sistema
+    Route::get('/settings/email', [App\Http\Controllers\Admin\SettingsController::class, 'emailConfig'])->name('settings.email');
+    Route::post('/settings/email', [App\Http\Controllers\Admin\SettingsController::class, 'updateEmailConfig'])->name('settings.email.update');
 });
-
-
 require __DIR__.'/auth.php';
