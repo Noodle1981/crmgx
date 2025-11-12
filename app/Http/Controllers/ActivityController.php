@@ -50,12 +50,14 @@ class ActivityController extends Controller
         $validated = $request->validate([
             'type' => 'required|string|in:note,call,meeting,email',
             'description' => 'required|string|max:5000',
+            'status' => 'required|string|in:pendiente,en espera,completada',
         ]);
 
         // 3. Creación de la actividad
         $deal->activities()->create([
             'type' => $validated['type'],
             'description' => $validated['description'],
+            'status' => $validated['status'],
             'user_id' => Auth::id(),
             'deal_stage_id' => $deal->deal_stage_id,
         ]);

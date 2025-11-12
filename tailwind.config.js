@@ -21,9 +21,9 @@ export default {
                 // *** ¡Aquí he añadido tu color naranja! ***
                 'orange-xamanen': '#FF8E28', // Puedes usar bg-orange-xamanen, text-orange-xamanen, etc.
 
-                // Tu paleta de colores de marca (la mantenemos por si la usas en otras partes)
+                // #FFAC4E Tu paleta de colores de marca (la mantenemos por si la usas en otras partes)
                 'primary': {
-                    'light': '#FFAC4E',
+                    'light': '#f3e1d9ff',
                     'DEFAULT': '#FF8F12', // Naranja principal
                     'dark': '#D97706',
                 },

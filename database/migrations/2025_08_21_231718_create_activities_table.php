@@ -17,6 +17,7 @@ return new class extends Migration
     $table->morphs('loggable'); // Esto creará loggable_id y loggable_type
                                // Podrá asociarse a un Client, a un Deal, a un Contact...
     $table->string('type'); // 'call', 'email', 'meeting', 'note'
+    $table->string('status')->default('pendiente'); // Estado de la tarea: pendiente, en espera, completada, etc.
     $table->text('description'); // "Llamada de seguimiento...", "Reunión para presentar propuesta..."
     $table->json('details')->nullable(); // Guardar metadatos (duración de la llamada, etc.)
     $table->timestamps();

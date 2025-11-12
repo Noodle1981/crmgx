@@ -79,8 +79,9 @@ Route::middleware(['auth', 'user'])->group(function () {
     Route::patch('/deals/{deal}/win', [DealController::class, 'markAsWon'])->name('deals.win');
     Route::patch('/deals/{deal}/lose', [DealController::class, 'markAsLost'])->name('deals.lost');
 
-    Route::resource('clients.contacts', ContactController::class)->scoped()->except(['index', 'show']);
-    Route::get('/contacts/{contact}', [ContactController::class, 'show'])->name('contacts.show');
+    Route::resource('clients.contacts', ContactController::class)->scoped()->except(['index', 'show', 'destroy']);
+    Route::post('/contacts/{contact}/deactivate', [ContactController::class, 'deactivate'])->name('contacts.deactivate');
+    Route::post('/contacts/{contact}/activate', [ContactController::class, 'activate'])->name('contacts.activate');
     Route::get('/clients/{client}/deals/create', [DealController::class, 'create'])->name('clients.deals.create');
     Route::post('/clients/{client}/deals', [DealController::class, 'store'])->name('clients.deals.store');
     Route::post('/clients/{client}/activities', [ActivityController::class, 'storeForClient'])->name('clients.activities.store');
@@ -102,6 +103,11 @@ Route::middleware(['auth', 'user'])->group(function () {
     Route::get('/charts/pipeline', [DashboardController::class, 'getPipelineData'])->name('charts.pipeline');
     Route::get('/dashboard/user', [UserController::class, 'showCurrentUser'])->middleware(['auth'])->name('dashboard.user');
 
+    // Rutas para desactivar y reactivar clientes (deben estar dentro del grupo de usuario)
+    Route::post('/clients/{client}/deactivate', [ClientController::class, 'deactivate'])->name('clients.deactivate');
+    Route::post('/clients/{client}/activate', [ClientController::class, 'activate'])->name('clients.activate');
+
+    Route::get('clients/{client}/establishments/{establishment}/map', [EstablishmentController::class, 'map'])->name('clients.establishments.map');
 });
 
 

@@ -90,10 +90,19 @@ class ContactController extends Controller
         return redirect()->route('clients.show', $client)->with('success', '¡Contacto actualizado con éxito!');
     }
 
-    public function destroy(Client $client, Contact $contact)
+
+    public function deactivate(Contact $contact)
     {
-        $contact->delete();
-        return redirect()->route('clients.show', $client)->with('success', '¡Contacto eliminado con éxito!');
+        $contact->contact_status = 'inactivo';
+        $contact->save();
+        return redirect()->route('clients.show', $contact->client)->with('success', 'Contacto dado de baja correctamente.');
+    }
+
+    public function activate(Contact $contact)
+    {
+        $contact->contact_status = 'activo';
+        $contact->save();
+        return redirect()->route('clients.show', $contact->client)->with('success', 'Contacto reactivado correctamente.');
     }
 
     

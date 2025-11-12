@@ -94,37 +94,57 @@ El sistema implementa un **sistema de roles completo** que separa las funciones 
 ### Backend
 - **PHP** 8.2+
 - **Laravel** 11.x
+### 🏆 Recomendaciones para Prospectar Clientes H&S
+
+Este CRM está preparado para prospectar y gestionar clientes para vender plataformas de firmas digitales y checklist H&S. Para potenciar la prospección y venta, se recomienda:
+
+- **Segmentación avanzada:** Agregar campos como rubro, tamaño de empresa, cantidad de técnicos, nivel de digitalización, fuente del lead, motivo de interés.
+- **Historial de interacciones:** Timeline completo de llamadas, emails, reuniones, demos y actividades.
+- **Adjuntos y documentos:** Permitir subir cotizaciones, propuestas, contratos y demos enviados.
+- **Estado de oportunidad:** Motivo de cierre/ganancia/pérdida, feedback y razones de no compra.
+- **Etiquetas y notas internas:** Tags para filtrar clientes (ej: “interesado en checklist”, “solo firmas”, “demo agendada”).
+- **Filtros y búsqueda avanzada:** Filtrar por etapa, rubro, interés, tamaño, etc.
+- **Alertas y recordatorios:** Notificaciones para seguimientos y fechas clave.
+- **Integración con email/calendario:** Para agendar y registrar reuniones/demos.
+
+Estas mejoras permiten un seguimiento más efectivo y una gestión comercial profesional, adaptada a la venta consultiva de soluciones H&S.
 - **Base de Datos:** MySQL / PostgreSQL / SQLite compatible
 - **Laravel Sanctum** - Autenticación API
-- **Pest PHP** - Testing framework
-
-### Frontend
-- **Vite** - Build tool moderno
-- **Tailwind CSS** 3.x - Framework CSS utility-first
-- **Alpine.js** 3.x - Framework JavaScript ligero
+ **Gestión de Leads:**
+  - CRUD completo de prospectos
+  - Segmentación avanzada (rubro, tamaño, fuente, interés)
+  - Estados: Nuevo → Contactado → Calificado → Convertido
+  - Conversión automática a Cliente + Contacto + Deal
+  - Sistema de recordatorios y alertas
+  - Actualización rápida de estados
 - **FullCalendar** - Calendario interactivo
-- **ApexCharts** - Gráficos y visualizaciones
-- **Sortable.js** - Drag & drop para Kanban
-- **Font Awesome** 6.x - Iconografía
-
-### Herramientas de Desarrollo
-- **Composer** - Gestión de dependencias PHP
+ **Gestión de Clientes:**
+  - Información completa de empresas
+  - Segmentación y tags
+  - Múltiples contactos por cliente
+  - Gestión de establecimientos
+  - Historial de actividades e interacciones
+  - Registro de llamadas, reuniones, emails, demos
+  - Adjuntos y documentos comerciales
 - **NPM** - Gestión de dependencias JavaScript
-- **Laravel Pint** - Estilo de código PHP
-- **PostCSS** - Procesamiento CSS
+ **Pipeline de Ventas (Deals):**
+  - Vista Kanban drag & drop
+  - Etapas personalizables
+  - Estado de oportunidad y motivo de cierre
+  - Marcado de ganadas/perdidas
+  - Valor total del pipeline
+  - Probabilidad de cierre
+  - Adjuntos y feedback del cliente
 
----
-
-## 🛠️ Instalación
-
-### Requisitos Previos
-```bash
-- PHP >= 8.2
-- Composer
-- Node.js >= 18.x
+ **Calendario Integrado:**
+  - Vista mensual/semanal/diaria
+  - Gestión de tareas, eventos y alertas
+  - Recordatorios y notificaciones
+  - Integración con FullCalendar y email
 - NPM o Yarn
-- MySQL / PostgreSQL / SQLite
-```
+## 🚦 Siguientes pasos recomendados
+
+- Las automatizaciones (sequences), integración directa con la plataforma de firmas y workflows avanzados pueden implementarse en futuras versiones, una vez consolidada la gestión comercial y el proceso de ventas.
 
 ### Pasos de Instalación
 
@@ -782,3 +802,22 @@ EP Consultora & Grupo Xamanen
 **⚡ Construido con Laravel & Tailwind CSS**
 
 </div>
+
+---
+
+# 🚦 Versión 1.0 estable
+
+Esta versión entrega todas las funcionalidades principales del CRM (clientes, contactos, deals, tareas, dashboard, roles, email, etc.) probadas y listas para producción.
+
+<!-- ## 🔒 Automatización (Secuencias e Inscripciones)
+
+El módulo de automatización de procesos (secuencias y las inscripciones) está presente en el código, pero **deshabilitado en la interfaz** y no disponible para usuarios finales en esta versión. Esto permite una base escalable y lista para futuras ampliaciones, sin afectar la estabilidad actual.
+
+- Las vistas y enlaces de secuencias/inscripciones están ocultos en la navegación.
+- El backend y los controladores siguen presentes para desarrollo y pruebas internas.
+- La activación de estos módulos se realizará en versiones posteriores.
+
+> Para dudas sobre la automatización, consulta la documentación interna o contacta al equipo de desarrollo.
+-->
+
+---

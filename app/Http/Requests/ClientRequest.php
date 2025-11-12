@@ -32,7 +32,6 @@ class ClientRequest extends FormRequest
             'hs_manager_contact' => 'nullable|string|max:255',
             'notes' => 'nullable|string',
             'active' => 'boolean',
-            'user_id' => 'required|exists:users,id',
         ];
     }
 

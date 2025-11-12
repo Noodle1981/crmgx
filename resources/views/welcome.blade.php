@@ -24,7 +24,7 @@
                     {{-- Logo EP.png y texto Grupo Xamanen --}}
                     <a href="/" class="flex items-center space-x-2"> {{-- <-- Añade esto aquí --}}
     <div class="bg-white p-1 rounded-md shadow">
-        <img src="{{ asset('img/EP.png') }}" alt="EP Consultora Logo" class="block h-9 w-auto">
+        <img src="{{ asset('img/logo.png') }}" alt="EP Consultora Logo" class="block h-9 w-auto">
     </div>
     <span class="font-headings text-2xl font-bold text-white"> & Grupo Xamanen</span>
 </a>

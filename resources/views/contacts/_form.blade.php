@@ -1,5 +1,8 @@
 {{-- resources/views/contacts/_form.blade.php --}}
 
+{{-- Campo oculto para client_id --}}
+<input type="hidden" name="client_id" value="{{ $client->id }}">
+
 {{-- Campo Nombre --}}
 <div class="mb-4">
     <x-input-label for="name" :value="__('Nombre')" />

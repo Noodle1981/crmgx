@@ -16,31 +16,31 @@
             @else
                 <div class="space-y-8">
                     @foreach($establishments as $clientId => $clientEstablishments)
-                        <x-card class="!p-0">
-                            <h3 class="text-2xl font-bold mb-4 text-white p-6">{{ $clientEstablishments->first()->client->name }}</h3>
+                        <x-card class="!p-0 bg-white border border-primary-light shadow-lg">
+                            <h3 class="text-2xl font-bold mb-4 text-primary-dark p-6">{{ $clientEstablishments->first()->client->name }}</h3>
                             <div class="overflow-x-auto">
-                                <table class="w-full text-sm">
-                                    <thead class="border-b border-white/10">
+                                <table class="w-full text-base">
+                                    <thead class="border-b border-primary-light bg-surface">
                                         <tr>
-                                            <th class="p-4 text-left font-semibold text-light-text-muted uppercase tracking-wider">Sede</th>
-                                            <th class="p-4 text-left font-semibold text-light-text-muted uppercase tracking-wider">Dirección</th>
-                                            <th class="p-4 text-left font-semibold text-light-text-muted uppercase tracking-wider">Contactos</th>
+                                            <th class="p-4 text-left font-bold text-primary-dark uppercase tracking-wider">Sede</th>
+                                            <th class="p-4 text-left font-bold text-primary-dark uppercase tracking-wider">Dirección</th>
+                                            <th class="p-4 text-left font-bold text-primary-dark uppercase tracking-wider">Contactos</th>
                                         </tr>
                                     </thead>
-                                    <tbody class="divide-y divide-white/5">
+                                    <tbody class="divide-y divide-primary-light">
                                         @foreach($clientEstablishments as $establishment)
-                                            <tr class="hover:bg-gray-800/50 transition-colors duration-200">
-                                                <td class="p-4 font-medium text-light-text">{{ $establishment->name }}</td>
-                                                <td class="p-4 text-light-text-muted">{{ $establishment->address_street }}, {{ $establishment->address_city }}, {{ $establishment->address_state }}, {{ $establishment->address_country }}</td>
-                                                <td class="p-4 text-light-text-muted">
+                                            <tr class="hover:bg-primary-light/20 transition-colors duration-200">
+                                                <td class="p-4 font-bold text-black">{{ $establishment->name }}</td>
+                                                <td class="p-4 text-black">{{ $establishment->address_street }}, {{ $establishment->address_city }}, {{ $establishment->address_state }}, {{ $establishment->address_country }}</td>
+                                                <td class="p-4 text-black">
                                                     @if($establishment->contacts->isNotEmpty())
                                                         <ul class="list-disc list-inside">
                                                             @foreach($establishment->contacts as $contact)
-                                                                <li>{{ $contact->name }} - {{ $contact->email }}</li>
+                                                                <li class="font-semibold">{{ $contact->name }} <span class="text-primary-dark">- {{ $contact->email }}</span></li>
                                                             @endforeach
                                                         </ul>
                                                     @else
-                                                        Sin contactos
+                                                        <span class="text-primary-dark font-semibold">Sin contactos</span>
                                                     @endif
                                                 </td>
                                             </tr>

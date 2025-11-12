@@ -16,6 +16,7 @@ class Activity extends Model
         'loggable_id',
         'loggable_type',
         'type',
+        'status',
         'description',
         'details',
         'deal_stage_id',

@@ -10,6 +10,13 @@ use App\Http\Requests\EstablishmentRequest;
 class EstablishmentController extends Controller
 {
     /**
+     * Muestra la vista de mapa para un establecimiento.
+     */
+    public function map(Client $client, Establishment $establishment)
+    {
+        return view('establishments.map', compact('client', 'establishment'));
+    }
+    /**
      * Display a listing of all resources.
      */
     public function indexAll()

@@ -13,18 +13,23 @@ use App\Http\Requests\ClientRequest;
 
 class ClientController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $query = Client::forCurrentUser();
-        
+        $filter = $request->get('filter', 'activos');
+        if ($filter === 'inactivos') {
+            $query = $query->where('client_status', 'inactivo');
+        } else {
+            $query = $query->where('client_status', '!=', 'inactivo');
+        }
+        // Para estadísticas, usar queries independientes para evitar duplicación y errores de brackets
         $stats = [
-            'total_clients' => $query->count(),
-            'active_clients' => $query->where('active', true)->count(),
-            'total_value' => $query->withSum('deals', 'value')->get()->sum('deals_sum_value')
+            'total_clients' => Client::forCurrentUser()->count(),
+            'active_clients' => Client::forCurrentUser()->where('client_status', '!=', 'inactivo')->count(),
+            'total_value' => Client::forCurrentUser()->withSum('deals', 'value')->get()->sum('deals_sum_value')
         ];
-        
         $clients = $query->latest()->paginate(10);
-        return view('clients.index', compact('clients', 'stats'));
+        return view('clients.index', compact('clients', 'stats', 'filter'));
     }
 
     public function create()
@@ -130,5 +135,29 @@ public function show(Client $client)
             'establishments' => $establishments,
             'contacts' => $contacts,
         ]);
+    }
+
+    public function deactivate(Client $client)
+    {
+        $client->update(['client_status' => 'inactivo']);
+        // Registrar en el log
+        activity()
+            ->performedOn($client)
+            ->causedBy(auth()->user())
+            ->withProperties(['client_id' => $client->id, 'name' => $client->name])
+            ->log('client_deactivated');
+        return redirect()->route('clients.index')->with('success', 'Cliente desactivado correctamente.');
+    }
+
+    public function activate(Client $client)
+    {
+        $client->update(['client_status' => 'activo']);
+        // Registrar en el log
+        activity()
+            ->performedOn($client)
+            ->causedBy(auth()->user())
+            ->withProperties(['client_id' => $client->id, 'name' => $client->name])
+            ->log('client_activated');
+        return redirect()->route('clients.index')->with('success', 'Cliente reactivado correctamente.');
     }
 }

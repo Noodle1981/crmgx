@@ -62,23 +62,24 @@
                         </div>
                     </div>
 
-                    <!-- Automatización Dropdown -->
+                    <!-- Dropdown oculto en versión 1.0 estable -->
                     <div class="relative" x-data="{ open: false }">
                         <button @click="open = !open" class="flex items-center px-3 py-2 text-sm font-medium text-gray-200 hover:text-white transition"
                                 :class="{'text-white': {{ request()->routeIs('sequences.*') || request()->routeIs('enrollments.*') ? 'true' : 'false' }}}">
                             <i class="fas fa-robot mr-2"></i>
-                            <span>Automatización</span>
+                            {{-- <span>Automatización</span> --}} <!-- Oculto en versión 1.0 estable -->
                             <i class="fas fa-chevron-down ml-2 text-xs"></i>
                         </button>
                         <div x-show="open" @click.away="open = false" 
                              class="absolute z-50 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
                             <div class="py-1">
-                                <x-dropdown-link :href="route('sequences.index')" :active="request()->routeIs('sequences.*')">
+                                {{-- Enlaces de Secuencias e Inscripciones ocultos en versión 1.0 estable --}}
+                                {{-- <x-dropdown-link :href="route('sequences.index')" :active="request()->routeIs('sequences.*')">
                                     <i class="fas fa-sitemap mr-2"></i> Secuencias
                                 </x-dropdown-link>
                                 <x-dropdown-link :href="route('enrollments.index')" :active="request()->routeIs('enrollments.*')">
                                     <i class="fas fa-users-cog mr-2"></i> Inscripciones
-                                </x-dropdown-link>
+                                </x-dropdown-link> --}}
                             </div>
                         </div>
                     </div>
@@ -234,15 +235,16 @@
                 </x-responsive-nav-link>
             </div>
 
-            <!-- Automatización Section -->
+            <!-- Sección oculta en versión 1.0 estable -->
             <div class="border-l-4 border-transparent">
-                <div class="text-gray-300 px-4 py-2 text-xs font-semibold">AUTOMATIZACIÓN</div>
-                <x-responsive-nav-link :href="route('sequences.index')" :active="request()->routeIs('sequences.*')">
+                {{-- <div class="text-gray-300 px-4 py-2 text-xs font-semibold">AUTOMATIZACIÓN</div> --}} <!-- Oculto en versión 1.0 estable -->
+                {{-- Enlaces de Secuencias e Inscripciones ocultos en versión 1.0 estable --}}
+                {{-- <x-responsive-nav-link :href="route('sequences.index')" :active="request()->routeIs('sequences.*')">
                     <i class="fas fa-sitemap w-5 mr-2"></i> Secuencias
                 </x-responsive-nav-link>
                 <x-responsive-nav-link :href="route('enrollments.index')" :active="request()->routeIs('enrollments.*')">
                     <i class="fas fa-users-cog w-5 mr-2"></i> Inscripciones
-                </x-responsive-nav-link>
+                </x-responsive-nav-link> --}}
             </div>
 
             <!-- Gestión Section -->

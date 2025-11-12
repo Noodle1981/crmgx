@@ -148,6 +148,43 @@ class DemoDataSeeder extends Seeder
                     'user_id' => $user->id,
                 ]
             );
+
+            // 9) Actividades demo (idempotentes por tipo+deal)
+            \App\Models\Activity::firstOrCreate([
+                'type' => 'note',
+                'loggable_id' => $deal->id,
+                'loggable_type' => Deal::class,
+                'user_id' => $user->id,
+                'description' => 'Primera nota de seguimiento.',
+            ], [
+                'status' => 'pendiente',
+                'deal_stage_id' => $deal->deal_stage_id ?? 1,
+                'details' => json_encode(['origen' => 'seeder']),
+            ]);
+
+            \App\Models\Activity::firstOrCreate([
+                'type' => 'call',
+                'loggable_id' => $deal->id,
+                'loggable_type' => Deal::class,
+                'user_id' => $user->id,
+                'description' => 'Llamada de prueba al cliente.',
+            ], [
+                'status' => 'completada',
+                'deal_stage_id' => $deal->deal_stage_id ?? 1,
+                'details' => json_encode(['duracion' => '10min', 'origen' => 'seeder']),
+            ]);
+
+            \App\Models\Activity::firstOrCreate([
+                'type' => 'meeting',
+                'loggable_id' => $deal->id,
+                'loggable_type' => Deal::class,
+                'user_id' => $user->id,
+                'description' => 'Reunión agendada para demo.',
+            ], [
+                'status' => 'en espera',
+                'deal_stage_id' => $deal->deal_stage_id ?? 1,
+                'details' => json_encode(['fecha' => now()->addDays(5)->toDateString(), 'origen' => 'seeder']),
+            ]);
         });
 
         $this->command?->info('DemoDataSeeder: datos de prueba listos (idempotente, solo local).');

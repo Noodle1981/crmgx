@@ -74,6 +74,45 @@
                                     </div>
                                 </div>
                             </div>
+
+                            <!-- Configuración SMTP -->
+                            <div class="pt-6">
+                                <h3 class="text-lg font-medium">Configuración de Correo SMTP</h3>
+                                <div class="mt-4 space-y-4">
+                                    <div>
+                                        <label for="smtp_host" class="block font-medium">Servidor SMTP (Host)</label>
+                                        <input id="smtp_host" name="smtp_host" type="text" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50" value="{{ old('smtp_host', $settings['smtp_host'] ?? env('MAIL_HOST')) }}" required>
+                                    </div>
+                                    <div>
+                                        <label for="smtp_port" class="block font-medium">Puerto SMTP</label>
+                                        <input id="smtp_port" name="smtp_port" type="number" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50" value="{{ old('smtp_port', $settings['smtp_port'] ?? env('MAIL_PORT')) }}" required>
+                                    </div>
+                                    <div>
+                                        <label for="smtp_username" class="block font-medium">Usuario SMTP</label>
+                                        <input id="smtp_username" name="smtp_username" type="text" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50" value="{{ old('smtp_username', $settings['smtp_username'] ?? env('MAIL_USERNAME')) }}" required>
+                                    </div>
+                                    <div>
+                                        <label for="smtp_password" class="block font-medium">Contraseña SMTP</label>
+                                        <input id="smtp_password" name="smtp_password" type="password" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50" value="{{ old('smtp_password', $settings['smtp_password'] ?? env('MAIL_PASSWORD')) }}" required>
+                                    </div>
+                                    <div>
+                                        <label for="smtp_encryption" class="block font-medium">Encriptación</label>
+                                        <select id="smtp_encryption" name="smtp_encryption" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50">
+                                            <option value="tls" {{ old('smtp_encryption', $settings['smtp_encryption'] ?? env('MAIL_ENCRYPTION')) === 'tls' ? 'selected' : '' }}>TLS</option>
+                                            <option value="ssl" {{ old('smtp_encryption', $settings['smtp_encryption'] ?? env('MAIL_ENCRYPTION')) === 'ssl' ? 'selected' : '' }}>SSL</option>
+                                            <option value="" {{ old('smtp_encryption', $settings['smtp_encryption'] ?? env('MAIL_ENCRYPTION')) === '' ? 'selected' : '' }}>Sin encriptación</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label for="smtp_from_address" class="block font-medium">Correo Remitente (From)</label>
+                                        <input id="smtp_from_address" name="smtp_from_address" type="email" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50" value="{{ old('smtp_from_address', $settings['smtp_from_address'] ?? env('MAIL_FROM_ADDRESS')) }}" required>
+                                    </div>
+                                    <div>
+                                        <label for="smtp_from_name" class="block font-medium">Nombre Remitente</label>
+                                        <input id="smtp_from_name" name="smtp_from_name" type="text" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50" value="{{ old('smtp_from_name', $settings['smtp_from_name'] ?? env('MAIL_FROM_NAME')) }}" required>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
                         <div class="flex items-center justify-end mt-6">

@@ -55,6 +55,32 @@
         <x-text-input id="phone" name="phone" type="text" class="mt-1 block w-full" :value="old('phone', $client->phone ?? '')" />
         <x-input-error :messages="$errors->get('phone')" class="mt-2" />
     </div>
+
+    <!-- Fecha de Alta como Cliente -->
+    <div class="mb-6">
+        <x-input-label for="registration_date" value="Fecha de Alta como Cliente" />
+        <x-text-input id="registration_date" name="registration_date" type="date" class="mt-1 block w-full" :value="old('registration_date', $client->registration_date ?? '')" />
+        <x-input-error :messages="$errors->get('registration_date')" class="mt-2" />
+    </div>
+
+    <!-- Estado Cliente -->
+    <div class="mb-6">
+        <x-input-label for="client_status" value="Estado Cliente" />
+        <select id="client_status" name="client_status" class="mt-1 block w-full">
+            <option value="" disabled selected>Selecciona estado...</option>
+            <option value="nuevo" @selected(old('client_status', $client->client_status ?? '') == 'nuevo')>Nuevo</option>
+            <option value="activo" @selected(old('client_status', $client->client_status ?? '') == 'activo')>Activo</option>
+            <option value="inactivo" @selected(old('client_status', $client->client_status ?? '') == 'inactivo')>Inactivo</option>
+        </select>
+        <x-input-error :messages="$errors->get('client_status')" class="mt-2" />
+    </div>
+
+    <!-- Código de Actividad -->
+    <div class="mb-6">
+        <x-input-label for="activity_code" value="Código de Actividad" />
+        <x-text-input id="activity_code" name="activity_code" type="text" class="mt-1 block w-full" :value="old('activity_code', $client->activity_code ?? '')" />
+        <x-input-error :messages="$errors->get('activity_code')" class="mt-2" />
+    </div>
 </div>
 
 <!-- Notas (ocupa el ancho completo) -->

@@ -20,137 +20,149 @@
     @endif
 
     <div class="py-12" x-data="{ isActivityModalOpen: false, currentDealId: null, currentDealName: '' }">
-        <div class="max-w-full mx-auto sm:px-6 lg:px-8">
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                @foreach ($pipelineData as $stage)
-                    <div class="bg-gray-100 rounded-2xl flex flex-col">
-                        {{-- Header de la columna --}}
-                        <div class="p-4 border-b border-gray-200">
-                            <h3 class="font-headings font-bold text-lg text-primary-dark text-center">{{ $stage['name'] }}</h3>
-                        </div>
-                        
-                        {{-- Contenedor de las tarjetas de deal --}}
-                        <div class="p-4 space-y-4 overflow-y-auto flex-grow">
-                            @forelse ($stage['deals'] as $deal)
-                                
-                            <div class="bg-primary border border-primary-dark/20 rounded-lg shadow-md overflow-hidden text-white">
-                                    <!-- Parte 1: Contenido Principal -->
-                                    <div class="p-4">
-                                        <div class="flex justify-between items-start">
-                                            <div class="flex-grow">
-                                                <p class="font-semibold text-lg text-white">{{ $deal->name }}</p>
-                                                <p class="text-s text-white/90">{{ $deal->client->name }}</p>
-                                                
-                                                @if($deal->value)
-    @if($stage['name'] === 'Propuesta Enviada')
-        <p class="text-sm font-bold mt-2">${{ number_format($deal->value, 0) }}</p>
-    @elseif($stage['name'] === 'Negociación')
-        <div class="text-sm font-bold mt-2">
-            <span>${{ number_format($deal->value, 0) }}</span>
-            @if(!is_null($deal->original_value) && $deal->original_value != $deal->value)
-                <span class="text-xs font-normal text-white/70 line-through ml-2">${{ number_format($deal->original_value, 0) }}</span>
-            @endif
-        </div>
-    @endif
-@endif
-                                                
-                                
-
-                @if ($deal->notes_contact || $deal->notes_proposal || $deal->notes_negotiation)
-                <div class="mt-3 pt-2 border-t border-white/10 text-xs">
-                    <div class="space-y-3">
-                        @if ($deal->notes_contact)
-                        <div class="bg-primary-light rounded-md p-3">
-                            <p class="font-bold mb-1 text-white/90">Notas: Contacto Inicial</p>
-                            <p class="whitespace-pre-wrap text-white/80">{{ $deal->notes_contact }}</p>
-                        </div>
-                        @endif
-                        @if ($deal->notes_proposal)
-                        <div class="bg-primary-light rounded-md p-3">
-                            <p class="font-bold mb-1 text-white/90">Notas: Propuesta Enviada</p>
-                            <p class="whitespace-pre-wrap text-white/80">{{ $deal->notes_proposal }}</p>
-                        </div>
-                        @endif
-                        @if ($deal->notes_negotiation)
-                        <div class="bg-primary-light rounded-md p-3">
-                            <p class="font-bold mb-1 text-white/90">Notas: Negociación</p>
-                            <p class="whitespace-pre-wrap text-white/80">{{ $deal->notes_negotiation }}</p>
-                        </div>
-                        @endif
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-10">
+            @foreach ($pipelineData as $stage)
+                <div class="bg-white border border-gray-200 rounded-2xl shadow-lg p-8">
+                    <div class="flex items-center mb-6">
+                        <i class="fas fa-layer-group text-2xl text-aurora-cyan mr-3"></i>
+                        <h3 class="font-headings font-bold text-2xl text-primary-dark">{{ $stage['name'] }}</h3>
                     </div>
-                </div>
-                @endif
-
-                                                <div class="mt-3 pt-2 border-t border-white/10 text-xs">
-                                                    <div class="flex justify-between">
-                                                        <span class="font-bold text-white/80">Fecha Inicio:</span>
-                                                        <x-smart-date :date="$deal->created_at" format="d M, Y" />
-                                                    </div>
-                                                    <div class="flex justify-between mt-1">
-                                                        <span class="font-bold text-white/80">Fecha Cierre:</span>
-                                                        <x-smart-date :date="$deal->expected_close_date" with-color="true" format="d M, Y" />
-                                                    </div>
+                    <div class="grid grid-cols-1 gap-8">
+                        @forelse ($stage['deals'] as $deal)
+                            <div class="bg-gray-50 border border-gray-200 rounded-xl shadow-md p-8 min-h-[220px] w-full">
+                                <div class="flex justify-between items-start">
+                                    <div class="flex-grow">
+                                        <p class="font-semibold text-2xl text-primary-dark">{{ $deal->name }}</p>
+                                        <p class="text-base text-gray-600">{{ $deal->client->name }}</p>
+                                        
+                                        @if($deal->value)
+                                            @if($stage['name'] === 'Propuesta Enviada')
+                                                <p class="text-lg font-bold mt-2 text-aurora-cyan">${{ number_format($deal->value, 0) }}</p>
+                                            @elseif($stage['name'] === 'Negociación')
+                                                <div class="text-lg font-bold mt-2">
+                                                    <span class="text-aurora-cyan">${{ number_format($deal->value, 0) }}</span>
+                                                    @if(!is_null($deal->original_value) && $deal->original_value != $deal->value)
+                                                        <span class="text-xs font-normal text-gray-400 line-through ml-2">${{ number_format($deal->original_value, 0) }}</span>
+                                                    @endif
                                                 </div>
-
-                                                @if ($deal->activity_summary->isNotEmpty())
-                                                    <div class="mt-3 pt-2 border-t border-white/10 text-xs">
-                                                        <p class="font-bold text-white/90 mb-2">Resumen de Actividades:</p>
-                                                        @foreach ($deal->activity_summary as $stageName => $activityCounts)
-                                                            <p class="font-semibold text-white/80">{{ $stageName }}:</p>
-                                                            <ul class="list-disc list-inside ml-2">
-                                                                @foreach ($activityCounts as $type => $count)
-                                                                    <li class="text-white/70">{{ ucfirst($type) }}: {{ $count }}</li>
-                                                                @endforeach
-                                                            </ul>
-                                                        @endforeach
+                                            @endif
+                                        @endif
+                                        
+                                        @if ($deal->notes_contact || $deal->notes_proposal || $deal->notes_negotiation)
+                                            <div class="mt-4 pt-3 border-t border-gray-200 text-sm">
+                                                <div class="space-y-4">
+                                                    @if ($deal->notes_contact)
+                                                    <div class="bg-black/90 rounded-lg p-4 text-white">
+                                                        <span class="font-bold text-aurora-cyan">Notas: Contacto Inicial</span>
+                                                        <p class="mt-2">{{ $deal->notes_contact }}</p>
                                                     </div>
-                                                @endif
-
+                                                    @endif
+                                                    @if ($deal->notes_proposal)
+                                                    <div class="bg-black/90 rounded-lg p-4 text-white">
+                                                        <span class="font-bold text-aurora-cyan">Notas: Propuesta Enviada</span>
+                                                        <p class="mt-2">{{ $deal->notes_proposal }}</p>
+                                                    </div>
+                                                    @endif
+                                                    @if ($deal->notes_negotiation)
+                                                    <div class="bg-black/90 rounded-lg p-4 text-white">
+                                                        <span class="font-bold text-aurora-cyan">Notas: Negociación</span>
+                                                        <p class="mt-2">{{ $deal->notes_negotiation }}</p>
+                                                    </div>
+                                                    @endif
+                                                </div>
                                             </div>
-                                            <div class="flex items-center ml-4 space-x-4">
-                                                <a href="{{ route('deals.show', $deal) }}" class="text-white/70 hover:text-white transition" title="Ver Deal">
-                                                    <i class="fas fa-eye text-xl"></i>
-                                                </a>
+                                        @endif
 
-                                                <x-dropdown align="right" width="48">
-                                                    <x-slot name="trigger">
-                                                        <button class="text-white/70 hover:text-white transition"><i class="fas fa-ellipsis-v"></i></button>
-                                                    </x-slot>
-                                                    <x-slot name="content">
-                                                        <x-dropdown-link href="#" @click.prevent="isActivityModalOpen = true; currentDealId = {{ $deal->id }}; currentDealName = '{{ addslashes($deal->name) }}'">
-                                                            Añadir Actividad
-                                                        </x-dropdown-link>
-                                                        <x-dropdown-link :href="route('deals.edit', $deal)">Editar</x-dropdown-link>
-                                                        <form action="{{ route('deals.destroy', $deal) }}" method="POST" onsubmit="return confirm('¿Estás seguro?');">@csrf @method('DELETE')<button type="submit" class="block w-full px-4 py-2 text-start text-sm leading-5 text-red-600 hover:text-red-800 hover:bg-gray-100">Eliminar</button></form>
-                                                    </x-slot>
-                                                </x-dropdown>
+                                        <div class="mt-3 pt-2 border-t border-white/10 text-xs">
+                                            <div class="flex justify-between">
+                                                <span class="font-bold text-white/80">Fecha Inicio:</span>
+                                                <x-smart-date :date="$deal->created_at" format="d M, Y" />
+                                            </div>
+                                            <div class="flex justify-between mt-1">
+                                                <span class="font-bold text-white/80">Fecha Cierre:</span>
+                                                <x-smart-date :date="$deal->expected_close_date" with-color="true" format="d M, Y" />
                                             </div>
                                         </div>
+
+                                        @if ($deal->activity_summary->isNotEmpty())
+                                            <div class="mt-3 pt-2 border-t border-white/10 text-xs">
+                                                <p class="font-bold text-white/90 mb-2">Resumen de Actividades:</p>
+                                                @foreach ($deal->activity_summary as $stageName => $activityCounts)
+                                                    <p class="font-semibold text-white/80">{{ $stageName }}:</p>
+                                                    <ul class="list-disc list-inside ml-2">
+                                                        @foreach ($activityCounts as $type => $count)
+                                                            <li class="text-white/70">{{ ucfirst($type) }}: {{ $count }}</li>
+                                                        @endforeach
+                                                    </ul>
+                                                @endforeach
+                                            </div>
+                                        @endif
+
+                                        @if ($deal->activities->count())
+                                            <div class="mt-6">
+                                                <h4 class="font-bold text-aurora-cyan mb-2">Tareas</h4>
+                                                <div class="space-y-3">
+                                                    @foreach ($deal->activities as $activity)
+                                                        <div class="bg-gray-900/80 rounded-lg p-3 text-white">
+                                                            <div class="flex justify-between items-center mb-1">
+                                                                <span class="text-xs font-semibold text-aurora-yellow">{{ ucfirst($activity->type) }}</span>
+                                                                <span class="text-xs text-light-text-muted">{{ $activity->user->name ?? 'Usuario' }}</span>
+                                                            </div>
+                                                            <div class="flex items-center mb-1">
+                                                                <span class="px-2 py-1 rounded text-xs font-bold"
+                                                                    @class([
+                                                                        'bg-aurora-yellow text-black' => $activity->status === 'pendiente',
+                                                                        'bg-aurora-cyan text-black' => $activity->status === 'en espera',
+                                                                        'bg-emerald-500 text-white' => $activity->status === 'completada',
+                                                                    ])>
+                                                                    {{ ucfirst($activity->status) }}
+                                                                </span>
+                                                            </div>
+                                                            <p class="text-sm">{{ $activity->description }}</p>
+                                                            <span class="text-xs text-light-text-muted">{{ $activity->created_at->diffForHumans() }}</span>
+                                                        </div>
+                                                    @endforeach
+                                                </div>
+                                            </div>
+                                        @endif
+
                                     </div>
-
-                                    <!-- Parte 2: Barra de Acciones -->
-                                    <div class="px-4 py-2 bg-primary-light flex items-center justify-between">
-                                        <div class="flex items-center space-x-3">
-                                            @if ($deal->deal_stage_id > 1)
-                                                <form action="{{ route('deals.updateStage', $deal) }}" method="POST">@csrf @method('PATCH')<input type="hidden" name="deal_stage_id" value="{{ $deal->deal_stage_id - 1 }}"><button type="submit" class="text-primary-dark/70 hover:text-primary-dark transition text-lg" title="Mover a etapa anterior"><i class="fas fa-chevron-left"></i></button></form>
-                                            @endif
-                                            @if ($deal->deal_stage_id < $pipelineData->count())
-                                                <form action="{{ route('deals.updateStage', $deal) }}" method="POST">@csrf @method('PATCH')<input type="hidden" name="deal_stage_id" value="{{ $deal->deal_stage_id + 1 }}"><button type="submit" class="text-primary-dark/70 hover:text-primary-dark transition text-lg" title="Mover a etapa siguiente"><i class="fas fa-chevron-right"></i></button></form>
-                                            @endif
-                                        </div>
-                                        <div class="flex items-center space-x-3">
-                                            <form action="{{ route('deals.lost', $deal) }}" method="POST">@csrf @method('PATCH')<button type="submit" class="text-red-500 hover:text-red-700 transition text-lg" title="Marcar como Perdido"><i class="fas fa-times-circle"></i></button></form>
-                                            <form action="{{ route('deals.win', $deal) }}" method="POST">@csrf @method('PATCH')<button type="submit" class="text-green-500 hover:text-green-700 transition text-lg" title="Marcar como Ganado"><i class="fas fa-check-circle"></i></button></form>
-                                        </div>
+                                    <div class="flex flex-col items-end ml-4 space-y-2">
+                                        <a href="{{ route('deals.show', $deal) }}" class="text-aurora-cyan hover:text-aurora-cyan/80 transition" title="Ver detalles">
+                                            <i class="fas fa-eye"></i> <span class="ml-1">Ver</span>
+                                        </a>
+                                        <a href="{{ route('deals.edit', $deal) }}" class="text-aurora-cyan hover:text-aurora-cyan/80 transition" title="Editar">
+                                            <i class="fas fa-pen"></i> <span class="ml-1">Editar</span>
+                                        </a>
+                                        <a href="#" @click.prevent="isActivityModalOpen = true; currentDealId = {{ $deal->id }}; currentDealName = '{{ $deal->name }}'" class="text-aurora-cyan hover:text-aurora-cyan/80 transition" title="Agregar tarea">
+                                            <i class="fas fa-tasks"></i> <span class="ml-1">Tarea</span>
+                                        </a>
+                                        <form action="{{ route('deals.destroy', $deal) }}" method="POST" onsubmit="return confirm('¿Seguro que deseas eliminar este deal?');">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="text-red-600 hover:text-red-800 transition flex items-center" title="Eliminar">
+                                                <i class="fas fa-trash"></i> <span class="ml-1">Eliminar</span>
+                                            </button>
+                                        </form>
+                                        @if($stage['name'] !== 'Propuesta Enviada')
+                                            <form action="{{ route('deals.update', $deal) }}" method="POST">
+                                                @csrf
+                                                @method('PUT')
+                                                <input type="hidden" name="deal_stage_id" value="{{ $pipelineData->firstWhere('name', 'Propuesta Enviada')['id'] ?? '' }}">
+                                                <button type="submit" class="text-aurora-cyan hover:text-aurora-cyan/80 transition flex items-center" title="Mover a Propuesta Enviada">
+                                                    <i class="fas fa-paper-plane"></i> <span class="ml-1">Propuesta Enviada</span>
+                                                </button>
+                                            </form>
+                                        @endif
                                     </div>
                                 </div>
-                            @empty
-                                <div class="text-center text-text-muted py-10"><i class="fas fa-folder-open text-3xl mb-2"></i><p class="text-sm">No hay deals en esta etapa.</p></div>
-                            @endforelse
-                        </div>
+                            </div>
+                        @empty
+                            <p class="text-center text-light-text-muted py-8">No hay deals en esta etapa.</p>
+                        @endforelse
                     </div>
-                @endforeach
-            </div>
+                </div>
+            @endforeach
         </div>
 
         <!-- Activity Modal -->
@@ -177,6 +189,14 @@
                                 <option value="call">Llamada</option>
                                 <option value="meeting">Reunión</option>
                                 <option value="email">Email</option>
+                            </select>
+                        </div>
+                        <div>
+                            <x-input-label for="status" value="Estado de la tarea" />
+                            <select name="status" id="status" class="mt-1 block w-full border-gray-300 focus:border-primary focus:ring-primary rounded-md shadow-sm">
+                                <option value="pendiente">Pendiente</option>
+                                <option value="en espera">En espera</option>
+                                <option value="completada">Completada</option>
                             </select>
                         </div>
                         <div>

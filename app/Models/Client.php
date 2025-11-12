@@ -46,6 +46,7 @@ class Client extends Model
         'active',
         'user_id',
         'hs_platform_empresa_id', // <-- Importante para la integración
+        'client_status', // <-- Permitir cambio de estado
     ];
 
     /**

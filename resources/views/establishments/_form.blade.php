@@ -42,6 +42,48 @@
         <x-text-input id="address_country" name="address_country" type="text" class="mt-1 block w-full" :value="old('address_country', $establishment->address_country ?? 'Argentina')" required />
         <x-input-error :messages="$errors->get('address_country')" class="mt-2" />
     </div>
+
+    <!-- Ubicación GPS -->
+    <div class="mb-6">
+        <x-input-label for="latitude" value="Latitud (GPS)" />
+        <x-text-input id="latitude" name="latitude" type="number" step="0.00000001" class="mt-1 block w-full" :value="old('latitude', $establishment->latitude ?? '')" placeholder="Ej: -31.53750000" />
+        <x-input-error :messages="$errors->get('latitude')" class="mt-2" />
+    </div>
+    <div class="mb-6">
+        <x-input-label for="longitude" value="Longitud (GPS)" />
+        <x-text-input id="longitude" name="longitude" type="number" step="0.00000001" class="mt-1 block w-full" :value="old('longitude', $establishment->longitude ?? '')" placeholder="Ej: -68.53611111" />
+        <x-input-error :messages="$errors->get('longitude')" class="mt-2" />
+    </div>
+</div>
+
+<!-- Mapa interactivo para ubicación GPS -->
+<div class="mb-6">
+    <x-input-label value="Ubicación en el mapa (click para seleccionar)" />
+    <div id="map" style="height: 300px; border-radius: 8px; overflow: hidden;"></div>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var latInput = document.getElementById('latitude');
+            var lngInput = document.getElementById('longitude');
+            var lat = parseFloat(latInput.value) || -31.5375;
+            var lng = parseFloat(lngInput.value) || -68.53611111;
+            var map = L.map('map').setView([lat, lng], 13);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 19,
+                attribution: '© OpenStreetMap'
+            }).addTo(map);
+            var marker = L.marker([lat, lng], {draggable: true}).addTo(map);
+            function updateInputs(e) {
+                var pos = e.latlng || marker.getLatLng();
+                latInput.value = pos.lat.toFixed(8);
+                lngInput.value = pos.lng.toFixed(8);
+                marker.setLatLng(pos);
+            }
+            map.on('click', updateInputs);
+            marker.on('dragend', updateInputs);
+        });
+    </script>
 </div>
 
 <!-- Notas -->
@@ -75,6 +117,9 @@
         </div>
     @endif
 </div>
+
+<!-- Campo Oculto para client_id -->
+<input type="hidden" name="client_id" value="{{ $client->id }}">
 
 <!-- Botones de Acción -->
 <div class="flex items-center justify-end mt-8 space-x-4">
